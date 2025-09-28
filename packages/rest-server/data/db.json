@@ -1,0 +1,619 @@
+{
+  "permissions": [
+    {
+      "id": "user",
+      "label": "用户管理",
+      "description": "用户管理"
+    },
+    {
+      "id": "team",
+      "label": "团队管理",
+      "description": "团队管理"
+    },
+    {
+      "id": "portfolio",
+      "label": "投资组合管理",
+      "description": "投资组合管理"
+    },
+    {
+      "id": "profit",
+      "label": "收益管理",
+      "description": "收益管理"
+    },
+    {
+      "id": "blacklist",
+      "label": "黑名单管理",
+      "description": "黑名单管理"
+    }
+  ],
+  "sessions": [
+    {
+      "id": 1758610778,
+      "userId": 101,
+      "token": "4087ca9f48cb6b051c1db4587fa7f3f3053294bedec1f7969c87c8f978f8201f",
+      "createdAt": 1758610778
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "title": "First Post",
+      "content": "This is the first post."
+    },
+    {
+      "id": 2,
+      "title": "Second Post",
+      "content": "This is the second post."
+    }
+  ],
+  "users": [
+    {
+      "id": 101,
+      "isSuper": true,
+      "email": "garlic.william@gmail.com",
+      "permissions": [
+        "user",
+        "team",
+        "portfolio",
+        "profit",
+        "blacklist"
+      ],
+      "passwordHash": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+      "suspended": false,
+      "createdAt": 1758092447,
+      "updatedAt": 1758092447
+    },
+    {
+      "id": 1758701823950,
+      "email": "william@stakestone.io",
+      "isSuper": false,
+      "permissions": [
+        "user",
+        "team",
+        "portfolio",
+        "profit",
+        "blacklist"
+      ],
+      "passwordHash": "921443c5e72aac9f10321d52f095edd5ed04ab8deeca8cd0eb425ad46c135c14",
+      "createdAt": 1758701823,
+      "updatedAt": 1758701823,
+      "suspended": false
+    }
+  ],
+  "nav_snapshots": [
+    {
+      "id": 1,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758024000,
+      "nav": 1.025
+    },
+    {
+      "id": 2,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758027600,
+      "nav": 1.025
+    },
+    {
+      "id": 3,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758031200,
+      "nav": 1.025
+    },
+    {
+      "id": 4,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758034800,
+      "nav": 1.025
+    },
+    {
+      "id": 5,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758038400,
+      "nav": 1.025
+    },
+    {
+      "id": 6,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758042000,
+      "nav": 1.025
+    },
+    {
+      "id": 7,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758045600,
+      "nav": 1.025
+    },
+    {
+      "id": 8,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758049200,
+      "nav": 1.025
+    },
+    {
+      "id": 9,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758052800,
+      "nav": 1.025
+    },
+    {
+      "id": 10,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758056400,
+      "nav": 1.025
+    },
+    {
+      "id": 11,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758060000,
+      "nav": 1.025
+    },
+    {
+      "id": 12,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758063600,
+      "nav": 1.025
+    },
+    {
+      "id": 13,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758067200,
+      "nav": 1.025
+    },
+    {
+      "id": 14,
+      "createdAt": 1757930466,
+      "snapshotAt": 1758070800,
+      "nav": 1.025
+    }
+  ],
+  "rate_snapshots": [
+    {
+      "id": 1,
+      "createdAt": 1757930466,
+      "snapshotAt": 1757509200,
+      "exchangeRate": 1.0015
+    },
+    {
+      "id": 2,
+      "createdAt": 1757930466,
+      "snapshotAt": 1757512800,
+      "exchangeRate": 1.0025
+    },
+    {
+      "id": 3,
+      "createdAt": 1757930466,
+      "snapshotAt": 1757516400,
+      "exchangeRate": 1.0025
+    },
+    {
+      "id": 4,
+      "createdAt": 1757930466,
+      "snapshotAt": 1757520000,
+      "exchangeRate": 1.0035
+    },
+    {
+      "id": 5,
+      "createdAt": 1757930466,
+      "snapshotAt": 1757523600,
+      "exchangeRate": 1.0025
+    },
+    {
+      "id": 6,
+      "createdAt": 1757930466,
+      "snapshotAt": 1757527200,
+      "exchangeRate": 1.003
+    },
+    {
+      "id": 7,
+      "createdAt": 1757930466,
+      "snapshotAt": 1757530800,
+      "exchangeRate": 1.004
+    },
+    {
+      "id": 8,
+      "createdAt": 1757930466,
+      "snapshotAt": 1757534400,
+      "exchangeRate": 1.0044
+    },
+    {
+      "id": 9,
+      "createdAt": 1757930466,
+      "snapshotAt": 1757538000,
+      "exchangeRate": 1.0049
+    },
+    {
+      "id": 10,
+      "createdAt": 1757930466,
+      "snapshotAt": 1757541600,
+      "exchangeRate": 1.0053
+    },
+    {
+      "id": 11,
+      "createdAt": 1757930466,
+      "snapshotAt": 1757545200,
+      "exchangeRate": 1.0055
+    }
+  ],
+  "assets_snapshots": [
+    {
+      "id": 1,
+      "assetsValue": 100.3333,
+      "snapshotAt": 1758070800,
+      "createdAt": 1757930466
+    },
+    {
+      "id": 2,
+      "assetsValue": 100.3333,
+      "snapshotAt": 1758070800,
+      "createdAt": 1757930466
+    },
+    {
+      "id": 3,
+      "assetsValue": 100.3333,
+      "snapshotAt": 1758070800,
+      "createdAt": 1757930466
+    },
+    {
+      "id": 4,
+      "assetsValue": 100.3333,
+      "snapshotAt": 1758070800,
+      "createdAt": 1757930466
+    },
+    {
+      "id": 5,
+      "assetsValue": 1024.235,
+      "snapshotAt": 1758070800,
+      "createdAt": 1757930466
+    }
+  ],
+  "teams": [
+    {
+      "id": 1,
+      "name": "team1",
+      "createdAt": 1758092447,
+      "updatedAt": 1758092447
+    },
+    {
+      "id": 2,
+      "name": "team2",
+      "createdAt": 1758092447,
+      "updatedAt": 1758092447
+    },
+    {
+      "id": 3,
+      "name": "team3",
+      "createdAt": 1758092447,
+      "updatedAt": 1758092447
+    },
+    {
+      "id": 1758393723157,
+      "name": "team4",
+      "createdAt": 1758393723,
+      "updatedAt": 1758393723
+    }
+  ],
+  "portfolios": [
+    {
+      "id": 1,
+      "fundName": "portfolio1",
+      "fundAlias": "投资组合1",
+      "inceptionTime": 1758092447,
+      "accountName": "account1",
+      "accountAlias": "子账号1",
+      "ceffuWalletId": "123",
+      "ceffuWalletName": "ceffu prime wallet 1",
+      "teamId": 2,
+      "updatedAt": 1758443589
+    },
+    {
+      "id": 2,
+      "fundName": "portfolio2",
+      "fundAlias": "投资组合2",
+      "inceptionTime": 1758092447,
+      "accountName": "account2",
+      "accountAlias": "子账号2",
+      "ceffuWalletId": "456",
+      "ceffuWalletName": "ceffu prime wallet 2",
+      "teamId": 2,
+      "updatedAt": 1758443612
+    },
+    {
+      "id": 3,
+      "fundName": "portfolio3",
+      "fundAlias": "投资组合3",
+      "inceptionTime": 1758092447,
+      "accountName": "account3",
+      "accountAlias": "子账号3",
+      "ceffuWalletId": "789",
+      "ceffuWalletName": "ceffu prime wallet 3",
+      "teamId": 1,
+      "updatedAt": 1758443625
+    }
+  ],
+  "profit_allocation_ratios": [
+    {
+      "id": 1758530824511,
+      "portfolioId": 2,
+      "version": 1,
+      "toTeam": 2000,
+      "toPlatform": 1000,
+      "toUser": 7000,
+      "createdAt": 1758530824
+    },
+    {
+      "id": 1758535881129,
+      "portfolioId": 1,
+      "version": 2,
+      "toTeam": 2500,
+      "toPlatform": 500,
+      "toUser": 7000,
+      "createdAt": 1758535881
+    },
+    {
+      "id": 1758535948256,
+      "portfolioId": 2,
+      "version": 3,
+      "toTeam": 2000,
+      "toPlatform": 2000,
+      "toUser": 6000,
+      "createdAt": 1758535948
+    },
+    {
+      "id": 1758551103274,
+      "portfolioId": 3,
+      "version": 4,
+      "toTeam": 2000,
+      "toPlatform": 1000,
+      "toUser": 7000,
+      "createdAt": 1758551103
+    }
+  ],
+  "blacklist": [
+    {
+      "id": 2,
+      "address": "0x3135b3b744ddf3ad78023c8db6f3e6318645696d",
+      "note": "测试",
+      "createdAt": 1758616768,
+      "updatedAt": 1758616768
+    }
+  ],
+  "acc_profit_user": [
+    {
+      "id": 1,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758027600,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 2,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758031200,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 3,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758034800,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 4,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758038400,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 5,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758042000,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 6,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758045600,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 7,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758049200,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 8,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758052800,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 9,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758056400,
+      "createdAt": 1758092447
+    }
+  ],
+  "acc_profit_platform": [
+    {
+      "id": 1,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758027600,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 2,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758031200,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 3,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758034800,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 4,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758038400,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 5,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758042000,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 6,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758045600,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 7,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758049200,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 8,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758052800,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 9,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758056400,
+      "createdAt": 1758092447
+    }
+  ],
+  "acc_profit_team": [
+    {
+      "id": 1,
+      "portfolioId": 1,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758027600,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 2,
+      "portfolioId": 1,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758031200,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 3,
+      "portfolioId": 1,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758034800,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 4,
+      "portfolioId": 1,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758038400,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 5,
+      "portfolioId": 1,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758042000,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 6,
+      "portfolioId": 1,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758045600,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 7,
+      "portfolioId": 1,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758049200,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 8,
+      "portfolioId": 1,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758052800,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 9,
+      "portfolioId": 1,
+      "accProfit": "1234.56",
+      "snapshotAt": 1758056400,
+      "createdAt": 1758092447
+    }
+  ],
+  "acc_profit_from_portfolio": [],
+  "profit_reallocations": [
+    {
+      "id": 1,
+      "from": "platform",
+      "fromPortfolioId": null,
+      "to": "user",
+      "toPortfolioId": null,
+      "reason": "222",
+      "usdValue": 22,
+      "createdAt": 1758899331,
+      "createdBy": 101
+    },
+    {
+      "id": 2,
+      "from": "team_portfolio",
+      "fromPortfolioId": 1,
+      "to": "user",
+      "toPortfolioId": null,
+      "reason": "asss",
+      "usdValue": 1,
+      "createdAt": 1758900499,
+      "createdBy": 101
+    },
+    {
+      "id": 3,
+      "from": "platform",
+      "fromPortfolioId": null,
+      "to": "user",
+      "toPortfolioId": null,
+      "reason": "33333",
+      "usdValue": 12,
+      "createdAt": 1758918084,
+      "createdBy": 101
+    },
+    {
+      "id": 4,
+      "from": "team_portfolio",
+      "fromPortfolioId": 3,
+      "to": "user",
+      "toPortfolioId": null,
+      "reason": "qwerqwr",
+      "usdValue": "4",
+      "createdAt": 1758919190,
+      "createdBy": 101
+    }
+  ],
+  "profit_withdrawals": [
+    {
+      "id": 1,
+      "from": "team_portfolio",
+      "fromPortfolioId": 1,
+      "chainId": "1",
+      "transactionHash": "0xc1b5e30a50e535f162ed9b4c5e1edc11cfdbfa49905b73f6c14cfe5d6149192f",
+      "transactionTime": 1758986327,
+      "assets": "USDT",
+      "assetsAmount": 12,
+      "usdValue": "12",
+      "createdAt": 1758991390,
+      "createdBy": 101
+    }
+  ]
+}

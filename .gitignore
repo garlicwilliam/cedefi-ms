@@ -25,3 +25,4 @@ _.njsproj
 _.sln
 \*.sw?
 data
+!packages/rest-server/data
