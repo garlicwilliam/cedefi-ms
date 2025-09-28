@@ -4,25 +4,38 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@ant-design/icons": "^5.5.1",
+    "@rainbow-me/rainbowkit": "^2.2.8",
+    "@refinedev/antd": "^6.0.1",
     "@refinedev/cli": "^2.16.48",
     "@refinedev/core": "^5.0.0",
     "@refinedev/devtools": "^2.0.1",
+    "@refinedev/graphql": "^8.0.0",
     "@refinedev/kbar": "^2.0.0",
+    "@refinedev/react-router": "^2.0.0",
+    "@refinedev/simple-rest": "^6.0.0",
+    "@refinedev/ui-types": "^2.0.0",
+    "@tanstack/react-query": "^5.90.2",
+    "@uiw/react-md-editor": "^4.0.8",
+    "antd": "^5.23.0",
+    "dayjs": "^1.11.18",
+    "jotai": "^2.14.0",
+    "query-string": "^9.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.0.2",
-    "@refinedev/simple-rest": "^6.0.0",
-    "@refinedev/antd": "^6.0.1",
-    "antd": "^5.23.0",
-    "@ant-design/icons": "^5.5.1",
-    "@uiw/react-md-editor": "^4.0.8",
-    "@refinedev/react-router": "^2.0.0"
+    "rxjs": "^7.8.2",
+    "sass": "^1.92.1",
+    "superagent": "^10.2.3",
+    "viem": "~2.37.8",
+    "wagmi": "^2.17.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
     "@types/node": "^20",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
+    "@types/superagent": "^8.1.9",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "@vitejs/plugin-react": "^4.4.1",
@@ -30,9 +43,12 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "json-graphql-server": "^3.3.0",
+    "json-server": "1.0.0-beta.3",
+    "prettier": "^3.6.2",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.30.1",
-    "vite": "^6.3.5",
-    "typescript": "^5.8.3"
+    "vite": "^6.3.5"
   },
   "scripts": {
     "dev": "refine dev",
@@ -54,5 +70,9 @@
   },
   "refine": {
     "projectId": "UHQ55z-Y2kdks-R3DGwC"
-  }
+  },
+  "workspaces": [
+    "packages/*",
+    "libs/*"
+  ]
 }

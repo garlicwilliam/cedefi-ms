@@ -1,10 +1,4 @@
-import {
-  DateField,
-  MarkdownField,
-  NumberField,
-  Show,
-  TextField,
-} from "@refinedev/antd";
+import { DateField, MarkdownField, Show, TextField } from "@refinedev/antd";
 import { useOne, useShow } from "@refinedev/core";
 import { Typography } from "antd";
 import React from "react";

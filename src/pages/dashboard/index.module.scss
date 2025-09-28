@@ -1,0 +1,12 @@
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  column-gap: 16px;
+  row-gap: 16px;
+}
+
+.info {
+  margin-top: 24px;
+  padding: 16px 16px 24px 16px;
+  border-bottom: 1px solid #cdcdcd;
+}

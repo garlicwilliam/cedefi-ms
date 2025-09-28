@@ -1,0 +1,13 @@
+.titleGroup {
+  display: flex;
+  column-gap: 16px;
+  align-items: baseline;
+
+  .title {
+    font-size: 32px;
+  }
+
+  .desc {
+    font-size: 14px;
+  }
+}
