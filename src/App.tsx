@@ -88,7 +88,9 @@ function App() {
           <AntdApp>
             <DevtoolsProvider>
               <Refine
-                dataProvider={restProvider("http://localhost:3100")}
+                dataProvider={{
+                  default: restProvider("http://localhost:3100"),
+                }}
                 notificationProvider={useNotificationProvider}
                 routerProvider={routerProvider}
                 authProvider={authProvider}

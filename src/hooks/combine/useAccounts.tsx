@@ -1,15 +1,25 @@
-import { useList } from "@refinedev/core";
+import { DataProvider, useDataProvider, useList } from "@refinedev/core";
+import { usePortfolios } from "../usePortfolios.tsx";
+import { restProvider } from "../../restProvider.ts";
+import { from } from "rxjs";
+import { map } from "rxjs/operators";
 
 export const useAccounts = () => {
-  // 获取用户账户的信息
-  const { result: userProfitResult } = useList({
-    resource: "acc_profit_user",
-    pagination: { pageSize: 1, currentPage: 1 },
-  });
-  const userProfit = userProfitResult.data;
+  const dataProvider: DataProvider = useDataProvider()();
 
-  // 获取平台账户的信息
-  const {result: platform} = useList({resource: 'acc_profit_platform'})
+  const user$ = from(
+    dataProvider.getList({
+      resource: "acc_profit_user",
+      pagination: { currentPage: 1, pageSize: 1 },
+    }),
+  ).pipe(
+    map((result) => {
+      return result.data;
+    }),
+    map((list) => {
+      return list.length > 0 ? list[0] : null;
+    }),
+  );
 
-  //
+  from(dataProvider.getList({resource: "acc_profit_platform"}))
 };
