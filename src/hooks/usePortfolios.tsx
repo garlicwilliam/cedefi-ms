@@ -1,5 +1,6 @@
-import { useList } from "@refinedev/core";
-import { Portfolio } from "../service/types.ts";
+import { useList } from '@refinedev/core';
+import { Portfolio } from '../service/types.ts';
+import { useMemo } from 'react';
 
 type HookReturnType = {
   arr: Portfolio[];
@@ -13,22 +14,31 @@ export const usePortfolios: (enabled?: boolean) => HookReturnType = (
 ): HookReturnType => {
   //
   const { result, query } = useList({
-    resource: "portfolios",
+    resource: 'portfolios',
     pagination: { pageSize: 1000, currentPage: 1 },
     queryOptions: {
       enabled: enabled == undefined ? true : enabled,
     },
   });
 
-  const data: Portfolio[] = (result?.data || []) as Portfolio[];
-  const isLoading = query.isLoading;
-  const map = (data as any[]).reduce(
-    (map: Map<number, Portfolio>, portfolio: Portfolio) => {
-      map.set(portfolio.id, portfolio);
-      return map;
-    },
-    new Map<number, Portfolio>(),
-  );
+  if (!(result as any)['id']) {
+    (result as any)['id'] = Math.random().toString();
+  }
 
-  return { arr: data, isLoading, map };
+  const isLoading = query.isLoading;
+  const data = result?.data;
+
+  const map = useMemo(() => {
+    const map = (data as any[]).reduce(
+      (map: Map<number, Portfolio>, portfolio: Portfolio) => {
+        map.set(portfolio.id, portfolio);
+        return map;
+      },
+      new Map<number, Portfolio>(),
+    );
+
+    return map;
+  }, [data]);
+
+  return { arr: data as Portfolio[], isLoading, map };
 };

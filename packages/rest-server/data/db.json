@@ -28,10 +28,10 @@
   ],
   "sessions": [
     {
-      "id": 1758610778,
+      "id": 1759087106,
       "userId": 101,
-      "token": "4087ca9f48cb6b051c1db4587fa7f3f3053294bedec1f7969c87c8f978f8201f",
-      "createdAt": 1758610778
+      "token": "d5761cb519ef696916e2c6f8e352b98730219625361a8e1db21cddc3ec85c943",
+      "createdAt": 1759087106
     }
   ],
   "posts": [
@@ -51,13 +51,7 @@
       "id": 101,
       "isSuper": true,
       "email": "garlic.william@gmail.com",
-      "permissions": [
-        "user",
-        "team",
-        "portfolio",
-        "profit",
-        "blacklist"
-      ],
+      "permissions": ["user", "team", "portfolio", "profit", "blacklist"],
       "passwordHash": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
       "suspended": false,
       "createdAt": 1758092447,
@@ -67,13 +61,7 @@
       "id": 1758701823950,
       "email": "william@stakestone.io",
       "isSuper": false,
-      "permissions": [
-        "user",
-        "team",
-        "portfolio",
-        "profit",
-        "blacklist"
-      ],
+      "permissions": ["user", "team", "portfolio", "profit", "blacklist"],
       "passwordHash": "921443c5e72aac9f10321d52f095edd5ed04ab8deeca8cd0eb425ad46c135c14",
       "createdAt": 1758701823,
       "updatedAt": 1758701823,
@@ -286,7 +274,7 @@
       "updatedAt": 1758092447
     },
     {
-      "id": 1758393723157,
+      "id": 4,
       "name": "team4",
       "createdAt": 1758393723,
       "updatedAt": 1758393723
@@ -328,6 +316,30 @@
       "ceffuWalletName": "ceffu prime wallet 3",
       "teamId": 1,
       "updatedAt": 1758443625
+    },
+    {
+      "id": 4,
+      "fundName": "portfolio1",
+      "fundAlias": "投资组合4",
+      "inceptionTime": 1758092447,
+      "accountName": "account1",
+      "accountAlias": "子账号1",
+      "ceffuWalletId": "123",
+      "ceffuWalletName": "ceffu prime wallet 4",
+      "teamId": 3,
+      "updatedAt": 1758443589
+    },
+    {
+      "id": 5,
+      "fundName": "portfolio1",
+      "fundAlias": "投资组合5",
+      "inceptionTime": 1758092447,
+      "accountName": "account1",
+      "accountAlias": "子账号1",
+      "ceffuWalletId": "123",
+      "ceffuWalletName": "ceffu prime wallet 5",
+      "teamId": 4,
+      "updatedAt": 1758443589
     }
   ],
   "profit_allocation_ratios": [
@@ -552,6 +564,34 @@
       "accProfit": "1234.56",
       "snapshotAt": 1758056400,
       "createdAt": 1758092447
+    },
+    {
+      "id": 10,
+      "portfolioId": 2,
+      "accProfit": "1254.56",
+      "snapshotAt": 1758056400,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 11,
+      "portfolioId": 3,
+      "accProfit": "1288.56",
+      "snapshotAt": 1758056400,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 13,
+      "portfolioId": 4,
+      "accProfit": "1299.00",
+      "snapshotAt": 1758056400,
+      "createdAt": 1758092447
+    },
+    {
+      "id": 14,
+      "portfolioId": 5,
+      "accProfit": "1500.00",
+      "snapshotAt": 1758056400,
+      "createdAt": 1758092447
     }
   ],
   "acc_profit_from_portfolio": [],
@@ -614,6 +654,142 @@
       "usdValue": "12",
       "createdAt": 1758991390,
       "createdBy": 101
+    }
+  ],
+  "hourly_profit_user": [
+    {
+      "id": 1,
+      "hourEndAt": 1758027600,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "createdAt": 1758991390
+    },
+    {
+      "id": 2,
+      "hourEndAt": 1758027600,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "createdAt": 1758991390
+    },
+    {
+      "id": 3,
+      "hourEndAt": 1758027600,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "createdAt": 1758991390
+    },
+    {
+      "id": 4,
+      "hourEndAt": 1758027600,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "createdAt": 1758991390
+    },
+    {
+      "id": 5,
+      "hourEndAt": 1758027600,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "createdAt": 1758991390
+    },
+    {
+      "id": 6,
+      "hourEndAt": 1758027600,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "createdAt": 1758991390
+    },
+    {
+      "id": 7,
+      "hourEndAt": 1758027600,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "createdAt": 1758991390
+    },
+    {
+      "id": 8,
+      "hourEndAt": 1758027600,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "createdAt": 1758991390
+    }
+  ],
+  "hourly_profit_platform": [
+    {
+      "id": 1,
+      "hourEndAt": 1758027600,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "deltaFromWithdraw": "0",
+      "createdAt": 1758991390
+    },
+    {
+      "id": 2,
+      "hourEndAt": 1758027600,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "deltaFromWithdraw": "0",
+      "createdAt": 1758991390
+    },
+    {
+      "id": 3,
+      "hourEndAt": 1758027600,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "deltaFromWithdraw": "0",
+      "createdAt": 1758991390
+    },
+    {
+      "id": 4,
+      "hourEndAt": 1758027600,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "deltaFromWithdraw": "0",
+      "createdAt": 1758991390
+    }
+  ],
+  "hourly_profit_team": [
+    {
+      "id": 1,
+      "hourEndAt": 1758027600,
+      "portfolioId": 1,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "deltaFromWithdraw": "0",
+      "createdAt": 1758991390
+    },
+    {
+      "id": 2,
+      "hourEndAt": 1758027600,
+      "portfolioId": 2,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "deltaFromWithdraw": "0",
+      "createdAt": 1758991390
+    },
+    {
+      "id": 3,
+      "hourEndAt": 1758027600,
+      "portfolioId": 3,
+      "profitDelta": "12344.44",
+      "deltaFromFund": "12344.44",
+      "deltaFromReallocation": "0",
+      "deltaFromWithdraw": "0",
+      "createdAt": 1758991390
     }
   ]
 }

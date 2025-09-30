@@ -49,3 +49,39 @@ export type Portfolio = {
 
   teamId: number | null;
 };
+
+export type PlatformAccProfit = {
+  id: number;
+  snapshotAt: number;
+  accProfit: number;
+  createdAt: number;
+};
+
+export type UserAccProfit = {
+  id: number;
+  snapshotAt: number;
+  accProfit: number;
+  createdAt: number;
+};
+
+export type TeamAccProfit = {
+  id: number;
+  portfolioId: number;
+  snapshotAt: number;
+  accProfit: string;
+  createdAt: number;
+};
+
+export type ProfitBalance = {
+  key: string;
+  accountType: "platform" | "user" | "team" | "team_portfolio";
+  accountName: string;
+  //
+  team: Team | null;
+  portfolio: Portfolio | null;
+  //
+  snapshotAt: number;
+  accProfit: string;
+
+  children?: ProfitBalance[];
+};

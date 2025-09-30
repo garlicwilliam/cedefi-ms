@@ -1,5 +1,6 @@
 import { useList } from "@refinedev/core";
 import { AdminUser } from "../service/types.ts";
+import { useMemo } from "react";
 
 export const useUsers = () => {
   const { result } = useList({
@@ -9,17 +10,19 @@ export const useUsers = () => {
   const users = result.data;
 
   //
-  const map = users.reduce((acc, cur: any) => {
-    const newUser: AdminUser = {
-      id: cur.id as number,
-      email: cur.email,
-      permissions: cur.permissions,
-    };
+  const map = useMemo(() => {
+    return users.reduce((acc, cur: any) => {
+      const newUser: AdminUser = {
+        id: cur.id as number,
+        email: cur.email,
+        permissions: cur.permissions,
+      };
 
-    acc.set(cur.id, newUser);
+      acc.set(cur.id, newUser);
 
-    return acc;
-  }, new Map<number, AdminUser>());
+      return acc;
+    }, new Map<number, AdminUser>());
+  }, [users]);
 
   return { arr: users, map };
 };
