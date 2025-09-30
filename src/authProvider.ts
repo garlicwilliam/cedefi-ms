@@ -2,7 +2,7 @@ import type { AuthProvider, AuthActionResponse } from "@refinedev/core";
 import { restService } from "./service/rest.service.ts";
 import { firstValueFrom } from "rxjs";
 import { map, tap } from "rxjs/operators";
-import { AUTH_TOKEN_STORAGE_NAME } from "./const.ts";
+import { AUTH_TOKEN_STORAGE_NAME } from "./const/const.ts";
 import { AdminUser } from "./service/types.ts";
 import { getDefaultStore } from "jotai";
 import { S } from "./state/global.ts";

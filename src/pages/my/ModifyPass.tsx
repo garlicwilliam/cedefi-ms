@@ -1,6 +1,6 @@
 import { Button, Form, Input, message } from "antd";
 import { AuthSimpleResponse, restService } from "../../service/rest.service.ts";
-import { AUTH_TOKEN_STORAGE_NAME } from "../../const.ts";
+import { AUTH_TOKEN_STORAGE_NAME } from "../../const/const.ts";
 import { firstValueFrom } from "rxjs";
 import { useNotification } from "@refinedev/core";
 import { useForm } from "@refinedev/antd";

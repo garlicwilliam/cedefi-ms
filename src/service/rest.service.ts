@@ -1,4 +1,4 @@
-import { REST_API_BASE_HOST } from "../const.ts";
+import { REST_API_BASE_HOST } from "../const/const.ts";
 import { httpGet, httpPost, HttpResponse } from "../util/http.ts";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";

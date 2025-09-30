@@ -17,7 +17,7 @@ import { firstValueFrom, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { RestResponseBody } from "./service/types.ts";
 import QS from "query-string";
-import { AUTH_TOKEN_STORAGE_NAME } from "./const.ts";
+import { AUTH_TOKEN_STORAGE_NAME } from "./const/const.ts";
 import { generateFilter } from "./util/filter.ts";
 
 type SortDirection = "asc" | "desc";

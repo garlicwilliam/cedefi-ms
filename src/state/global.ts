@@ -1,5 +1,5 @@
-import { atom } from "jotai";
-import { AdminUser, PermissionCache } from "../service/types.ts";
+import { atom } from 'jotai';
+import { AdminUser, PermissionCache } from '../service/types.ts';
 
 export const S = {
   Auth: {
@@ -7,5 +7,8 @@ export const S = {
   },
   Cache: {
     Permissions: atom<PermissionCache | null>(null),
+  },
+  Theme: {
+    IsDark: atom<boolean>(true),
   },
 } as const;
