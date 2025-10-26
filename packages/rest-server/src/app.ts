@@ -1,20 +1,13 @@
-import { createJsonServer } from "./server";
-import { Low } from "lowdb";
-import type { Session, User } from "./types";
-import { App } from "@tinyhttp/app";
-import type { Request, Response } from "@tinyhttp/app";
-import {
-  curTimestamp,
-  failRes,
-  passwordToHash,
-  successList,
-  successObj,
-  userPublic,
-} from "./util";
-import { createLoginSession, login } from "./business";
+import { createJsonServer } from './server';
+import { Low } from 'lowdb';
+import type { Session, User } from './types';
+import { App } from '@tinyhttp/app';
+import type { Request, Response } from '@tinyhttp/app';
+import { curTimestamp, failRes, passwordToHash, successList, successObj, userPublic } from './util';
+import { createLoginSession, login } from './business';
 
-const dbFile: string = "./data/db.json";
-const defaultPassword: string = "admin321";
+const dbFile: string = './data/db.json';
+const defaultPassword: string = 'admin321';
 
 // check the authorization header and return user info if valid
 function checkAuth(req: Request, db: Low<any>): null | User {
@@ -23,11 +16,9 @@ function checkAuth(req: Request, db: Low<any>): null | User {
     return null;
   }
 
-  const userToken: string = authStr.replace("Bearer ", "");
+  const userToken: string = authStr.replace('Bearer ', '');
 
-  const session = db.data.sessions
-    ? db.data.sessions.find((s: any): boolean => s.token === userToken)
-    : null;
+  const session = db.data.sessions ? db.data.sessions.find((s: any): boolean => s.token === userToken) : null;
 
   if (!session) {
     return null;
@@ -35,8 +26,7 @@ function checkAuth(req: Request, db: Low<any>): null | User {
 
   const uid: number = session.userId;
 
-  const user: User | null =
-    db.data.users.find((u: any): boolean => u.id === uid) || null;
+  const user: User | null = db.data.users.find((u: any): boolean => u.id === uid) || null;
 
   if (!user) {
     return null;
@@ -50,15 +40,15 @@ function checkPermission(user: User, permission: string): boolean {
 }
 
 const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
-  app.get("/", (req: Request, res: Response) => {
-    const adminHash = passwordToHash("admin123");
-    res.send("Hello! This is the JSON Server. " + adminHash).end();
+  app.get('/', (req: Request, res: Response) => {
+    const adminHash = passwordToHash('admin123');
+    res.send('Hello! This is the JSON Server. ' + adminHash).end();
   });
 
-  app.get("/auth/current", (req: Request, res: Response) => {
+  app.get('/auth/current', (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).send(failRes("Unauthorized")).end();
+      res.status(401).send(failRes('Unauthorized')).end();
       return;
     }
 
@@ -69,17 +59,14 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
       .end();
   });
 
-  app.post("/auth/login", async (req: Request, res: Response) => {
+  app.post('/auth/login', async (req: Request, res: Response) => {
     const email: string = req.body.email;
     const pass: string = req.body.password;
     const curUser: User | null = login(db, { email, password: pass });
 
     if (!curUser) {
       // 登录失败
-      res
-        .status(401)
-        .send(failRes("Login Failed: invalid email or password"))
-        .end();
+      res.status(401).send(failRes('Login Failed: invalid email or password')).end();
       return;
     }
 
@@ -92,26 +79,24 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
       .end();
   });
 
-  app.post("/auth/logout", async (req: Request, res: Response) => {
+  app.post('/auth/logout', async (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
 
     // 删除 session
-    db.data.sessions = db.data.sessions.filter(
-      (s: Session) => s.userId !== user.id,
-    );
+    db.data.sessions = db.data.sessions.filter((s: Session) => s.userId !== user.id);
     await db.write();
 
     res.status(200).json(successObj({})).end();
   });
 
-  app.post("/auth/password", async (req: Request, res: Response) => {
+  app.post('/auth/password', async (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
 
@@ -122,10 +107,7 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     const newPassHash: string = passwordToHash(newPassword);
     //
     if (user.passwordHash !== oldPassHash) {
-      res
-        .status(200)
-        .send(failRes("Change Password Failed: invalid old password"))
-        .end();
+      res.status(200).send(failRes('Change Password Failed: invalid old password')).end();
       return;
     }
 
@@ -141,17 +123,17 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).send(successObj({})).end();
   });
 
-  app.get("/users", async (req: Request, res: Response) => {
+  app.get('/users', async (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
 
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
     //
-    const checked = checkPermission(user, "user");
+    const checked = checkPermission(user, 'user');
     if (!checked) {
-      res.status(403).json(failRes("Forbidden")).end();
+      res.status(403).json(failRes('Forbidden')).end();
       return;
     }
 
@@ -163,17 +145,17 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).send(successList(list, list.length)).end();
   });
 
-  app.post("/users", async (req: Request, res: Response) => {
+  app.post('/users', async (req: Request, res: Response) => {
     //
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
     //
-    const checked = checkPermission(user, "user");
+    const checked = checkPermission(user, 'user');
     if (!checked) {
-      res.status(403).json(failRes("Forbidden")).end();
+      res.status(403).json(failRes('Forbidden')).end();
       return;
     }
     //
@@ -181,14 +163,10 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     const email: string = req.body.email;
     const permissions: string[] = req.body.permissions;
     const passHash: string = passwordToHash(defaultPassword);
-    const existUser: User | null =
-      db.data.users.find(
-        (u: any): boolean =>
-          String(u.email).toLowerCase() === email.toLowerCase(),
-      ) || null;
+    const existUser: User | null = db.data.users.find((u: any): boolean => String(u.email).toLowerCase() === email.toLowerCase()) || null;
 
     if (existUser) {
-      res.status(200).json(failRes("Already Exist")).end();
+      res.status(200).json(failRes('Already Exist')).end();
       return;
     }
 
@@ -212,17 +190,17 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
       .end();
   });
   // 重置密码
-  app.patch("/users/:id/reset", async (req: Request, res: Response) => {
+  app.patch('/users/:id/reset', async (req: Request, res: Response) => {
     //
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
     //
-    const checked = checkPermission(user, "user");
+    const checked = checkPermission(user, 'user');
     if (!checked) {
-      res.status(403).json(failRes("Forbidden")).end();
+      res.status(403).json(failRes('Forbidden')).end();
       return;
     }
     //
@@ -230,16 +208,14 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     const uid: string | undefined = req.params.id;
 
     if (!uid) {
-      res.status(400).json(failRes("Bad Request")).end();
+      res.status(400).json(failRes('Bad Request')).end();
       return;
     }
 
-    const find: User | undefined = db.data.users.find(
-      (u: User) => u.id.toString() === uid.toString(),
-    );
+    const find: User | undefined = db.data.users.find((u: User) => u.id.toString() === uid.toString());
 
     if (!find) {
-      res.status(200).json(failRes("Not Found")).end();
+      res.status(200).json(failRes('Not Found')).end();
       return;
     }
 
@@ -249,16 +225,16 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).send(successObj({})).end();
   });
   // 修改权限
-  app.patch("/users/:id/permissions", async (req: Request, res: Response) => {
+  app.patch('/users/:id/permissions', async (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
     //
-    const checked = checkPermission(user, "user");
+    const checked = checkPermission(user, 'user');
     if (!checked) {
-      res.status(403).json(failRes("Forbidden")).end();
+      res.status(403).json(failRes('Forbidden')).end();
       return;
     }
 
@@ -266,16 +242,14 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     const permissions: string[] = req.body.permissions;
 
     if (!uid || !permissions || !Array.isArray(permissions)) {
-      res.status(400).json(failRes("Bad Request")).end();
+      res.status(400).json(failRes('Bad Request')).end();
       return;
     }
 
-    const find: User | undefined = db.data.users.find(
-      (u: User) => u.id.toString() === uid.toString(),
-    );
+    const find: User | undefined = db.data.users.find((u: User) => u.id.toString() === uid.toString());
 
     if (!find) {
-      res.status(404).json(failRes("Not Found")).end();
+      res.status(404).json(failRes('Not Found')).end();
       return;
     }
 
@@ -285,32 +259,30 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).send(successObj(find)).end();
   });
   // 禁用用户
-  app.patch("/users/:id/suspend", async (req: Request, res: Response) => {
+  app.patch('/users/:id/suspend', async (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
     //
-    const checked = checkPermission(user, "user");
+    const checked = checkPermission(user, 'user');
     if (!checked) {
-      res.status(403).json(failRes("Forbidden")).end();
+      res.status(403).json(failRes('Forbidden')).end();
       return;
     }
     //
     const uid: string | undefined = req.params.id;
     const suspend: boolean | undefined = req.body.suspend;
     if (suspend == undefined || !uid) {
-      res.status(400).json(failRes("Bad Request")).end();
+      res.status(400).json(failRes('Bad Request')).end();
       return;
     }
     //
-    const find: User | undefined = db.data.users.find(
-      (u: User) => u.id.toString() === uid.toString(),
-    );
+    const find: User | undefined = db.data.users.find((u: User) => u.id.toString() === uid.toString());
     //
     if (!find) {
-      res.status(404).json(failRes("Not Found")).end();
+      res.status(404).json(failRes('Not Found')).end();
       return;
     }
 
@@ -320,21 +292,21 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).send(successObj(find)).end();
   });
   //
-  app.delete("/users/:id", async (req: Request, res: Response) => {
-    res.status(401).json({ error: "Unauthorized" }).end();
+  app.delete('/users/:id', async (req: Request, res: Response) => {
+    res.status(401).json({ error: 'Unauthorized' }).end();
   });
   //
-  app.post("/teams", async (req: Request, res: Response) => {
+  app.post('/teams', async (req: Request, res: Response) => {
     //
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
     //
-    const checked = checkPermission(user, "team");
+    const checked = checkPermission(user, 'team');
     if (!checked) {
-      res.status(403).json(failRes("Forbidden")).end();
+      res.status(403).json(failRes('Forbidden')).end();
       return;
     }
     //
@@ -342,18 +314,14 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     const name: string = req.body.name;
     //
     if (!name || name.length < 1) {
-      res.status(400).json(failRes("Bad Request")).end();
+      res.status(400).json(failRes('Bad Request')).end();
       return;
     }
 
-    const existTeam: any =
-      db.data.teams.find(
-        (t: any): boolean =>
-          String(t.name).toLowerCase() === name.toLowerCase(),
-      ) || null;
+    const existTeam: any = db.data.teams.find((t: any): boolean => String(t.name).toLowerCase() === name.toLowerCase()) || null;
 
     if (existTeam) {
-      res.status(200).json(failRes("Already Exist")).end();
+      res.status(200).json(failRes('Already Exist')).end();
       return;
     }
 
@@ -370,34 +338,30 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).json(successObj(newTeam)).end();
   });
   //
-  app.put("/teams/:id", async (req: Request, res: Response) => {
+  app.put('/teams/:id', async (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
     //
-    const checked = checkPermission(user, "team");
+    const checked = checkPermission(user, 'team');
     if (!checked) {
-      res.status(403).json(failRes("Forbidden")).end();
+      res.status(403).json(failRes('Forbidden')).end();
       return;
     }
     //
     const name: string = req.body.name;
     //
     if (!name || name.length < 1) {
-      res.status(400).json(failRes("Bad Request")).end();
+      res.status(400).json(failRes('Bad Request')).end();
       return;
     }
     //
-    const existTeam: any =
-      db.data.teams.find(
-        (t: any): boolean =>
-          String(t.name).toLowerCase() === name.toLowerCase(),
-      ) || null;
+    const existTeam: any = db.data.teams.find((t: any): boolean => String(t.name).toLowerCase() === name.toLowerCase()) || null;
 
     if (existTeam) {
-      res.status(200).json(failRes("Already Exist")).end();
+      res.status(200).json(failRes('Already Exist')).end();
       return;
     }
 
@@ -405,7 +369,7 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     const tid: string | undefined = req.params.id;
     const team = db.data.teams.find((one: any) => one.id == tid);
     if (!team) {
-      res.status(404).json(failRes("Not Found")).end();
+      res.status(404).json(failRes('Not Found')).end();
       return;
     }
     //
@@ -417,16 +381,16 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).json(successObj(team)).end();
   });
   //
-  app.patch("/portfolios/:id/team", async (req: Request, res: Response) => {
+  app.patch('/portfolios/:id/team', async (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
 
-    const checked = checkPermission(user, "portfolio");
+    const checked = checkPermission(user, 'portfolio');
     if (!checked) {
-      res.status(403).json(failRes("Forbidden")).end();
+      res.status(403).json(failRes('Forbidden')).end();
       return;
     }
 
@@ -434,13 +398,13 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     const teamId: number = req.body.teamId;
 
     if (!teamId || !pid) {
-      res.status(400).json(failRes("Bad Request")).end();
+      res.status(400).json(failRes('Bad Request')).end();
       return;
     }
 
     const portfolio = db.data.portfolios.find((one: any) => one.id == pid);
     if (!portfolio) {
-      res.status(404).json(failRes("Not Found")).end();
+      res.status(404).json(failRes('Not Found')).end();
       return;
     }
 
@@ -451,20 +415,21 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).json(successObj(portfolio)).end();
   });
   //
-  app.get("/portfolios", async (req: Request, res: Response) => {
+  app.get('/portfolios', async (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
 
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
     //
-    const tid = req.query.teamId;
-    let ids = req.query.id;
+    const tid: string | string[] | undefined = req.query.teamId;
+    let ids: string | string[] | undefined = req.query.id;
     let list: any[] = db.data.portfolios;
 
     if (tid) {
-      list = list.filter((one) => one.teamId == tid);
+      const tids: string[] = Array.isArray(tid) ? tid : [tid];
+      list = list.filter((one) => tids.indexOf(one.teamId.toString()) >= 0);
     }
 
     if (ids && !Array.isArray(ids)) {
@@ -478,16 +443,16 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).send(successList(list, list.length)).end();
   });
   //
-  app.post("/profit_allocation_ratios", async (req: Request, res: Response) => {
+  app.post('/profit_allocation_ratios', async (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
 
-    const checked = checkPermission(user, "profit");
+    const checked = checkPermission(user, 'profit');
     if (!checked) {
-      res.status(403).json(failRes("Forbidden")).end();
+      res.status(403).json(failRes('Forbidden')).end();
       return;
     }
 
@@ -500,7 +465,7 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
       toUser === undefined ||
       toTeam + toPlatform + toUser !== 10000
     ) {
-      res.status(400).json(failRes("Bad Request")).end();
+      res.status(400).json(failRes('Bad Request')).end();
       return;
     }
 
@@ -526,12 +491,9 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).json(successObj(newAllocation)).end();
   });
   //
-  app.get("/profit_allocation_ratios", async (req: Request, res: Response) => {
+  app.get('/profit_allocation_ratios', async (req: Request, res: Response) => {
     const pid = req.query.portfolioId;
-    const pids: string[] | undefined =
-      !!pid && !Array.isArray(pid)
-        ? ([pid] as string[])
-        : (pid as string[] | undefined);
+    const pids: string[] | undefined = !!pid && !Array.isArray(pid) ? ([pid] as string[]) : (pid as string[] | undefined);
     const size = req.query.limit ? Number(req.query.limit) : 100;
     const offset = req.query.offset ? Number(req.query.offset) : 0;
 
@@ -547,16 +509,16 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).send(successList(list, total)).end();
   });
   //
-  app.post("/blacklist", async (req: Request, res: Response) => {
+  app.post('/blacklist', async (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
 
-    const checked = checkPermission(user, "blacklist");
+    const checked = checkPermission(user, 'blacklist');
     if (!checked) {
-      res.status(403).json(failRes("Forbidden")).end();
+      res.status(403).json(failRes('Forbidden')).end();
       return;
     }
 
@@ -565,17 +527,13 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     const addrRegex = /^(0x)?[0-9a-fA-F]{40}$/;
 
     if (!address || !addrRegex.test(address) || !note) {
-      res.status(400).json(failRes("Bad Request")).end();
+      res.status(400).json(failRes('Bad Request')).end();
       return;
     }
 
     address = address.toLowerCase();
 
-    const exist: any =
-      db.data.blacklist.find(
-        (t: any): boolean =>
-          String(t.address).toLowerCase() === address.toLowerCase(),
-      ) || null;
+    const exist: any = db.data.blacklist.find((t: any): boolean => String(t.address).toLowerCase() === address.toLowerCase()) || null;
 
     const maxId: number = db.data.blacklist
       .map((one: any) => one.id)
@@ -584,7 +542,7 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
       }, 0);
 
     if (exist) {
-      res.status(200).json(failRes("Already Exist")).end();
+      res.status(200).json(failRes('Already Exist')).end();
       return;
     }
 
@@ -602,24 +560,23 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).json(successObj(newItem)).end();
   });
   //
-  app.post("/profit_reallocations", async (req: Request, res: Response) => {
+  app.post('/profit_reallocations', async (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
     //
-    const checked = checkPermission(user, "profit");
+    const checked = checkPermission(user, 'profit');
     if (!checked) {
-      res.status(403).json(failRes("Forbidden")).end();
+      res.status(403).json(failRes('Forbidden')).end();
       return;
     }
 
     //
-    const { from, fromPortfolioId, to, toPortfolioId, reason, usdValue } =
-      req.body;
+    const { from, fromPortfolioId, to, toPortfolioId, reason, usdValue } = req.body;
 
-    const type = ["platform", "user", "team_portfolio"];
+    const type = ['platform', 'user', 'team_portfolio'];
 
     if (
       !from ||
@@ -631,7 +588,7 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
       !type.includes(to) ||
       !type.includes(from)
     ) {
-      res.status(400).json(failRes("Bad Request")).end();
+      res.status(400).json(failRes('Bad Request')).end();
       return;
     }
 
@@ -640,16 +597,16 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     const maxId: number = rows
       .map((one: any) => one.id)
       .reduce((acc: number, cur: number) => {
-        console.log("cur acc", cur, acc);
+        console.log('cur acc', cur, acc);
         return Math.max(acc, cur);
       }, 0);
 
     const newObj = {
       id: maxId + 1,
       from,
-      fromPortfolioId: from === "team_portfolio" ? fromPortfolioId : null,
+      fromPortfolioId: from === 'team_portfolio' ? fromPortfolioId : null,
       to,
-      toPortfolioId: to === "team_portfolio" ? toPortfolioId : null,
+      toPortfolioId: to === 'team_portfolio' ? toPortfolioId : null,
       reason,
       usdValue,
       createdAt: curTimestamp(),
@@ -662,31 +619,22 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     res.status(200).json(successObj(newObj)).end();
   });
   //
-  app.post("/profit_withdrawals", async (req: Request, res: Response) => {
+  app.post('/profit_withdrawals', async (req: Request, res: Response) => {
     const user: User | null = checkAuth(req, db);
     if (!user) {
-      res.status(401).json({ error: "Unauthorized" }).end();
+      res.status(401).json({ error: 'Unauthorized' }).end();
       return;
     }
     //
-    const checked = checkPermission(user, "profit");
+    const checked = checkPermission(user, 'profit');
     if (!checked) {
-      res.status(403).json(failRes("Forbidden")).end();
+      res.status(403).json(failRes('Forbidden')).end();
       return;
     }
     //
-    const {
-      from,
-      portfolioId,
-      chainId,
-      transactionHash,
-      transactionTime,
-      usdValue,
-      assets,
-      assetsAmount,
-    } = req.body;
+    const { from, portfolioId, chainId, transactionHash, transactionTime, usdValue, assets, assetsAmount } = req.body;
     //
-    const type = ["platform", "team_portfolio"];
+    const type = ['platform', 'team_portfolio'];
 
     if (
       !from ||
@@ -701,7 +649,7 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
       !assetsAmount ||
       !transactionTime
     ) {
-      res.status(400).json(failRes("Bad Request")).end();
+      res.status(400).json(failRes('Bad Request')).end();
       return;
     }
     //
@@ -716,7 +664,7 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
     const newObj = {
       id: maxId + 1,
       from,
-      portfolioId: from === "team_portfolio" ? portfolioId : null,
+      portfolioId: from === 'team_portfolio' ? portfolioId : null,
       chainId,
       transactionHash,
       transactionTime,
@@ -734,6 +682,4 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
   });
 });
 
-appServer.listen(3100, () =>
-  console.log("Server running: http://localhost:3100"),
-);
+appServer.listen(3100, () => console.log('Server running: http://localhost:3100'));

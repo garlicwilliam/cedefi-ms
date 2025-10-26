@@ -15,11 +15,24 @@
     "@refinedev/react-router": "^2.0.0",
     "@refinedev/simple-rest": "^6.0.0",
     "@refinedev/ui-types": "^2.0.0",
+    "@safe-global/api-kit": "^4.0.0",
+    "@safe-global/protocol-kit": "^6.1.1",
+    "@safe-global/safe-apps-provider": "^0.18.6",
+    "@safe-global/safe-apps-sdk": "^9.1.0",
+    "@safe-global/safe-react-hooks": "^0.3.0",
+    "@safe-global/sdk-starter-kit": "^3.0.1",
+    "@safe-global/types-kit": "^3.0.0",
     "@tanstack/react-query": "^5.90.2",
+    "@types/lodash": "^4.17.20",
     "@uiw/react-md-editor": "^4.0.8",
+    "@wagmi/core": "^2.22.0",
+    "@walletconnect/ethereum-provider": "^2.22.4",
+    "@walletconnect/types": "^2.22.4",
+    "@walletconnect/universal-provider": "^2.22.4",
     "antd": "^5.23.0",
     "dayjs": "^1.11.18",
     "jotai": "^2.14.0",
+    "lodash": "^4.17.21",
     "query-string": "^9.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -27,7 +40,7 @@
     "rxjs": "^7.8.2",
     "sass": "^1.92.1",
     "superagent": "^10.2.3",
-    "viem": "~2.37.8",
+    "viem": "2.38.3",
     "wagmi": "^2.17.2"
   },
   "devDependencies": {
@@ -74,5 +87,10 @@
   "workspaces": [
     "packages/*",
     "libs/*"
-  ]
+  ],
+  "pnpm": {
+    "overrides": {
+      "viem": "2.38.3"
+    }
+  }
 }

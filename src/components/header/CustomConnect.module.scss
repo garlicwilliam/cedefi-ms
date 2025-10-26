@@ -1,0 +1,12 @@
+.displayBox {
+  display: flex;
+  align-items: center;
+  column-gap: 6px;
+}
+
+.chainIcon,
+.account {
+  display: flex;
+  column-gap: 6px;
+  align-items: center;
+}

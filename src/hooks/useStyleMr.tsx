@@ -1,9 +1,11 @@
-import { useSmall } from "./useSmall.tsx";
-import { bindStyleMerger, StyleMerger } from "../util/css.ts";
+import { useSmall } from './useSmall.tsx';
+import { bindStyleMerger, StyleMerger } from '../util/css.ts';
+import { useAtomValue } from 'jotai';
+import { S } from '../state/global.ts';
 
-export const useStyleMr: (styles: any) => StyleMerger = (
-  styles: any,
-): StyleMerger => {
+export const useStyleMr: (styles: any) => StyleMerger = (styles: any): StyleMerger => {
   const isSmall: boolean = useSmall();
-  return bindStyleMerger(isSmall ? styles.small : "");
+  const isDark: boolean = useAtomValue(S.Theme.IsDark);
+
+  return bindStyleMerger(isSmall ? styles.small : '', isDark ? styles.dark : '');
 };

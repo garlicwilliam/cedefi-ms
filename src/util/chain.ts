@@ -1,29 +1,21 @@
-import { createPublicClient, http, PublicClient } from "viem";
-import { mainnet, bsc } from "viem/chains";
-import {
-  CHAIN_RPC,
-  SUPPORTED_CHAINS,
-  SupportedChainType,
-} from "../const/chain-rpc.ts";
+import { createPublicClient, http, PublicClient } from 'viem';
+import { mainnet, bsc, sepolia } from 'viem/chains';
+import { CHAIN_RPC, SUPPORTED_CHAINS, SupportedChainType } from '../const/chain-rpc.ts';
 
-export async function getTxTimestamp(
-  chainId: SupportedChainType,
-  txHash: `0x${string}`,
-): Promise<number> {
+export async function getTxTimestamp(chainId: SupportedChainType, txHash: `0x${string}`): Promise<number> {
   const client: PublicClient = createClient(chainId);
-  console.log("client is", client);
+
   return await getTransactionTimestamp(txHash, client);
 }
 
 function createClient(id: SupportedChainType): PublicClient {
   const chains = {
-    "1": mainnet,
-    "56": bsc,
+    '1': mainnet,
+    '56': bsc,
+    '11155111': sepolia,
   };
 
   const rpcUrl: string = CHAIN_RPC[id];
-
-  console.log("rpcUrl", id, rpcUrl);
 
   return createPublicClient({
     chain: chains[id],
@@ -31,15 +23,12 @@ function createClient(id: SupportedChainType): PublicClient {
   });
 }
 
-async function getTransactionTimestamp(
-  txHash: `0x${string}`,
-  client: PublicClient,
-) {
+async function getTransactionTimestamp(txHash: `0x${string}`, client: PublicClient) {
   // 1. 获取交易详情
   const tx = await client.getTransaction({ hash: txHash });
 
   if (!tx.blockNumber) {
-    throw new Error("交易还未被打包");
+    throw new Error('交易还未被打包');
   }
 
   // 2. 根据区块号获取区块
@@ -53,8 +42,6 @@ export function isTxHash(tx: string): tx is `0x${string}` {
   return /^0x([A-Fa-f0-9]{64})$/.test(tx);
 }
 
-export function isSupportedChainId(
-  chainId: string,
-): chainId is SupportedChainType {
+export function isSupportedChainId(chainId: string): chainId is SupportedChainType {
   return (SUPPORTED_CHAINS as readonly string[]).includes(chainId);
 }

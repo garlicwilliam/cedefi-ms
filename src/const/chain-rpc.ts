@@ -18,3 +18,9 @@ export const CHAIN_EXPLORER_TX = {
   '56': 'https://bscscan.com/tx/',
   '11155111': 'https://sepolia.etherscan.io/tx',
 };
+
+export const SAFE_SERVICE_URLS: { [c in SupportedChainType]: string } = {
+  '1': 'https://safe-transaction-mainnet.safe.global/api',
+  '56': 'https://safe-transaction-bsc.safe.global/api',
+  '11155111': 'https://safe-transaction-sepolia.safe.global/api',
+};

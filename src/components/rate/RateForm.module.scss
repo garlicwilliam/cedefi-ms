@@ -1,0 +1,30 @@
+.box {
+  display: grid;
+  row-gap: 12px;
+  width: 100%;
+  max-width: 300px;
+
+  &.hide {
+    visibility: hidden;
+  }
+}
+
+.displayBox {
+  display: grid;
+  row-gap: 12px;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'a c'
+    'b c';
+  align-items: center;
+
+  .price {
+    grid-area: a;
+  }
+  .cutOff {
+    grid-area: b;
+  }
+  .submit {
+    grid-area: c;
+  }
+}

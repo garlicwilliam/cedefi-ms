@@ -28,10 +28,10 @@
   ],
   "sessions": [
     {
-      "id": 1759087106,
+      "id": 1761495215,
       "userId": 101,
-      "token": "d5761cb519ef696916e2c6f8e352b98730219625361a8e1db21cddc3ec85c943",
-      "createdAt": 1759087106
+      "token": "f78aa42b77f138809f260aaf28ded6db91434079d37fa7420760569c41610dd7",
+      "createdAt": 1761495215
     }
   ],
   "posts": [
@@ -51,7 +51,13 @@
       "id": 101,
       "isSuper": true,
       "email": "garlic.william@gmail.com",
-      "permissions": ["user", "team", "portfolio", "profit", "blacklist"],
+      "permissions": [
+        "user",
+        "team",
+        "portfolio",
+        "profit",
+        "blacklist"
+      ],
       "passwordHash": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
       "suspended": false,
       "createdAt": 1758092447,
@@ -61,7 +67,13 @@
       "id": 1758701823950,
       "email": "william@stakestone.io",
       "isSuper": false,
-      "permissions": ["user", "team", "portfolio", "profit", "blacklist"],
+      "permissions": [
+        "user",
+        "team",
+        "portfolio",
+        "profit",
+        "blacklist"
+      ],
       "passwordHash": "921443c5e72aac9f10321d52f095edd5ed04ab8deeca8cd0eb425ad46c135c14",
       "createdAt": 1758701823,
       "updatedAt": 1758701823,

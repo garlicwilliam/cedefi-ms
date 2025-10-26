@@ -1,51 +1,21 @@
-import { generateSort } from "@refinedev/simple-rest";
-import type {
-  DataProvider,
-  GetListParams,
-  GetManyParams,
-} from "@refinedev/core";
-import {
-  httpDelete,
-  httpGet,
-  httpPatch,
-  httpPost,
-  httpPut,
-  HttpResponse,
-  isStatusOK,
-} from "./util/http.ts";
-import { firstValueFrom, Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { RestResponseBody } from "./service/types.ts";
-import QS from "query-string";
-import { AUTH_TOKEN_STORAGE_NAME } from "./const/const.ts";
-import { generateFilter } from "./util/filter.ts";
+import { generateSort } from '@refinedev/simple-rest';
+import type { DataProvider, GetListParams, GetManyParams } from '@refinedev/core';
+import { httpDelete, httpGet, httpPatch, httpPost, httpPut, HttpResponse, isStatusOK } from './util/http.ts';
+import { firstValueFrom, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { RestResponseBody } from './service/types.ts';
+import QS from 'query-string';
+import { AUTH_TOKEN_STORAGE_NAME } from './const/const.ts';
+import { generateFilter } from './util/filter.ts';
 
-type SortDirection = "asc" | "desc";
-type SortString =
-  | SortDirection
-  | `${SortDirection},${SortDirection}`
-  | `${SortDirection},${SortDirection},${SortDirection}`;
+type SortDirection = 'asc' | 'desc';
+type SortString = SortDirection | `${SortDirection},${SortDirection}` | `${SortDirection},${SortDirection},${SortDirection}`;
 
-export const restProvider = (
-  apiUrl: string,
-): Omit<
-  Required<DataProvider>,
-  "createMany" | "updateMany" | "deleteMany"
-> => ({
-  getList: async ({
-    resource,
-    pagination,
-    filters,
-    sorters,
-    meta,
-  }: GetListParams) => {
+export const restProvider = (apiUrl: string): Omit<Required<DataProvider>, 'createMany' | 'updateMany' | 'deleteMany'> => ({
+  getList: async ({ resource, pagination, filters, sorters, meta }: GetListParams) => {
     const url = `${apiUrl}/${resource}`;
 
-    const {
-      currentPage = 1,
-      pageSize = 10,
-      mode = "server",
-    } = pagination ?? {};
+    const { currentPage = 1, pageSize = 10, mode = 'server' } = pagination ?? {};
 
     const queryArgs: {
       limit?: number;
@@ -53,11 +23,12 @@ export const restProvider = (
       orderBy?: string;
       dir?: SortString;
     } = {};
+
     const { headers: headersFromMeta } = meta ?? {};
 
     const queryFilters = generateFilter(filters);
 
-    if (mode === "server") {
+    if (mode === 'server') {
       queryArgs.offset = (currentPage - 1) * pageSize;
       queryArgs.limit = pageSize;
     }
@@ -66,8 +37,8 @@ export const restProvider = (
     if (generatedSort) {
       const { _sort, _order } = generatedSort;
 
-      queryArgs.orderBy = _sort.join(",");
-      queryArgs.dir = _order.join(",") as SortString;
+      queryArgs.orderBy = _sort.join(',');
+      queryArgs.dir = _order.join(',') as SortString;
     }
 
     const combinedQuery = { ...queryArgs, ...queryFilters };
@@ -76,7 +47,7 @@ export const restProvider = (
       httpGet<RestResponseBody>(url, combinedQuery, {
         header: {
           ...headersFromMeta,
-          Authorization: localStorage.getItem(AUTH_TOKEN_STORAGE_NAME),
+          Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN_STORAGE_NAME)}`,
         },
       }).pipe(
         map((res: HttpResponse<RestResponseBody>) => {
@@ -90,7 +61,7 @@ export const restProvider = (
             };
           }
 
-          const errInfo: string = res.body.message || res.message || "Error";
+          const errInfo: string = res.body.message || res.message || 'Error';
 
           throw new Error(errInfo);
         }),
@@ -114,7 +85,7 @@ export const restProvider = (
         {
           header: {
             ...headers,
-            Authorization: localStorage.getItem(AUTH_TOKEN_STORAGE_NAME),
+            Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN_STORAGE_NAME)}`,
           },
         },
       ).pipe(
@@ -127,7 +98,7 @@ export const restProvider = (
             };
           }
 
-          const errInfo = res.body.message || res.message || "Error";
+          const errInfo = res.body.message || res.message || 'Error';
 
           throw new Error(errInfo);
         }),
@@ -147,7 +118,7 @@ export const restProvider = (
       httpPost<RestResponseBody>(url, variables, {
         header: {
           ...headers,
-          Authorization: localStorage.getItem(AUTH_TOKEN_STORAGE_NAME),
+          Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN_STORAGE_NAME)}`,
         },
       }).pipe(
         map((res: HttpResponse<RestResponseBody>) => {
@@ -159,7 +130,7 @@ export const restProvider = (
             };
           }
 
-          const errInfo = res.body.message || res.message || "Error";
+          const errInfo = res.body.message || res.message || 'Error';
           throw new Error(errInfo);
         }),
       ),
@@ -179,11 +150,11 @@ export const restProvider = (
     const { headers, method } = meta ?? {};
 
     const funCall =
-      method?.toLowerCase() === "post"
+      method?.toLowerCase() === 'post'
         ? httpPost
-        : method?.toLowerCase() === "put"
+        : method?.toLowerCase() === 'put'
           ? httpPut
-          : method?.toLowerCase() === "patch"
+          : method?.toLowerCase() === 'patch'
             ? httpPatch
             : httpPost;
 
@@ -191,7 +162,7 @@ export const restProvider = (
       funCall<RestResponseBody>(url, variables, {
         header: {
           ...headers,
-          Authorization: localStorage.getItem(AUTH_TOKEN_STORAGE_NAME),
+          Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN_STORAGE_NAME)}`,
         },
       }).pipe(
         map((res: HttpResponse<RestResponseBody>) => {
@@ -203,7 +174,7 @@ export const restProvider = (
             };
           }
 
-          const errInfo: string = res.body.message || res.message || "Error";
+          const errInfo: string = res.body.message || res.message || 'Error';
           throw new Error(errInfo);
         }),
       ),
@@ -225,7 +196,7 @@ export const restProvider = (
         {
           header: {
             ...headers,
-            Authorization: localStorage.getItem(AUTH_TOKEN_STORAGE_NAME),
+            Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN_STORAGE_NAME)}`,
           },
         },
       ).pipe(
@@ -238,7 +209,7 @@ export const restProvider = (
             };
           }
 
-          const errInfo: string = res.body.message || res.message || "Error";
+          const errInfo: string = res.body.message || res.message || 'Error';
           throw new Error(errInfo);
         }),
       ),
@@ -258,7 +229,7 @@ export const restProvider = (
       httpDelete<RestResponseBody>(url, variables, {
         header: {
           ...headers,
-          Authorization: localStorage.getItem(AUTH_TOKEN_STORAGE_NAME),
+          Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN_STORAGE_NAME)}`,
         },
       }).pipe(
         map((res: HttpResponse<RestResponseBody>) => {
@@ -270,7 +241,7 @@ export const restProvider = (
             };
           }
 
-          const errInfo: string = res.body.message || res.message || "Error";
+          const errInfo: string = res.body.message || res.message || 'Error';
           throw new Error(errInfo);
         }),
       ),
@@ -285,15 +256,7 @@ export const restProvider = (
     return apiUrl;
   },
 
-  custom: async ({
-    url,
-    method,
-    filters,
-    sorters,
-    payload,
-    query,
-    headers,
-  }) => {
+  custom: async ({ url, method, filters, sorters, payload, query, headers }) => {
     let requestUrl = `${url}`;
 
     let queryArgs: { [k: string]: string } = {};
@@ -304,8 +267,8 @@ export const restProvider = (
         const { _sort, _order } = generatedSort;
 
         const sortQuery = {
-          orderBy: _sort.join(","),
-          dir: _order.join(","),
+          orderBy: _sort.join(','),
+          dir: _order.join(','),
         };
 
         queryArgs = { ...queryArgs, ...sortQuery };
@@ -322,28 +285,28 @@ export const restProvider = (
       queryArgs = { ...queryArgs, ...query };
     }
 
-    requestUrl += "?" + QS.stringify(queryArgs);
+    requestUrl += '?' + QS.stringify(queryArgs);
 
     let request: Observable<HttpResponse<RestResponseBody>>;
 
     switch (method) {
-      case "put":
+      case 'put':
         request = httpPut(url, payload, { header: headers });
         break;
-      case "post":
+      case 'post':
         request = httpPost(url, payload, { header: headers });
         break;
-      case "patch":
+      case 'patch':
         request = httpPatch(url, payload, { header: headers });
         break;
-      case "delete":
+      case 'delete':
         request = httpDelete(url, payload, { header: headers });
         break;
       default:
         request = httpGet(requestUrl, {
           header: {
             ...headers,
-            Authorization: localStorage.getItem(AUTH_TOKEN_STORAGE_NAME),
+            Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN_STORAGE_NAME)}`,
           },
         });
         break;
@@ -358,7 +321,7 @@ export const restProvider = (
             };
           }
 
-          throw new Error(res.body.message || res.message || "Error");
+          throw new Error(res.body.message || res.message || 'Error');
         }),
       ),
     );

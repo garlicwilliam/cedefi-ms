@@ -1,0 +1,37 @@
+.header {
+  display: grid;
+  grid-row-gap: 16px;
+
+  .headerName {
+    font-weight: 800;
+  }
+
+  .headerContent {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    padding: 10px;
+    background-color: rgba(204, 204, 204, 0.15);
+    border-radius: 8px;
+  }
+
+  .actionBox {
+    display: grid;
+    align-items: center;
+    grid-template-columns: auto 1fr auto;
+    height: 40px;
+
+    .checkState {
+      display: flex;
+      column-gap: 16px;
+    }
+
+    .buttons {
+      display: flex;
+      column-gap: 16px;
+    }
+  }
+}
+
+.warn {
+  color: orangered;
+}

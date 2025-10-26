@@ -52,6 +52,7 @@ import {
   ClockCircleOutlined,
   AccountBookOutlined,
   FieldTimeOutlined,
+  FlagOutlined,
 } from '@ant-design/icons';
 import { UserProfitList } from './pages/snapshots/list-user-profit.tsx';
 import { PlatformProfitList } from './pages/snapshots/list-platform-profit.tsx';
@@ -66,6 +67,15 @@ import { PlatformHourlyProfitList } from './pages/profit-hourly/list-platform.ts
 import { TeamHourlyProfitList } from './pages/profit-hourly/list-team.tsx';
 import { useAtomValue } from 'jotai';
 import { S } from './state/global.ts';
+import { UpdateRate } from './pages/exchange-rate/UpdateRate.tsx';
+import { RateHistory } from './pages/exchange-rate/RateHistory.tsx';
+import { graphProvider } from './graphProvider.ts';
+import { REST_API_BASE_HOST } from './const/const.ts';
+import { GRAPH_API_URL } from './const/contract.ts';
+import { RequestOrderList } from './pages/request-orders/order-list.tsx';
+import { RoundOrderList } from './pages/request-orders/round-order-list.tsx';
+import { Rounds } from './pages/request-orders/rounds.tsx';
+import { SafeModal } from './components/safe-wallet/SafeModal.tsx';
 
 function App() {
   const Link = useLink();
@@ -84,7 +94,8 @@ function App() {
                   <DevtoolsProvider>
                     <Refine
                       dataProvider={{
-                        default: restProvider('http://localhost:3100'),
+                        default: restProvider(REST_API_BASE_HOST),
+                        graph: graphProvider(GRAPH_API_URL),
                       }}
                       notificationProvider={useNotificationProvider}
                       routerProvider={routerProvider}
@@ -313,7 +324,7 @@ function App() {
                         },
                         {
                           name: 'redeems',
-                          list: '/redeems',
+                          list: '/request_orders',
                           meta: {
                             label: '赎回记录',
                             parent: 'redeem_view',
@@ -321,8 +332,17 @@ function App() {
                           },
                         },
                         {
-                          name: 'period_closing',
-                          list: '/period_closing',
+                          name: 'round_orders',
+                          list: '/round_orders',
+                          meta: {
+                            label: '封账操作',
+                            parent: 'redeem_view',
+                            icon: <FlagOutlined />,
+                          },
+                        },
+                        {
+                          name: 'rounds',
+                          list: '/rounds',
                           meta: {
                             label: '封账周期',
                             parent: 'redeem_view',
@@ -349,6 +369,127 @@ function App() {
                           meta: {
                             label: 'Rate 历史',
                             parent: 'rate',
+                          },
+                        },
+                        {
+                          name: 'timeLockExecutes',
+                          meta: {
+                            dataProviderName: 'graph',
+                            entityName: 'timeLockExecute',
+                            entityType: 'TimeLockExecute',
+                            entityFields: [
+                              'id',
+                              'type',
+                              'exHash',
+                              'status',
+                              'predecessorId',
+                              'salt',
+                              'delay',
+                              'batchSize',
+                              'executeDone',
+                              'target',
+                              'value',
+                              'callData',
+                              'createdAt',
+                              'createdBlock',
+                              'updatedAt',
+                              'updatedBlock',
+                            ],
+                          },
+                        },
+                        {
+                          name: 'prices',
+                          meta: {
+                            dataProviderName: 'graph',
+                            entityName: 'price',
+                            entityType: 'Price',
+                            entityFields: ['id', 'idx', 'token', 'tokenSymbol', 'price', 'timestamp', 'blockNumber'],
+                          },
+                        },
+                        {
+                          name: 'cutOffPrices',
+                          meta: {
+                            dataProviderName: 'graph',
+                            entityName: 'cutOffPrice',
+                            entityType: 'CutOffPrice',
+                            entityFields: ['id', 'idx', 'token', 'tokenSymbol', 'price', 'timestamp', 'blockNumber'],
+                          },
+                        },
+                        {
+                          name: 'requestOrders',
+                          meta: {
+                            dataProviderName: 'graph',
+                            entityName: 'requestOrder',
+                            entityType: 'RequestOrder',
+                            entityFields: [
+                              'id',
+                              'round',
+                              'status',
+                              'requester',
+                              'requestShares',
+                              'sharePrice',
+                              'assetAmount',
+                              'assetPrice',
+                              'usdValue',
+
+                              'cancelledAt',
+                              'completedAt',
+                              'forfeitedAt',
+                              'processedAt',
+                              'processingAt',
+                              'rejectedAt',
+                              'requestedAt',
+                              'reviewedAt',
+
+                              'updatedAt',
+                            ],
+                            entitySub: {
+                              requestAsset: {
+                                entityFields: ['id', 'name', 'symbol', 'decimals'],
+                              },
+                            },
+                          },
+                        },
+                        {
+                          name: 'assets',
+                          meta: {
+                            dataProviderName: 'graph',
+                            entityName: 'asset',
+                            entityType: 'Asset',
+                            entityFields: ['id', 'name', 'symbol', 'decimals'],
+                          },
+                        },
+                        {
+                          name: 'withdrawRounds',
+                          meta: {
+                            dataProviderName: 'graph',
+                            entityName: 'withdrawRound',
+                            entityType: 'WithdrawRound',
+                            entityFields: [
+                              'id',
+                              'startedAt',
+                              'closedAt',
+                              'updatedAt',
+                              'sumForfeitedLpAmount',
+                              'sumForfeitedOrderCount',
+                              'sumForfeitedUsdValue',
+                              'sumProcessedLpAmount',
+                              'sumProcessedOrderCount',
+                              'sumProcessedUsdValue',
+                              'sumProcessingLpAmount',
+                              'sumProcessingOrderCount',
+                              'sumProcessingUsdValue',
+                            ],
+                            entitySub: {
+                              sumAssets: {
+                                entityFields: ['id', 'processedAmount', 'processingAmount', 'forfeitedAmount'],
+                                entitySub: {
+                                  asset: {
+                                    entityFields: ['id', 'name', 'symbol', 'decimals'],
+                                  },
+                                },
+                              },
+                            },
                           },
                         },
                       ]}
@@ -388,6 +529,7 @@ function App() {
                           <Route index element={<Navigate to={'/dashboard'} />} />
 
                           <Route path="/dashboard" element={<Dashboard />} />
+
                           <Route path={'/users'}>
                             <Route index element={<AdminList />} />
                             <Route path={'show/:id'} element={<ShowAdmin />} />
@@ -439,6 +581,13 @@ function App() {
                             <Route path={'create'} element={<CreateBlacklist />} />
                           </Route>
 
+                          <Route path={'/rate_submit'} element={<UpdateRate />} />
+                          <Route path={'/rate_history'} element={<RateHistory />} />
+
+                          <Route path={'/request_orders'} element={<RequestOrderList />} />
+                          <Route path={'/round_orders'} element={<RoundOrderList />} />
+                          <Route path={'/rounds'} element={<Rounds />} />
+
                           <Route path={'/modify_password'} element={<ModifyPass />} />
 
                           <Route path="/blog-posts">
@@ -475,6 +624,8 @@ function App() {
                       <RefineKbar />
                       <UnsavedChangesNotifier />
                       <DocumentTitleHandler />
+
+                      <SafeModal />
                     </Refine>
                     <DevtoolsPanel />
                   </DevtoolsProvider>

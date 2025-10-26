@@ -1,0 +1,18 @@
+.wrapper {
+  display: grid;
+  grid-row-gap: 10px;
+}
+
+.valueFilter {
+  display: flex;
+  align-items: center;
+  column-gap: 4px;
+}
+
+.valueActions {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  column-gap: 8px;
+}

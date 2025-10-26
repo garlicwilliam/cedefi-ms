@@ -1,12 +1,14 @@
 import type { RefineThemedLayoutHeaderProps } from '@refinedev/antd';
 import { useGetIdentity } from '@refinedev/core';
 import { Avatar, Layout as AntdLayout, Space, Switch, theme, Typography } from 'antd';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ColorModeContext } from '../../contexts/color-mode';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useSetAtom } from 'jotai';
 import { S } from '../../state/global.ts';
 import { useSmall } from '../../hooks/useSmall.tsx';
+import { CustomConnect } from './CustomConnect.tsx';
+import { useIsSafeWallet } from '../../hooks/wallet-write/useIsSafeWallet.tsx';
 
 const { Text } = Typography;
 const { useToken } = theme;
@@ -24,7 +26,13 @@ export const Header: React.FC<RefineThemedLayoutHeaderProps> = ({ sticky = true 
   const setIsDark = useSetAtom(S.Theme.IsDark);
   setIsDark(mode === 'dark');
   const isSmall: boolean = useSmall();
-  console.log('isSmall', isSmall);
+  const { isSafe } = useIsSafeWallet();
+  const setIsSafe = useSetAtom(S.Wallet.Safe.IsSafe);
+
+  useEffect(() => {
+    setIsSafe(isSafe);
+  }, [isSafe, setIsSafe]);
+
   const headerStyles1: React.CSSProperties = {
     backgroundColor: token.colorBgElevated,
     display: 'flex',
@@ -56,16 +64,8 @@ export const Header: React.FC<RefineThemedLayoutHeaderProps> = ({ sticky = true 
 
   return (
     <AntdLayout.Header style={headerStyles}>
-      <ConnectButton
-        accountStatus={'address'}
-        showBalance={{
-          smallScreen: false,
-          largeScreen: true,
-        }}
-        chainStatus={'icon'}
-
-      />
-
+      {/*<ConnectButton></ConnectButton>*/}
+      <CustomConnect />
 
       <Space>
         <Switch

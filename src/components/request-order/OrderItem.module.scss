@@ -1,0 +1,41 @@
+.order {
+  display: grid;
+  grid-row-gap: 8px;
+  grid-template-areas:
+    'a b'
+    'a c';
+
+  .no {
+    display: grid;
+
+    justify-items: start;
+    align-items: start;
+    align-content: start;
+    grid-area: a;
+    font-style: italic;
+    width: 32px;
+  }
+
+  .metaLine {
+    grid-area: b;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-column-gap: 36px;
+  }
+
+  .requestLine {
+    grid-area: c;
+    display: grid;
+    grid-template-columns: auto;
+    grid-column-gap: 36px;
+  }
+}
+
+.highlight {
+  color: orangered;
+  font-weight: bold;
+}
+
+.highlight2 {
+  color: green;
+}

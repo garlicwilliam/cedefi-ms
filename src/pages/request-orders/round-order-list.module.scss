@@ -1,0 +1,38 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  grid-column-gap: 20px;
+
+  .roundItem {
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(153, 153, 153, 0.1);
+    }
+
+    &.active {
+      background-color: rgba(66, 109, 232, 0.2);
+    }
+  }
+
+  .roundTime {
+    display: grid;
+    grid-row-gap: 6px;
+
+    .timeTag {
+      font-family: monospace;
+    }
+
+    .start,
+    .close {
+      color: #999999;
+      background-color: transparent;
+    }
+  }
+
+  .orderItem {
+    display: grid;
+    background-color: red;
+    width: 100%;
+  }
+}
