@@ -39,7 +39,7 @@ function checkPermission(user: User, permission: string): boolean {
   return user.permissions.indexOf(permission) > -1;
 }
 
-const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
+const appServer$ = createJsonServer(dbFile, (app: App, db: Low<any>) => {
   app.get('/', (req: Request, res: Response) => {
     const adminHash = passwordToHash('admin123');
     res.send('Hello! This is the JSON Server. ' + adminHash).end();
@@ -682,4 +682,6 @@ const appServer = await createJsonServer(dbFile, (app: App, db: Low<any>) => {
   });
 });
 
-appServer.listen(3100, () => console.log('Server running: http://localhost:3100'));
+appServer$.then((appServer) => {
+  appServer.listen(3100, () => console.log('Server running: http://localhost:3100'));
+});

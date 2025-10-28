@@ -16,7 +16,7 @@
   },
   "scripts": {
     "dev": "tsx src/app.ts",
-    "build": "rm -rf lib && tsc",
+    "build": "rm -rf compile && tsc && esbuild compile/app.js --bundle --platform=node --format=esm --outfile=dist/bundle.mjs",
     "test": "node --import tsx/esm --test src/*.test.ts",
     "lint": "eslint src",
     "prepare": "husky",
@@ -30,6 +30,7 @@
     "@sindresorhus/tsconfig": "^6.0.0",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22.5.5",
+    "@vercel/ncc": "^0.38.4",
     "concurrently": "^9.0.1",
     "eslint": "^9.11.0",
     "get-port": "^7.1.0",

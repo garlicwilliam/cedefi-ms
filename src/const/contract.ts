@@ -16,4 +16,4 @@ export const SAFE_TX_SERVICE_URL: string = SAFE_SERVICE_URLS[DEPLOYED_NETWORK.id
 
 export const ZERO_BYTES32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
-export const GRAPH_API_URL = 'https://api.studio.thegraph.com/query/70107/cedefi-sepolia-2/version/latest';
+export const GRAPH_API_URL = 'https://gateway.thegraph.com/api/subgraphs/id/EXNdatQQSHBwXebGzr7EmCJE7keJ1qsdXwp6gWJ9rGYT';
