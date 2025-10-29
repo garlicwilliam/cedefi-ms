@@ -8,8 +8,8 @@ import { SnapshotAtFilter } from '../../components/dropdown/SnapshotAtFilter.tsx
 import React from 'react';
 import { ValueFilter } from '../../components/dropdown/ValueFilter.tsx';
 import { filtered } from '../../util/filter.ts';
-import { ADDR_LP } from '../../const/contract.ts';
 import { isSameStrNoCase } from '../../util/string.ts';
+import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
 
 export const RequestOrderList = () => {
   const { tableProps, filters, setFilters } = useTable({
@@ -34,7 +34,7 @@ export const RequestOrderList = () => {
   });
 
   const assetFilters = assetArr
-    .filter((one) => !isSameStrNoCase(one.id, ADDR_LP))
+    .filter((one) => !isSameStrNoCase(one.id, DEPLOYED_CONTRACTS.ADDR_LP))
     .map((one) => {
       return {
         text: one.symbol,

@@ -1,24 +1,17 @@
 import { createPublicClient, http, PublicClient } from 'viem';
-import { mainnet, bsc, sepolia } from 'viem/chains';
-import { CHAIN_RPC, SUPPORTED_CHAINS, SupportedChainType } from '../const/chain-rpc.ts';
+import { CHAIN_OBJECTS, CHAIN_RPC, SUPPORTED_CHAINS, SupportedChainIDsType } from '../const/chain-rpc.ts';
 
-export async function getTxTimestamp(chainId: SupportedChainType, txHash: `0x${string}`): Promise<number> {
+export async function getTxTimestamp(chainId: SupportedChainIDsType, txHash: `0x${string}`): Promise<number> {
   const client: PublicClient = createClient(chainId);
 
   return await getTransactionTimestamp(txHash, client);
 }
 
-function createClient(id: SupportedChainType): PublicClient {
-  const chains = {
-    '1': mainnet,
-    '56': bsc,
-    '11155111': sepolia,
-  };
-
+function createClient(id: SupportedChainIDsType): PublicClient {
   const rpcUrl: string = CHAIN_RPC[id];
 
   return createPublicClient({
-    chain: chains[id],
+    chain: CHAIN_OBJECTS[id],
     transport: http(rpcUrl),
   });
 }
@@ -42,6 +35,6 @@ export function isTxHash(tx: string): tx is `0x${string}` {
   return /^0x([A-Fa-f0-9]{64})$/.test(tx);
 }
 
-export function isSupportedChainId(chainId: string): chainId is SupportedChainType {
-  return (SUPPORTED_CHAINS as readonly string[]).includes(chainId);
+export function isSupportedChainId(chainId: number): chainId is SupportedChainIDsType {
+  return SUPPORTED_CHAINS.map((one) => one.id).includes(chainId as SupportedChainIDsType);
 }

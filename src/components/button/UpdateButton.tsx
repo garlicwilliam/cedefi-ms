@@ -1,12 +1,9 @@
-import React from "react";
-import type { DeleteButtonProps } from "@refinedev/antd";
-import { useDeleteButton, useUpdate } from "@refinedev/core";
-import { Button, Popconfirm } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
-import {
-  RefineButtonClassNames,
-  RefineButtonTestIds,
-} from "@refinedev/ui-types";
+import React from 'react';
+import type { DeleteButtonProps } from '@refinedev/antd';
+import { useDeleteButton, useUpdate } from '@refinedev/core';
+import { Button, Popconfirm } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+import { RefineButtonClassNames, RefineButtonTestIds } from '@refinedev/ui-types';
 
 export const UpdateButton: React.FC<DeleteButtonProps & { values: any }> = ({
   resource: resourceNameFromProps,
@@ -62,10 +59,7 @@ export const UpdateButton: React.FC<DeleteButtonProps & { values: any }> = ({
 
   const onConfirm = async () => {
     mutate({ values: values });
-
   };
-
-  console.log("mutation", mutation);
 
   return (
     <Popconfirm

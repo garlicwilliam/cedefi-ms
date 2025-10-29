@@ -5,10 +5,11 @@ import styles from './RateForm.module.scss';
 import { useState } from 'react';
 import { useUpdatePriceCallData } from '../../hooks/contract/useUpdatePriceCallData.tsx';
 import { AbiNoDelayTimelockController } from '../../const/abis/NoDelayTimelockController.ts';
-import { ADDR_ORACLE, ADDR_TIMELOCK_0, ZERO_BYTES32 } from '../../const/contract.ts';
+import { ZERO_BYTES32 } from '../../const/contract.ts';
 import { generatePrivateKey } from 'viem/accounts';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useCallContractState } from '../../hooks/wallet-write/useCallContract.tsx';
+import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
 
 type RateFormProps = { onDone: () => void };
 
@@ -42,11 +43,11 @@ export const RateForm = ({ onDone }: RateFormProps) => {
   //
   const onSubmit = (): void => {
     const salt = generatePrivateKey();
-    const args: any[] = [ADDR_ORACLE, 0n, callData, ZERO_BYTES32, salt, 0n];
+    const args: any[] = [DEPLOYED_CONTRACTS.ADDR_ORACLE, 0n, callData, ZERO_BYTES32, salt, 0n];
 
     mutate({
       abi: AbiNoDelayTimelockController,
-      address: ADDR_TIMELOCK_0,
+      address: DEPLOYED_CONTRACTS.ADDR_TIMELOCK_0,
       function: 'schedule',
       args,
     });

@@ -12,8 +12,8 @@ import { useOrders } from '../../hooks/graph/useOrders.tsx';
 import { useCallContractState } from '../../hooks/wallet-write/useCallContract.tsx';
 import { useMultiTimesCall } from '../../util/refresh.ts';
 import { AbiWithdrawController } from '../../const/abis/WithdrawController.ts';
-import { ADDR_WITHDRAW } from '../../const/contract.ts';
 import { LoadingOutlined } from '@ant-design/icons';
+import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
 
 function computeRequestOrderStatistics(orders: RequestOrder[]) {
   const groups = orders.reduce(
@@ -60,7 +60,7 @@ export const Rounds = () => {
     mutate({
       abi: AbiWithdrawController,
       function: 'markAsProcessingComplete',
-      address: ADDR_WITHDRAW,
+      address: DEPLOYED_CONTRACTS.ADDR_WITHDRAW,
       args: [],
     });
   };

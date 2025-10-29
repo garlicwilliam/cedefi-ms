@@ -2,7 +2,7 @@ import { useAccount, useWaitForTransactionReceipt, useWriteContract } from 'wagm
 import { Abi, encodeFunctionData } from 'viem';
 import Safe, { Eip1193Provider } from '@safe-global/protocol-kit';
 import SafeApiKit from '@safe-global/api-kit';
-import { DEPLOYED_NETWORK, SAFE_TX_SERVICE_URL } from '../../const/contract.ts';
+import { SAFE_TX_SERVICE_URL } from '../../const/contract.ts';
 import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { filter, finalize, from, Observable, of, startWith, Subscription, switchMap, take, takeWhile, timer, zip } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { useSetAtom } from 'jotai';
 import { S } from '../../state/global.ts';
 import { App as AntdApp } from 'antd';
 import { parseErrorMessage } from '../../util/error.ts';
+import { DEPLOYED_NETWORK } from '../../const/env.ts';
 
 export type UseWriteParamType = {
   abi: Abi;

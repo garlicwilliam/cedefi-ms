@@ -1,14 +1,14 @@
-import { REST_API_BASE_HOST } from "../const/const.ts";
-import { httpGet, httpPost, HttpResponse } from "../util/http.ts";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { AdminUser, RestResponseBody } from "./types.ts";
+import { httpGet, httpPost, HttpResponse } from '../util/http.ts';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AdminUser, RestResponseBody } from './types.ts';
+import { REST_API } from '../const/env.ts';
 
 const URL_PATH = {
-  auth_login: REST_API_BASE_HOST + "/auth/login",
-  auth_logout: REST_API_BASE_HOST + "/auth/logout",
-  auth_current: REST_API_BASE_HOST + "/auth/current",
-  auth_password: REST_API_BASE_HOST + "/auth/password",
+  auth_login: REST_API + '/auth/login',
+  auth_logout: REST_API + '/auth/logout',
+  auth_current: REST_API + '/auth/current',
+  auth_password: REST_API + '/auth/password',
 };
 
 export type AuthUserResponse = {
@@ -39,7 +39,7 @@ function resParse(res: HttpResponse<RestResponseBody>): RestResponseBody {
 
   return {
     isOK: false,
-    message: "Error",
+    message: 'Error',
     data: {} as any,
   };
 }
@@ -47,11 +47,7 @@ function resParse(res: HttpResponse<RestResponseBody>): RestResponseBody {
 export class RestService {
   //
   public authCurrentUser(token: string): Observable<AuthUserResponse> {
-    return httpGet<RestResponseBody>(
-      URL_PATH.auth_current,
-      {},
-      { header: { Authorization: `Bearer ${token}` } },
-    ).pipe(
+    return httpGet<RestResponseBody>(URL_PATH.auth_current, {}, { header: { Authorization: `Bearer ${token}` } }).pipe(
       map((res: HttpResponse<RestResponseBody>): RestResponseBody => {
         return resParse(res);
       }),
@@ -67,10 +63,7 @@ export class RestService {
   }
 
   //
-  public authLogin(
-    email: string,
-    password: string,
-  ): Observable<AuthLoginResponse> {
+  public authLogin(email: string, password: string): Observable<AuthLoginResponse> {
     return httpPost<RestResponseBody>(URL_PATH.auth_login, {
       email,
       password,
@@ -93,11 +86,7 @@ export class RestService {
 
   //
   public authLogout(token: string): Observable<AuthSimpleResponse> {
-    return httpPost<RestResponseBody>(
-      URL_PATH.auth_logout,
-      {},
-      { header: { Authorization: `Bearer ${token}` } },
-    ).pipe(
+    return httpPost<RestResponseBody>(URL_PATH.auth_logout, {}, { header: { Authorization: `Bearer ${token}` } }).pipe(
       map((res: HttpResponse<RestResponseBody>): RestResponseBody => {
         return resParse(res);
       }),
@@ -113,11 +102,7 @@ export class RestService {
   }
 
   // modify auth password
-  public authPassword(
-    oldPassword: string,
-    newPassword: string,
-    token: string,
-  ): Observable<AuthSimpleResponse> {
+  public authPassword(oldPassword: string, newPassword: string, token: string): Observable<AuthSimpleResponse> {
     return httpPost<RestResponseBody>(
       URL_PATH.auth_password,
       { oldPassword, newPassword },

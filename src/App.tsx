@@ -1,20 +1,20 @@
-import { Refine, Authenticated, useLink } from '@refinedev/core';
+import { Authenticated, Refine, useLink } from '@refinedev/core';
 import { DevtoolsPanel, DevtoolsProvider } from '@refinedev/devtools';
 import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar';
-import { ErrorComponent, useNotificationProvider, ThemedLayout, ThemedSider } from '@refinedev/antd';
+import { ErrorComponent, ThemedLayout, ThemedSider, useNotificationProvider } from '@refinedev/antd';
 import '@refinedev/antd/dist/reset.css';
 import '@rainbow-me/rainbowkit/styles.css';
-import { RainbowKitProvider, WagmiProvider, QueryClientProvider, config, queryClient, darkTheme, lightTheme } from './wallet.tsx';
+import { config, darkTheme, lightTheme, queryClient, QueryClientProvider, RainbowKitProvider, WagmiProvider } from './wallet.tsx';
 import { App as AntdApp } from 'antd';
-import { BrowserRouter, Route, Routes, Outlet, Navigate } from 'react-router';
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router';
 import routerProvider, {
-  NavigateToResource,
   CatchAllNavigate,
-  UnsavedChangesNotifier,
   DocumentTitleHandler,
+  NavigateToResource,
+  UnsavedChangesNotifier,
 } from '@refinedev/react-router';
-import { BlogPostList, BlogPostCreate, BlogPostEdit, BlogPostShow } from './pages/blog-posts';
-import { CategoryList, CategoryCreate, CategoryEdit, CategoryShow } from './pages/categories';
+import { BlogPostCreate, BlogPostEdit, BlogPostList, BlogPostShow } from './pages/blog-posts';
+import { CategoryCreate, CategoryEdit, CategoryList, CategoryShow } from './pages/categories';
 import { ColorModeContextProvider } from './contexts/color-mode';
 import { Header } from './components';
 import { Login } from './pages/login';
@@ -26,7 +26,7 @@ import React from 'react';
 import { cedefiMenus, resetPassMenus } from './components/menus/cedefi-menus.tsx';
 import { Dashboard } from './pages/dashboard';
 import { restProvider } from './restProvider.ts';
-import { RateList, NavList } from './pages/snapshots';
+import { NavList, RateList } from './pages/snapshots';
 import { AssetsList } from './pages/snapshots/list-assets.tsx';
 import { AdminList } from './pages/admins/list.tsx';
 import { ShowAdmin } from './pages/admins/show.tsx';
@@ -42,17 +42,17 @@ import { ModifyPass } from './pages/my/ModifyPass.tsx';
 import { BlackList } from './pages/blacklist/list.tsx';
 import { CreateBlacklist } from './pages/blacklist/create.tsx';
 import {
-  FundViewOutlined,
-  CameraOutlined,
-  DatabaseOutlined,
-  TeamOutlined,
-  GroupOutlined,
-  SettingOutlined,
-  UsergroupAddOutlined,
-  ClockCircleOutlined,
   AccountBookOutlined,
+  CameraOutlined,
+  ClockCircleOutlined,
+  DatabaseOutlined,
   FieldTimeOutlined,
   FlagOutlined,
+  FundViewOutlined,
+  GroupOutlined,
+  SettingOutlined,
+  TeamOutlined,
+  UsergroupAddOutlined,
 } from '@ant-design/icons';
 import { UserProfitList } from './pages/snapshots/list-user-profit.tsx';
 import { PlatformProfitList } from './pages/snapshots/list-platform-profit.tsx';
@@ -70,12 +70,11 @@ import { S } from './state/global.ts';
 import { UpdateRate } from './pages/exchange-rate/UpdateRate.tsx';
 import { RateHistory } from './pages/exchange-rate/RateHistory.tsx';
 import { graphProvider } from './graphProvider.ts';
-import { REST_API_BASE_HOST } from './const/const.ts';
-import { GRAPH_API_URL } from './const/contract.ts';
 import { RequestOrderList } from './pages/request-orders/order-list.tsx';
 import { RoundOrderList } from './pages/request-orders/round-order-list.tsx';
 import { Rounds } from './pages/request-orders/rounds.tsx';
 import { SafeModal } from './components/safe-wallet/SafeModal.tsx';
+import { CURRENT_ENV, ENV, REST_API, SUBQUERY_URL } from './const/env.ts';
 
 function App() {
   const Link = useLink();
@@ -94,8 +93,8 @@ function App() {
                   <DevtoolsProvider>
                     <Refine
                       dataProvider={{
-                        default: restProvider(REST_API_BASE_HOST),
-                        graph: graphProvider(GRAPH_API_URL),
+                        default: restProvider(REST_API),
+                        graph: graphProvider(SUBQUERY_URL),
                       }}
                       notificationProvider={useNotificationProvider}
                       routerProvider={routerProvider}
@@ -499,7 +498,7 @@ function App() {
                         projectId: 'UHQ55z-Y2kdks-R3DGwC',
                         title: {
                           icon: <TitleImg size={24} />,
-                          text: 'CEDEFI',
+                          text: CURRENT_ENV === ENV.Prod ? 'CEDEFI' : 'CEDEFI Test',
                         },
                       }}
                     >

@@ -6,9 +6,10 @@ import { AbiOracleRegistry } from '../../const/abis/OracleRegistry.ts';
 import { SldDecimal } from '../../util/decimal.ts';
 import { CheckOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
 import { AbiNoDelayTimelockController } from '../../const/abis/NoDelayTimelockController.ts';
-import { ADDR_TIMELOCK_0, ZERO_BYTES32 } from '../../const/contract.ts';
+import { ZERO_BYTES32 } from '../../const/contract.ts';
 import { useState } from 'react';
 import { useCallContractState } from '../../hooks/wallet-write/useCallContract.tsx';
+import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
 
 export type RateConfirmProps = { execute: TimeLockExecute; onDone?: () => void };
 
@@ -34,7 +35,7 @@ export const RateConfirm = ({ execute, onDone }: RateConfirmProps) => {
   const onCancel = () => {
     setIsCancel(true);
     mutate(
-      { abi: AbiNoDelayTimelockController, address: ADDR_TIMELOCK_0, function: 'cancel', args: [execute.exHash] },
+      { abi: AbiNoDelayTimelockController, address: DEPLOYED_CONTRACTS.ADDR_TIMELOCK_0, function: 'cancel', args: [execute.exHash] },
       { gasLimit: BigInt(16770000) },
     );
   };
@@ -43,7 +44,7 @@ export const RateConfirm = ({ execute, onDone }: RateConfirmProps) => {
     mutate(
       {
         abi: AbiNoDelayTimelockController,
-        address: ADDR_TIMELOCK_0,
+        address: DEPLOYED_CONTRACTS.ADDR_TIMELOCK_0,
         function: 'execute',
         args: [target, value, callData, execute.predecessorId, salt],
       },

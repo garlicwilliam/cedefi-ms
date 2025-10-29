@@ -2,12 +2,12 @@ import { useTable, List } from '@refinedev/antd';
 import { Table } from 'antd';
 import { formatDatetime } from '../../util/time.ts';
 import { SldDecimal } from '../../util/decimal.ts';
-import { ADDR_LP } from '../../const/contract.ts';
+import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
 
 export const RateHistory = () => {
   const { tableProps } = useTable({
     resource: 'prices',
-    filters: { permanent: [{ field: 'token', operator: 'eq', value: ADDR_LP.toLowerCase() }] },
+    filters: { permanent: [{ field: 'token', operator: 'eq', value: DEPLOYED_CONTRACTS.ADDR_LP.toLowerCase() }] },
     sorters: { permanent: [{ field: 'idx', order: 'desc' }] },
     pagination: { pageSize: 10 },
   });

@@ -7,8 +7,8 @@ import { ValueItem } from './ValueItem.tsx';
 import { OrderStatusTag } from './StatusTag.tsx';
 import { formatBigDec } from '../../util/string.ts';
 import { useAssets } from '../../hooks/graph/useAssets.tsx';
-import { ADDR_LP } from '../../const/contract.ts';
 import { Checkbox, CheckboxChangeEvent } from 'antd';
+import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
 
 export type OrderItemProps = {
   order: RequestOrder;
@@ -19,7 +19,7 @@ export type OrderItemProps = {
 export const OrderItem = ({ order, onCheck, curChecked }: OrderItemProps) => {
   const styleMr: StyleMerger = useStyleMr(styles);
   const { map: assetMap } = useAssets();
-  const lp: Asset | undefined = assetMap.get(ADDR_LP);
+  const lp: Asset | undefined = assetMap.get(DEPLOYED_CONTRACTS.ADDR_LP);
 
   return (
     <div className={styleMr(styles.order)}>

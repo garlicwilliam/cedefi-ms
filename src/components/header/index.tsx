@@ -3,7 +3,6 @@ import { useGetIdentity } from '@refinedev/core';
 import { Avatar, Layout as AntdLayout, Space, Switch, theme, Typography } from 'antd';
 import React, { useContext, useEffect } from 'react';
 import { ColorModeContext } from '../../contexts/color-mode';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useSetAtom } from 'jotai';
 import { S } from '../../state/global.ts';
 import { useSmall } from '../../hooks/useSmall.tsx';

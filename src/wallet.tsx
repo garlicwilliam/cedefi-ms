@@ -1,17 +1,16 @@
 import { getDefaultConfig, RainbowKitProvider, darkTheme, lightTheme } from '@rainbow-me/rainbowkit';
 import { WagmiProvider, http } from 'wagmi';
-import { mainnet, bsc, sepolia } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { CHAIN_RPC } from './const/chain-rpc.ts';
+import { DEPLOYED_NETWORK } from './const/env.ts';
 
 export const config = getDefaultConfig({
   appName: 'StakeStone',
   projectId: '9155bc0988aa999a5bdf4069c4d050e7',
-  chains: [mainnet, bsc, sepolia],
+  chains: [DEPLOYED_NETWORK],
   ssr: false,
   transports: {
-    [mainnet.id]: http('https://lb.drpc.org/ethereum/AsQlBGo230qhhptQOBJcQ_BtGYnvm44R8L2Awg8TMB_n'),
-    [bsc.id]: http('https://lb.drpc.org/bsc/AsQlBGo230qhhptQOBJcQ_BtGYnvm44R8L2Awg8TMB_n'),
-    [sepolia.id]: http('https://lb.drpc.org/sepolia/AsQlBGo230qhhptQOBJcQ_BtGYnvm44R8L2Awg8TMB_n'),
+    [DEPLOYED_NETWORK.id]: http(CHAIN_RPC[DEPLOYED_NETWORK.id]),
   },
 });
 

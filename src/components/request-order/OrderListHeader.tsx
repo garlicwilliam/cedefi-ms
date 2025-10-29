@@ -9,8 +9,8 @@ import { Action, ActionNames, ActionTypes } from './action.types.tsx';
 import { useState } from 'react';
 import { useCallContractState } from '../../hooks/wallet-write/useCallContract.tsx';
 import { AbiWithdrawController } from '../../const/abis/WithdrawController.ts';
-import { ADDR_WITHDRAW } from '../../const/contract.ts';
 import { LoadingOutlined } from '@ant-design/icons';
+import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
 
 export type OrderListHeaderProps = {
   checkedOrders: Set<string>;
@@ -104,7 +104,7 @@ export const OrderListHeader = ({
 
     mutate({
       abi: AbiWithdrawController,
-      address: ADDR_WITHDRAW,
+      address: DEPLOYED_CONTRACTS.ADDR_WITHDRAW,
       function: fun,
       args: args,
     });

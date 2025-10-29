@@ -1,7 +1,7 @@
 import { useList } from '@refinedev/core';
 import { Asset } from '../../service/types.ts';
 import { useMemo } from 'react';
-import { ADDR_LP } from '../../const/contract.ts';
+import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
 
 export const useAssets = () => {
   const { result } = useList({
@@ -22,5 +22,5 @@ export const useAssets = () => {
 
 export const useLp = () => {
   const { map } = useAssets();
-  return map.get(ADDR_LP);
+  return map.get(DEPLOYED_CONTRACTS.ADDR_LP);
 };

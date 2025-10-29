@@ -1,6 +1,6 @@
 import { useList } from '@refinedev/core';
-import { ADDR_LP } from '../../const/contract.ts';
 import { Price } from '../../service/types.ts';
+import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
 
 export const useCutOffPrices = () => {
   const { result, query } = useList({
@@ -9,7 +9,7 @@ export const useCutOffPrices = () => {
       {
         field: 'token',
         operator: 'eq',
-        value: ADDR_LP.toLowerCase(),
+        value: DEPLOYED_CONTRACTS.ADDR_LP.toLowerCase(),
       },
     ],
     sorters: [

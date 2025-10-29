@@ -9,7 +9,7 @@ import { shortHex } from "../../util/string.ts";
 import {
   CHAIN_EXPLORER_TX,
   CHAIN_ICON,
-  SupportedChainType,
+  SupportedChainIDsType,
 } from "../../const/chain-rpc.ts";
 import { ExportOutlined } from "@ant-design/icons";
 import { Link } from "@refinedev/core";
@@ -48,7 +48,7 @@ export const ProfitWithdrawList = () => {
           dataIndex={"transactionHash"}
           title={"交易Hash"}
           render={(hash, row) => {
-            const chainId: SupportedChainType = row.chainId;
+            const chainId: SupportedChainIDsType = row.chainId;
             const icon: string = CHAIN_ICON[chainId];
             const shortHash: string = shortHex(hash, 6, 6);
             const link = `${CHAIN_EXPLORER_TX[chainId]}${hash}`;

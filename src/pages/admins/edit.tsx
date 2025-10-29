@@ -1,11 +1,11 @@
-import { Edit, TextField, useForm } from "@refinedev/antd";
-import { Form } from "antd";
-import React from "react";
-import { Typography } from "antd";
-import { Checkbox } from "antd";
-import { useUpdate } from "@refinedev/core";
-import { Navigate } from "react-router";
-import { usePermissions } from "../../hooks/usePermissions.tsx";
+import { Edit, TextField, useForm } from '@refinedev/antd';
+import { Form } from 'antd';
+import React from 'react';
+import { Typography } from 'antd';
+import { Checkbox } from 'antd';
+import { useUpdate } from '@refinedev/core';
+import { Navigate } from 'react-router';
+import { usePermissions } from '../../hooks/usePermissions.tsx';
 const { Title } = Typography;
 
 export const EditAdmin = () => {
@@ -19,16 +19,16 @@ export const EditAdmin = () => {
   }));
 
   const { mutate } = useUpdate({
-    resource: "users",
+    resource: 'users',
     id: record?.id,
     meta: {
-      subPath: "permissions",
+      subPath: 'permissions',
     },
     mutationOptions: {},
   });
 
-  if (!record || record?.isSuper) {
-    return <Navigate to={"/users"} />;
+  if (record && record?.isSuper) {
+    return <Navigate to={'/users'} />;
   }
 
   return (
@@ -40,17 +40,17 @@ export const EditAdmin = () => {
         }}
         layout="vertical"
       >
-        <Title level={5}>{"ID"}</Title>
+        <Title level={5}>{'ID'}</Title>
         <TextField value={record?.id} />
-        <Title level={5}>{"Email"}</Title>
+        <Title level={5}>{'Email'}</Title>
         <TextField value={record?.email} />
-        <Title level={5}>{"超级管理员"}</Title>
-        <TextField value={record?.isSuper ? "是" : "否"} />
+        <Title level={5}>{'超级管理员'}</Title>
+        <TextField value={record?.isSuper ? '是' : '否'} />
         {/*  */}
 
-        <Title level={5}>{"权限"}</Title>
+        <Title level={5}>{'权限'}</Title>
         <Form.Item
-          name={"permissions"}
+          name={'permissions'}
           rules={[
             {
               required: false,
