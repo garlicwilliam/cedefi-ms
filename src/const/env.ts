@@ -1,5 +1,5 @@
 import { mainnet, sepolia } from 'wagmi/chains';
-import { SupportedChainType } from './chain-rpc.ts';
+import { SAFE_SERVICE_URLS, SupportedChainIDsType, SupportedChainType } from './chain-rpc.ts';
 
 type ConfigType = {
   ADDR_DEPOSIT: `0x${string}`;
@@ -47,7 +47,7 @@ const CONTRACTS_CONFIG: { [k in ENV]: ConfigType } = {
   },
 };
 
-const SUBQUERY_URL_CONFIG: { [k in ENV]: string } = {
+export const SUBQUERY_URL_CONFIG: { [k in ENV]: string } = {
   [ENV.Test]: 'https://gateway.thegraph.com/api/subgraphs/id/EXNdatQQSHBwXebGzr7EmCJE7keJ1qsdXwp6gWJ9rGYT',
   [ENV.Prod]: 'https://gateway.thegraph.com/api/subgraphs/id/2mmjQrxDdLJa3AeWJHm5dZtyg6PzXvJJaPPnjB6vzbPX',
 };
@@ -65,3 +65,4 @@ export const DEPLOYED_NETWORK: SupportedChainType = NETWORKS_CONFIG[CURRENT_ENV]
 export const DEPLOYED_CONTRACTS: ConfigType = CONTRACTS_CONFIG[CURRENT_ENV];
 export const SUBQUERY_URL: string = SUBQUERY_URL_CONFIG[CURRENT_ENV];
 export const REST_API: string = REST_API_CONFIG[CURRENT_ENV];
+export const SAFE_TX_SERVICE_URL: string = SAFE_SERVICE_URLS[DEPLOYED_NETWORK.id as SupportedChainIDsType];

@@ -10,6 +10,7 @@ import { generatePrivateKey } from 'viem/accounts';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useCallContractState } from '../../hooks/wallet-write/useCallContract.tsx';
 import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
+import { ExchangeRateValue } from './RateValue.tsx';
 
 type RateFormProps = { onDone: () => void };
 
@@ -19,6 +20,7 @@ export const RateForm = ({ onDone }: RateFormProps) => {
   const [isCutOff, setCutOff] = useState<boolean>(false);
   const [confirmed, setConfirm] = useState<boolean>(false);
 
+  const lastHourEndAt: number = (Math.floor(new Date().getTime() / 1000 / 3600) - 1) * 3600;
   //
   const rateStr: string = rate ? String(rate) : '0';
   const callData: `0x${string}` = useUpdatePriceCallData(rateStr, isCutOff);
@@ -56,6 +58,11 @@ export const RateForm = ({ onDone }: RateFormProps) => {
 
   return (
     <div>
+      <div className={styleMr(styles.rateValueSelect)}>
+        <div>当前 Exchange Rate：</div>
+        <ExchangeRateValue snapshotAt={lastHourEndAt} />
+      </div>
+
       {/* 填表单 */}
       <div className={styleMr(styles.box, cssPick(confirmed, styles.hide))}>
         <InputNumber addonAfter={'USD'} addonBefore={'1 SSUSD ='} onChange={rChange} />
