@@ -75,6 +75,7 @@ import { RoundOrderList } from './pages/request-orders/round-order-list.tsx';
 import { Rounds } from './pages/request-orders/rounds.tsx';
 import { SafeModal } from './components/safe-wallet/SafeModal.tsx';
 import { CURRENT_ENV, ENV, REST_API, SUBQUERY_URL } from './const/env.ts';
+import { DepositPage } from './pages/onchain-opts/deposit.tsx';
 
 function App() {
   const Link = useLink();
@@ -491,6 +492,20 @@ function App() {
                             },
                           },
                         },
+                        {
+                          name: 'chain_ops',
+                          meta: {
+                            label: '链上操作',
+                          },
+                        },
+                        {
+                          name: 'deposits',
+                          list: '/deposits',
+                          meta: {
+                            parent: 'chain_ops',
+                            label: '存入(deposit)',
+                          },
+                        },
                       ]}
                       options={{
                         syncWithLocation: true,
@@ -586,6 +601,8 @@ function App() {
                           <Route path={'/request_orders'} element={<RequestOrderList />} />
                           <Route path={'/round_orders'} element={<RoundOrderList />} />
                           <Route path={'/rounds'} element={<Rounds />} />
+
+                          <Route path={'/deposits'} element={<DepositPage />} />
 
                           <Route path={'/modify_password'} element={<ModifyPass />} />
 
