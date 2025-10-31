@@ -118,6 +118,8 @@ function useWriteBySafe(params: UseWriteBySafeParamType) {
 
   //
   const mutateFunc = useCallback((meta: MetaTransactionData): Subscription => {
+    setSafeTx(null);
+
     // dependence
     const account: string | null | undefined = safeAddressRef.current;
     const client: Safe | null = safeClientRef.current;
@@ -281,6 +283,7 @@ export function useCallContractState(onSuccess?: () => void) {
   }, [sub]);
 
   useEffect(() => {
+    console.log('is safe', isSafe, safeTx);
     if (safeTx && isSafe) {
       setGlobalSafeTx(safeTx);
       setIsSafePending(true);

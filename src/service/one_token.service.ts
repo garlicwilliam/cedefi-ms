@@ -1,11 +1,10 @@
 import { httpPost } from '../util/http.ts';
 import { ONE_TOKEN_API_URL } from '../const/const.ts';
-import { PARENT_FUND } from '../const/one_token_funds.ts';
-import { map } from 'rxjs/operators';
+import { OneTokenSubFund, SUB_FUNDS } from '../const/one_token_funds.ts';
+import { map, mergeMap, toArray } from 'rxjs/operators';
 import { SldDecimal } from '../util/decimal.ts';
-import { Observable, zip } from 'rxjs';
+import { from, Observable, of, zip } from 'rxjs';
 import { ENV, SUBQUERY_URL_CONFIG } from '../const/env.ts';
-import { chain } from 'lodash';
 import { E18 } from '../util/big-number.ts';
 import { THE_GRAPH_API_KEY } from '../const/keys.ts';
 
@@ -67,12 +66,11 @@ type OnChainSnapshot = {
 
 export class OneTokenService {
   private readonly BaseRate: bigint = BigInt(10000); // 100%
-  private readonly UserAllocationRate: bigint = BigInt(7000); // 70%
 
-  public getAccPnlSnapshot(snapshotAt: number): Observable<SldDecimal | null> {
+  public getAccPnlSnapshot(snapshotAt: number, fundName: string): Observable<SldDecimal | null> {
     const snapshotTime: number = snapshotAt * 1000000000;
     const param = {
-      portfolio_name: PARENT_FUND,
+      portfolio_name: fundName,
       start_time: snapshotTime,
       end_time: snapshotTime,
       frequency: 'hourly',
@@ -186,13 +184,30 @@ export class OneTokenService {
   }
 
   public getUserAccProfit(snapshotAt: number): Observable<SldDecimal | null> {
-    return this.getAccPnlSnapshot(snapshotAt).pipe(
-      map((pnl: SldDecimal | null): SldDecimal | null => {
-        if (pnl == null) {
+    return from(SUB_FUNDS).pipe(
+      mergeMap((fund: OneTokenSubFund) => {
+        return zip(this.getAccPnlSnapshot(snapshotAt, fund.id), of(fund)).pipe(
+          map(([pnl, fund]) => {
+            if (!pnl) {
+              return null;
+            }
+
+            return pnl.mul(BigInt(fund.userRate)).div(this.BaseRate);
+          }),
+        );
+      }),
+      toArray(),
+      map((userPnlArr: (SldDecimal | null)[]) => {
+        return userPnlArr.filter(Boolean) as SldDecimal[];
+      }),
+      map((pnl: SldDecimal[]) => {
+        if (pnl.length === 0) {
           return null;
         }
 
-        return pnl.mul(this.UserAllocationRate).div(this.BaseRate);
+        return pnl.reduce((acc, cur) => {
+          return acc.add(cur);
+        }, SldDecimal.ZERO);
       }),
     );
   }

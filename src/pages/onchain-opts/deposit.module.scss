@@ -1,0 +1,26 @@
+.selection {
+  border: none;
+
+  &:global(.ant-select-focused) {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  :global(.ant-select-selector) {
+    border: none !important;
+    width: 110px !important;
+    background-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
+.depositBox {
+  display: grid;
+  grid-row-gap: 16px;
+}
+
+.actionButton {
+  width: 100%;
+  height: 50px;
+}

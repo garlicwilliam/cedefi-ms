@@ -59,7 +59,7 @@ export const RateForm = ({ onDone }: RateFormProps) => {
   return (
     <div>
       <div className={styleMr(styles.rateValueSelect)}>
-        <div>当前 Exchange Rate：</div>
+        <div>当前计算 Exchange Rate：</div>
         <ExchangeRateValue snapshotAt={lastHourEndAt} />
       </div>
 

@@ -4,6 +4,7 @@ import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar';
 import { ErrorComponent, ThemedLayout, ThemedSider, useNotificationProvider } from '@refinedev/antd';
 import '@refinedev/antd/dist/reset.css';
 import '@rainbow-me/rainbowkit/styles.css';
+import './index.css';
 import { config, darkTheme, lightTheme, queryClient, QueryClientProvider, RainbowKitProvider, WagmiProvider } from './wallet.tsx';
 import { App as AntdApp } from 'antd';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router';
