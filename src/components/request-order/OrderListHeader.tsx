@@ -26,7 +26,7 @@ export type OrderListHeaderProps = {
 const ACTIONS: { [s in RequestOrderStatus]?: Action[] } = {
   [RequestOrderStatus.Requested]: [Action.Processing, Action.Rejected],
   [RequestOrderStatus.Processing]: [Action.Processed, Action.Reviewing],
-  [RequestOrderStatus.Reviewing]: [Action.Forfeited],
+  [RequestOrderStatus.Reviewing]: [Action.Processed, Action.Forfeited],
 } as const;
 
 export const OrderListHeader = ({

@@ -3,7 +3,7 @@ import { Table } from 'antd';
 import { SldDecimal } from '../../util/decimal.ts';
 import { useAssets } from '../../hooks/graph/useAssets.tsx';
 import { formatDatetime } from '../../util/time.ts';
-import { RequestOrderStatus } from '../../service/types.ts';
+import { Asset, RequestOrderStatus } from '../../service/types.ts';
 import { SnapshotAtFilter } from '../../components/dropdown/SnapshotAtFilter.tsx';
 import React from 'react';
 import { ValueFilter } from '../../components/dropdown/ValueFilter.tsx';
@@ -24,7 +24,7 @@ export const RequestOrderList = () => {
     },
   });
 
-  const { arr: assetArr, map: assetMap } = useAssets();
+  const { arr: assetArr } = useAssets();
 
   const statusFilters = Object.values(RequestOrderStatus).map((one) => {
     return {
@@ -91,8 +91,8 @@ export const RequestOrderList = () => {
         <Table.Column
           dataIndex={'requestAsset'}
           title={'赎回资产'}
-          render={(tid) => {
-            return assetMap.get(tid)?.symbol || tid;
+          render={(asset: Asset) => {
+            return asset.symbol;
           }}
           filters={assetFilters}
         />
