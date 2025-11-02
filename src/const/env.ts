@@ -59,7 +59,7 @@ const REST_API_CONFIG: { [k in ENV]: string } = {
 
 // ------------------------------------------------------------------------------------
 
-export const CURRENT_ENV: ENV = ENV.Prod;
+export const CURRENT_ENV: ENV = ENV.Test;
 
 export const DEPLOYED_NETWORK: SupportedChainType = NETWORKS_CONFIG[CURRENT_ENV];
 export const DEPLOYED_CONTRACTS: ConfigType = CONTRACTS_CONFIG[CURRENT_ENV];
