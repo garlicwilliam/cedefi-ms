@@ -30,9 +30,9 @@ export type PortfolioAllocationRatio = {
   id: number;
   portfolioId: number;
   version: number;
-  toTeam: number;
-  toPlatform: number;
-  toUser: number;
+  toTeamRatio: number;
+  toPlatformRatio: number;
+  toUserRatio: number;
   createdAt: number;
 };
 
