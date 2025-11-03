@@ -17,7 +17,7 @@ export const RequestOrderList = () => {
     sorters: {
       permanent: [
         {
-          field: 'id',
+          field: 'requestedAt',
           order: 'desc',
         },
       ],
