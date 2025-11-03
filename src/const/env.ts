@@ -53,7 +53,7 @@ export const SUBQUERY_URL_CONFIG: { [k in ENV]: string } = {
 };
 
 const REST_API_CONFIG: { [k in ENV]: string } = {
-  [ENV.Test]: 'https://cdftest.stakestone.io',
+  [ENV.Test]: 'http://localhost:3000/api',
   [ENV.Prod]: 'https://cedefiapi.stakestone.io',
 };
 

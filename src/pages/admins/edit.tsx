@@ -1,15 +1,16 @@
 import { Edit, TextField, useForm } from '@refinedev/antd';
 import { Form } from 'antd';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Typography } from 'antd';
 import { Checkbox } from 'antd';
-import { useUpdate } from '@refinedev/core';
+import { useNavigation, useUpdate } from '@refinedev/core';
 import { Navigate } from 'react-router';
 import { usePermissions } from '../../hooks/usePermissions.tsx';
 const { Title } = Typography;
 
 export const EditAdmin = () => {
   const { formProps, query, saveButtonProps } = useForm({});
+  const { list } = useNavigation();
   const record = query?.data?.data;
 
   const { arr: permissions } = usePermissions();
@@ -27,19 +28,27 @@ export const EditAdmin = () => {
     mutationOptions: {},
   });
 
+  const onMutate = useCallback(
+    (values: any) => {
+      mutate(
+        { values: values },
+        {
+          onSuccess: () => {
+            list('users');
+          },
+        },
+      );
+    },
+    [mutate, list],
+  );
+
   if (record && record?.isSuper) {
     return <Navigate to={'/users'} />;
   }
 
   return (
     <Edit saveButtonProps={saveButtonProps}>
-      <Form
-        {...formProps}
-        onFinish={async (values) => {
-          mutate({ values: values });
-        }}
-        layout="vertical"
-      >
+      <Form {...formProps} onFinish={onMutate} layout="vertical">
         <Title level={5}>{'ID'}</Title>
         <TextField value={record?.id} />
         <Title level={5}>{'Email'}</Title>
