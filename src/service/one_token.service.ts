@@ -9,27 +9,24 @@ import { E18 } from '../util/big-number.ts';
 import { THE_GRAPH_API_KEY } from '../const/keys.ts';
 
 type Body = {
-  success: boolean;
-  data: {
-    code: string;
-    message: string;
-    request_time: number;
-    response_time: number;
-    result: {
-      historical_nav: {
-        fund_name: string;
-        fund_alias: string;
-        valuation_currency: string;
-        snapshot_time: number;
-        snapshot_time_str: string;
-        net_assets: string;
-        net_assets_str: string;
-        accum_nav: string;
-        accum_nav_str: string;
-        accum_pnl: string;
-        accum_pnl_str: string;
-      }[];
-    };
+  code: string;
+  message: string;
+  request_time: number;
+  response_time: number;
+  result: {
+    historical_nav: {
+      fund_name: string;
+      fund_alias: string;
+      valuation_currency: string;
+      snapshot_time: number;
+      snapshot_time_str: string;
+      net_assets: string;
+      net_assets_str: string;
+      accum_nav: string;
+      accum_nav_str: string;
+      accum_pnl: string;
+      accum_pnl_str: string;
+    }[];
   };
 };
 
@@ -70,17 +67,18 @@ export class OneTokenService {
   public getAccPnlSnapshot(snapshotAt: number, fundName: string): Observable<SldDecimal | null> {
     const snapshotTime: number = snapshotAt * 1000000000;
     const param = {
-      portfolio_name: fundName,
+      fund_name: fundName,
       start_time: snapshotTime,
       end_time: snapshotTime,
       frequency: 'hourly',
+      scale: '1h',
     };
 
     return httpPost(ONE_TOKEN_API_URL, param).pipe(
       map((res) => {
         if (res.status === 200) {
           const body: Body = res.body as any;
-          const hourPnl = body.data.result.historical_nav.find((one) => one.snapshot_time === snapshotTime);
+          const hourPnl = body.result.historical_nav.find((one) => one.snapshot_time === snapshotTime);
 
           if (hourPnl) {
             return SldDecimal.fromNumeric(hourPnl.accum_pnl, 18);
