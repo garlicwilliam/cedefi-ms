@@ -28,7 +28,12 @@ export const useRoundOrders = (round?: string, status?: RequestOrderStatus[]) =>
       pageSize: 1000,
       currentPage: 1,
     },
-    sorters: [{ field: 'id', order: 'desc' }],
+    sorters: [
+      {
+        field: 'requestedAt',
+        order: 'desc',
+      },
+    ],
     queryOptions: {
       enabled: !!round,
     },
