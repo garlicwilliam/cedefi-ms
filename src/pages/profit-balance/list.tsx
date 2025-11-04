@@ -4,7 +4,7 @@ import { useAccounts } from '../../hooks/combine/useAccounts.tsx';
 import { formatDatetime } from '../../util/time.ts';
 
 export const ProfitBalanceList = () => {
-  const { accounts, refresh } = useAccounts();
+  const { accounts } = useAccounts();
 
   return (
     <List>

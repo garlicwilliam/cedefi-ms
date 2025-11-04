@@ -61,6 +61,12 @@ type OnChainSnapshot = {
   lpLockValue: SldDecimal;
 };
 
+export type NavResultType = {
+  nav: SldDecimal;
+  netAssets: SldDecimal;
+  snapshotTime: number;
+};
+
 export class OneTokenService {
   private readonly BaseRate: bigint = BigInt(10000); // 100%
 
@@ -225,6 +231,43 @@ export class OneTokenService {
         }
 
         return totalValue.mul(E18).div(totalLp.toOrigin());
+      }),
+    );
+  }
+
+  // -------------------------
+
+  public getNavAndAssets(snapshotAt: number, fundName: string): Observable<NavResultType | null> {
+    const snapshotTime: number = snapshotAt * 1000000000;
+    const param = {
+      fund_name: fundName,
+      start_time: snapshotTime,
+      end_time: snapshotTime,
+      frequency: 'hourly',
+      scale: '1h',
+    };
+
+    return httpPost(ONE_TOKEN_API_URL, param).pipe(
+      map((res): NavResultType | null => {
+        if (res.status === 200) {
+          const body: Body = res.body as any;
+          const nav = body.result.historical_nav.find((one) => one.snapshot_time === snapshotTime);
+
+          if (nav) {
+            const accNav: SldDecimal = SldDecimal.fromNumeric(nav.accum_nav, 18);
+            const netAsset: SldDecimal = SldDecimal.fromNumeric(nav.net_assets, 18);
+
+            return {
+              nav: accNav,
+              netAssets: netAsset,
+              snapshotTime: snapshotAt,
+            };
+          }
+
+          return null;
+        }
+
+        return null;
       }),
     );
   }

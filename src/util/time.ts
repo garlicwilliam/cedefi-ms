@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from 'dayjs';
 
 export function formatDatetime(seconds: number): string {
   const date: Date = new Date(seconds * 1000);
@@ -15,6 +15,10 @@ export function formatDatetime(seconds: number): string {
 }
 
 export function formatDateHour(seconds: number): string {
+  if (seconds == 0) {
+    return 'N/A';
+  }
+
   const date: Date = new Date(seconds * 1000);
   //
   const yy = date.getFullYear();
@@ -33,7 +37,7 @@ export function timestamp(date: Date): number {
 }
 
 function padTimeStr(number: number, len: number = 2): string {
-  return number.toString().padStart(len, "0");
+  return number.toString().padStart(len, '0');
 }
 
 export function dayjsObj(timestamp: number): Dayjs {
@@ -44,4 +48,18 @@ export function dayjsObj(timestamp: number): Dayjs {
   const d = dayjs(timestamp);
 
   return d;
+}
+
+/**
+ *
+ * @param last - 最近一个整点结束，用0表示，1 表示上一个整点结束，依次类推
+ * @param delay - 延迟秒数, 当最近一个整点过去多少秒之后，才算作是整点结束，只在last = 0 时有效
+ * @returns 整点结束的时间戳（秒）
+ */
+export function hourEndAt(last: number = 0, delay = 0): number {
+  const now = new Date().getTime() / 1000;
+  last = now % 3600 < delay && last === 0 ? 1 : last;
+
+  const hourIndex = Math.floor(now / 3600);
+  return (hourIndex - last) * 3600;
 }
