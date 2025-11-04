@@ -18,8 +18,11 @@ function rate7DayApy(prices: Price[]): SldDecPercent {
 
   const period: number = 7 * 24 * 3600;
 
-  const last = prices[0];
-  let from = prices[prices.length - 1];
+  const last: Price = prices[0];
+
+  console.log('last', last);
+
+  let from: Price = prices[prices.length - 1];
   for (let i = 1; i < prices.length; i++) {
     const cur = prices[i];
     const timeDiff = Number(last.timestamp) - Number(cur.timestamp);
@@ -29,10 +32,10 @@ function rate7DayApy(prices: Price[]): SldDecPercent {
     }
   }
 
-  const startPrice = SldDecimal.fromOrigin(BigInt(from.price), 18);
-  const endPrice = SldDecimal.fromOrigin(BigInt(last.price), 18);
-  const rate = SldDecPercent.fromArgs(startPrice, endPrice.sub(startPrice));
-  const timeDiff = Number(last.timestamp) - Number(from.timestamp);
+  const startPrice: SldDecimal = SldDecimal.fromOrigin(BigInt(from.price), 18);
+  const endPrice: SldDecimal = SldDecimal.fromOrigin(BigInt(last.price), 18);
+  const rate: SldDecPercent = SldDecPercent.fromArgs(startPrice, endPrice.sub(startPrice));
+  const timeDiff: number = Number(last.timestamp) - Number(from.timestamp);
   const apy: SldDecimal = rate
     .toDecimal()
     .mul(BigInt(365 * 24 * 3600))
@@ -53,7 +56,7 @@ export const TopCards = () => {
 
   const navText: string = nav ? `${nav.format({ fix: 6, removeZero: true })} (${formatDateHour(navSnapshotAt || 0)})` : 'N/A';
 
-  const rateItem = lpRates[0];
+  const rateItem: Price | null = lpRates[0] || null;
   const rateVal = rateItem ? SldDecimal.fromOrigin(BigInt(rateItem.price), 18) : null;
   const rateText: string = rateVal
     ? `1 LP = ${rateVal.format({ fix: 6, removeZero: true })} USD  (Updated At ${formatDateHour(Number(rateItem.timestamp))})`
@@ -62,10 +65,10 @@ export const TopCards = () => {
   const assetsVal = assets.data[0];
   const assetsText: string = assetsVal ? `${assetsVal.assetsValue} USD  (${formatDateHour(assetsVal?.snapshotAt)})` : 'N/A';
 
-  const apy = rate7DayApy(lpRates);
+  const apy: SldDecPercent = rate7DayApy(lpRates);
   const apyText = (
     <span>
-      {apy.percentFormat()}% (Updated At {formatDateHour(Number(rateItem.timestamp))})
+      {apy.percentFormat()}% (Updated At {formatDateHour(Number(rateItem?.timestamp || 0))})
     </span>
   );
 

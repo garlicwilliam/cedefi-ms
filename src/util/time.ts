@@ -1,6 +1,10 @@
 import dayjs, { Dayjs } from 'dayjs';
 
 export function formatDatetime(seconds: number): string {
+  if (seconds === 0) {
+    return 'N/A';
+  }
+
   const date: Date = new Date(seconds * 1000);
   //
   const yy = date.getFullYear();
