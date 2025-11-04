@@ -10,3 +10,31 @@
   padding: 16px 16px 24px 16px;
   border-bottom: 1px solid #cdcdcd;
 }
+
+.chainBox {
+  margin-top: 24px;
+  display: grid;
+  border-bottom: 1px solid #cdcdcd;
+  padding: 0 16px;
+}
+
+.chainData {
+  display: grid;
+
+  padding: 16px 0 24px 0;
+  grid-template-columns: 2fr 2fr 4fr 3fr;
+  column-gap: 16px;
+
+  .processCard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.description {
+  :global(.ant-descriptions-item-label) {
+  }
+  :global(.ant-descriptions-item-content) {
+    font-family: monospace;
+  }
+}
