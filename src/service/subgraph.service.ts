@@ -19,6 +19,12 @@ export type WithdrawAssetAccount = {
   realAmount: SldDecimal;
   netAmount: SldDecimal;
 };
+export type DepositAssetAccount = {
+  asset: Asset;
+  accDepositedAmount: SldDecimal;
+  accDepositedShares: SldDecimal;
+  accDepositedUsdVal: SldDecimal;
+};
 type StatisticResponseData = {
   lpSupply: {
     id: string;
@@ -55,6 +61,12 @@ type StatisticResponseData = {
     requiredAmount: string;
     requiredUsdVal: string;
   }[];
+  depositAssetsAccounts: {
+    id: string;
+    accDepositedUsdVal: string;
+    accDepositedShares: string;
+    accDepositedAmount: string;
+  }[];
   assets: {
     id: string;
     name: string;
@@ -71,6 +83,7 @@ export type StatisticData = {
   lpForfeited: SldDecimal;
   //
   accounts: WithdrawAssetAccount[];
+  deposits: DepositAssetAccount[];
 };
 
 export class SubgraphService {
@@ -104,6 +117,12 @@ export class SubgraphService {
         accDeposit(id: "1") {
           id
           totalUsdValue
+        }
+        depositAssetsAccounts {
+          id
+          accDepositedUsdVal
+          accDepositedShares
+          accDepositedAmount
         }
         withdrawAssetsAccounts {
           id
@@ -161,6 +180,18 @@ export class SubgraphService {
             return withdrawAsset;
           });
 
+          const depositAccounts = data.depositAssetsAccounts;
+          const deposits = depositAccounts.map((account) => {
+            const asset: Asset = assetsMap.get(account.id)!;
+            const depositAsset: DepositAssetAccount = {} as DepositAssetAccount;
+            depositAsset.asset = asset;
+            depositAsset.accDepositedAmount = SldDecimal.fromOrigin(BigInt(account.accDepositedAmount), 18);
+            depositAsset.accDepositedShares = SldDecimal.fromOrigin(BigInt(account.accDepositedShares), 18);
+            depositAsset.accDepositedUsdVal = SldDecimal.fromOrigin(BigInt(account.accDepositedUsdVal), 18);
+
+            return depositAsset;
+          });
+
           return {
             accDeposit: deposit,
             accWithdrawal: withdraw,
@@ -169,6 +200,7 @@ export class SubgraphService {
             lpProcessed,
             lpForfeited,
             accounts,
+            deposits,
           } as StatisticData;
         }
 

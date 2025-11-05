@@ -4,14 +4,14 @@ import styles from './index.module.scss';
 import { useStatistics } from '../../hooks/graph/useStatistics.tsx';
 import { Typography } from 'antd';
 import { SldDecimal } from '../../util/decimal.ts';
-import { WithdrawAssetAccount } from '../../service/subgraph.service.ts';
+import { DepositAssetAccount, WithdrawAssetAccount } from '../../service/subgraph.service.ts';
 
 const { Title } = Typography;
 
 export const ChainData = () => {
   const styleMr = useStyleMr(styles);
   const { statistic } = useStatistics();
-  const { accDeposit, accWithdrawal, lpActive, lpLocked, accounts } = statistic || {};
+  const { accDeposit, accWithdrawal, lpActive, lpLocked, accounts, deposits } = statistic || {};
 
   const accForfeitedUsd: SldDecimal =
     accounts
@@ -44,6 +44,13 @@ export const ChainData = () => {
       ?.map((account: WithdrawAssetAccount): SldDecimal => account.requiredUsdVal)
       .reduce((a: SldDecimal, b: SldDecimal): SldDecimal => a.add(b), SldDecimal.ZERO) || SldDecimal.ZERO;
 
+  const depositTokens = deposits?.map((account: DepositAssetAccount) => {
+    return {
+      label: account.asset.symbol,
+      children: `${account.accDepositedAmount.format({ fix: 2 })} (≈${account.accDepositedUsdVal.format({ fix: 2 })} USD)`,
+    };
+  });
+
   const out = [
     {
       key: '2',
@@ -72,12 +79,14 @@ export const ChainData = () => {
       children: lpLocked?.format({ fix: 2 }) || '0.00',
     },
   ];
+
   const deposit = [
     {
       key: '1',
       label: '累计存入(USD)',
       children: accDeposit?.format({ fix: 2 }) || '0.00',
     },
+    ...(depositTokens || []),
   ];
 
   const claim = [
@@ -96,9 +105,11 @@ export const ChainData = () => {
           <Card>
             <Descriptions title="" column={1} items={deposit} className={styleMr(styles.description)} />
           </Card>
+
           <Card>
             <Descriptions title="" column={1} items={fund} className={styleMr(styles.description)} />
           </Card>
+
           <Card>
             <div className={styleMr(styles.processCard)}>
               <div>

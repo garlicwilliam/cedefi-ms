@@ -22,8 +22,9 @@
   display: grid;
 
   padding: 16px 0 24px 0;
-  grid-template-columns: 2fr 2fr 4fr 3fr;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   column-gap: 16px;
+  row-gap: 16px;
 
   .processCard {
     display: grid;

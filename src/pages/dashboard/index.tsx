@@ -11,7 +11,7 @@ export const Dashboard = () => {
 
       <ChainData />
 
-      <CeffuData />
+      {/*<CeffuData />*/}
 
       <CexData />
 
