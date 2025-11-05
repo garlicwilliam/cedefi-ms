@@ -36,5 +36,7 @@ export function isTxHash(tx: string): tx is `0x${string}` {
 }
 
 export function isSupportedChainId(chainId: number): chainId is SupportedChainIDsType {
-  return SUPPORTED_CHAINS.map((one) => one.id).includes(chainId as SupportedChainIDsType);
+  const chainIds: number[] = SUPPORTED_CHAINS.map((one) => one.id);
+
+  return chainIds.includes(chainId);
 }
