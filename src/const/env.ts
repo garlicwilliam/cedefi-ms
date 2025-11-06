@@ -19,7 +19,7 @@ export enum ENV {
 }
 
 const NETWORKS_CONFIG: { [k in ENV]: SupportedChainType } = {
-  [ENV.Test]: sepolia,
+  [ENV.Test]: mainnet,
   [ENV.Prod]: mainnet,
 };
 
@@ -48,9 +48,15 @@ const CONTRACTS_CONFIG: { [k in ENV]: ConfigType } = {
   },
 };
 
+// 统一版本，SubQuery会根据两个部署版本的indexing状态选择最快的那个
 export const SUBQUERY_URL_CONFIG: { [k in ENV]: string } = {
   [ENV.Test]: 'https://gateway.thegraph.com/api/subgraphs/id/2mmjQrxDdLJa3AeWJHm5dZtyg6PzXvJJaPPnjB6vzbPX',
   [ENV.Prod]: 'https://gateway.thegraph.com/api/subgraphs/id/2mmjQrxDdLJa3AeWJHm5dZtyg6PzXvJJaPPnjB6vzbPX',
+};
+// 最新版本，有最新的数据结构，已经修正了旧版本的错误，但是可能会延迟
+export const SUBQUERY_ST_URL_CONFIG: { [k in ENV]: string } = {
+  [ENV.Test]: 'https://gateway.thegraph.com/api/deployments/id/QmU1AnN4ZnpBzgdeXHyfsKkBwv8T7b1fR3q8Gmvwk27LWy',
+  [ENV.Prod]: 'https://gateway.thegraph.com/api/deployments/id/QmU1AnN4ZnpBzgdeXHyfsKkBwv8T7b1fR3q8Gmvwk27LWy',
 };
 
 const REST_API_CONFIG: { [k in ENV]: string } = {
@@ -65,5 +71,6 @@ export const CURRENT_ENV: ENV = ENV.Prod;
 export const DEPLOYED_NETWORK: SupportedChainType = NETWORKS_CONFIG[CURRENT_ENV];
 export const DEPLOYED_CONTRACTS: ConfigType = CONTRACTS_CONFIG[CURRENT_ENV];
 export const SUBQUERY_URL: string = SUBQUERY_URL_CONFIG[CURRENT_ENV];
+export const SUBQUERY_ST_URL: string = SUBQUERY_ST_URL_CONFIG[CURRENT_ENV];
 export const REST_API: string = REST_API_CONFIG[CURRENT_ENV];
 export const SAFE_TX_SERVICE_URL: string = SAFE_SERVICE_URLS[DEPLOYED_NETWORK.id as SupportedChainIDsType];

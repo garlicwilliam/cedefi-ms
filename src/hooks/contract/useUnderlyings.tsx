@@ -28,6 +28,8 @@ export const useDepositUnderlyingAssets = () => {
       : [];
   }, [data, assetMap]);
 
+  console.log('data is', data);
+
   return {
     underlyingAssets: depositAssets,
     isPending,

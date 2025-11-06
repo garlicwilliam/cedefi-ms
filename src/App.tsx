@@ -51,9 +51,13 @@ import {
   FlagOutlined,
   FundViewOutlined,
   GroupOutlined,
+  LinkOutlined,
   SettingOutlined,
   TeamOutlined,
   UsergroupAddOutlined,
+  DollarOutlined,
+  HistoryOutlined,
+  WalletOutlined,
 } from '@ant-design/icons';
 import { UserProfitList } from './pages/snapshots/list-user-profit.tsx';
 import { PlatformProfitList } from './pages/snapshots/list-platform-profit.tsx';
@@ -77,6 +81,7 @@ import { Rounds } from './pages/request-orders/rounds.tsx';
 import { SafeModal } from './components/safe-wallet/SafeModal.tsx';
 import { CURRENT_ENV, ENV, REST_API, SUBQUERY_URL } from './const/env.ts';
 import { DepositPage } from './pages/onchain-opts/deposit.tsx';
+import { accessControlProvider } from './accessControlProvider.ts';
 
 function App() {
   const Link = useLink();
@@ -121,18 +126,6 @@ function App() {
                           name: 'snapshots',
                           meta: {
                             label: '整时快照',
-                          },
-                        },
-                        {
-                          name: 'nav-snapshots',
-                          list: '/nav_snapshots',
-                          meta: {
-                            canDelete: false,
-                            canEdit: false,
-                            canCreate: false,
-                            label: 'NAV 快照',
-                            parent: 'snapshots',
-                            icon: <CameraOutlined />,
                           },
                         },
                         {
@@ -202,15 +195,7 @@ function App() {
                             icon: <SettingOutlined />,
                           },
                         },
-                        {
-                          name: 'blacklist',
-                          list: '/blacklist',
-                          create: '/blacklist/create',
-                          meta: {
-                            label: '黑名单',
-                            canEdit: false,
-                          },
-                        },
+
                         {
                           name: 'accounts',
                           meta: {
@@ -321,6 +306,7 @@ function App() {
                           name: 'redeem_view',
                           meta: {
                             label: '赎回',
+                            icon: <LinkOutlined />,
                           },
                         },
                         {
@@ -329,7 +315,7 @@ function App() {
                           meta: {
                             label: '赎回记录',
                             parent: 'redeem_view',
-                            icon: <DatabaseOutlined />,
+                            icon: <LinkOutlined />,
                           },
                         },
                         {
@@ -354,6 +340,7 @@ function App() {
                           name: 'rate',
                           meta: {
                             label: 'Exchange Rate',
+                            icon: <LinkOutlined />,
                           },
                         },
                         {
@@ -362,6 +349,7 @@ function App() {
                           meta: {
                             label: 'Rate 上链',
                             parent: 'rate',
+                            icon: <WalletOutlined />,
                           },
                         },
                         {
@@ -370,6 +358,7 @@ function App() {
                           meta: {
                             label: 'Rate 历史',
                             parent: 'rate',
+                            icon: <HistoryOutlined />,
                           },
                         },
                         {
@@ -497,6 +486,7 @@ function App() {
                           name: 'chain_ops',
                           meta: {
                             label: '链上操作',
+                            icon: <LinkOutlined />,
                           },
                         },
                         {
@@ -505,9 +495,20 @@ function App() {
                           meta: {
                             parent: 'chain_ops',
                             label: '存入(deposit)',
+                            icon: <DollarOutlined />,
+                          },
+                        },
+                        {
+                          name: 'blacklist',
+                          list: '/blacklist',
+                          create: '/blacklist/create',
+                          meta: {
+                            label: '黑名单',
+                            canEdit: false,
                           },
                         },
                       ]}
+                      accessControlProvider={accessControlProvider}
                       options={{
                         syncWithLocation: true,
                         warnWhenUnsavedChanges: false,
@@ -591,11 +592,6 @@ function App() {
                             <Route path={'create'} element={<CreateProfitWithdrawal />} />
                           </Route>
 
-                          <Route path={'/blacklist'}>
-                            <Route index element={<BlackList />} />
-                            <Route path={'create'} element={<CreateBlacklist />} />
-                          </Route>
-
                           <Route path={'/rate_submit'} element={<UpdateRate />} />
                           <Route path={'/rate_history'} element={<RateHistory />} />
 
@@ -604,6 +600,11 @@ function App() {
                           <Route path={'/rounds'} element={<Rounds />} />
 
                           <Route path={'/deposits'} element={<DepositPage />} />
+
+                          <Route path={'/blacklist'}>
+                            <Route index element={<BlackList />} />
+                            <Route path={'create'} element={<CreateBlacklist />} />
+                          </Route>
 
                           <Route path={'/modify_password'} element={<ModifyPass />} />
 

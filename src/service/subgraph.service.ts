@@ -1,5 +1,5 @@
 import { httpPost } from '../util/http.ts';
-import { SUBQUERY_URL } from '../const/env.ts';
+import { SUBQUERY_ST_URL } from '../const/env.ts';
 import { map } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { SldDecimal } from '../util/decimal.ts';
@@ -142,7 +142,7 @@ export class SubgraphService {
       `,
     };
 
-    return httpPost(SUBQUERY_URL, param, {
+    return httpPost(SUBQUERY_ST_URL, param, {
       header: {
         Authorization: `Bearer ${THE_GRAPH_API_KEY}`,
       },

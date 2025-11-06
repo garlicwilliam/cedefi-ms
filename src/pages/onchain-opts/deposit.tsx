@@ -144,6 +144,8 @@ export const DepositPage = () => {
   }, [mutate, selectedAsset, inputValue]);
   //
 
+  console.log("assets is", assets);
+
   return (
     <div className={styleMr(styles.depositBox)}>
       <DecimalNumInput
