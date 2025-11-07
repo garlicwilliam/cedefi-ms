@@ -19,6 +19,8 @@ export const SafePending = ({ safeTx, onClose, isOpen }: SafePendingProps) => {
   const styleMr: StyleMerger = useStyleMr(styles);
   const isSmall: boolean = useSmall();
 
+  console.log('safe tx is', safeTx);
+
   if (!safeTx) {
     return <></>;
   }

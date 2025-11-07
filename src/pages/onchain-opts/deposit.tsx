@@ -10,9 +10,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useUserDepositApproved, useUserDepositBalance } from '../../hooks/contract/useUserDepositInfo.tsx';
 import { isSameStrNoCase } from '../../util/string.ts';
 import { SldDecimal } from '../../util/decimal.ts';
-import { DepositExeStep, useDoDeposit } from '../../hooks/contract/useDoDeposit.tsx';
 import { LoadingOutlined } from '@ant-design/icons';
 import { App as AntdApp } from 'antd';
+import { useDeposit } from '../../hooks/contract/useDeposit.tsx';
 
 type InputValue = {
   asset: Asset;
@@ -39,9 +39,11 @@ export const DepositPage = () => {
     }
     return SldDecimal.ZERO;
   }, [assetBalances, selectAssetId]);
+  //
   const selectedAsset: Asset | undefined = useMemo(() => {
     return assets.find((one) => isSameStrNoCase(one.id, selectAssetId || ''));
   }, [selectAssetId, assets]);
+  //
   const depositAssetsOpts = useMemo(() => {
     return assets.map((asset: Asset) => {
       return {
@@ -61,9 +63,10 @@ export const DepositPage = () => {
       : '钱包余额: ' + curAssetBalance.format({ fix: selectedAsset?.decimals, removeZero: true });
   }, [curAssetBalance, selectedAsset]);
   //
-  const { mutate, executing, step } = useDoDeposit(needApprove, selectedAsset, inputValue?.value || null);
+
+  const { mutate: mutate2, isSuccess, isFinal, isPending } = useDeposit(needApprove, selectedAsset, inputValue?.value || null);
   //
-  useEffect(() => {}, [selectAssetId]);
+
   // 默认/自动选中资产
   useEffect(() => {
     if (!selectAssetId && assets.length > 0) {
@@ -81,25 +84,23 @@ export const DepositPage = () => {
     const allowanceInfo = assetAllowances.find((one) => isSameStrNoCase(one.asset.id, selectedAsset.id));
 
     if (allowanceInfo) {
-      console.log('allowanceInfo', inputValue, allowanceInfo.allowance);
       if (inputValue && inputValue.value.gtZero() && allowanceInfo.allowance.lt(inputValue.value)) {
         setNeedApprove(true);
       } else {
-        console.log('set need approve false');
         setNeedApprove(false);
       }
     }
   }, [selectedAsset, assetAllowances, inputValue]);
   //
   useEffect(() => {
-    if (!executing && step === DepositExeStep.DONE) {
+    if (isFinal && isSuccess) {
       refreshApprove();
       refreshBalance();
       setInputValue(null);
 
       messageApi.success('Deposit Successful!');
     }
-  }, [executing, step, refreshApprove, refreshBalance, messageApi]);
+  }, [isFinal, isSuccess, refreshApprove, refreshBalance, messageApi]);
   //
   const onMax = useCallback((): void => {
     if (!selectedAsset) {
@@ -140,11 +141,9 @@ export const DepositPage = () => {
       return;
     }
 
-    mutate();
-  }, [mutate, selectedAsset, inputValue]);
+    mutate2();
+  }, [mutate2, selectedAsset, inputValue]);
   //
-
-  console.log("assets is", assets);
 
   return (
     <div className={styleMr(styles.depositBox)}>
@@ -174,11 +173,11 @@ export const DepositPage = () => {
       <Button
         type={'primary'}
         size={'large'}
-        disabled={!inputValue || inputValue.value.isZero() || isInputError || executing}
+        disabled={!inputValue || inputValue.value.isZero() || isInputError || isPending}
         className={styleMr(styles.actionButton)}
         onClick={onDeposit}
       >
-        DEPOSIT {needApprove ? '(APPROVE)' : ''} {executing && <LoadingOutlined />}
+        DEPOSIT {needApprove ? '(APPROVE)' : ''} {isPending && <LoadingOutlined />}
       </Button>
     </div>
   );
