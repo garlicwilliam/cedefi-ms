@@ -1,51 +1,57 @@
-import styles from "./index.module.scss";
-import { Descriptions } from "antd";
-import { useStyleMr } from "../../hooks/useStyleMr.tsx";
+import styles from './index.module.scss';
+import { Descriptions } from 'antd';
+import { useStyleMr } from '../../hooks/useStyleMr.tsx';
+import { useProfitAccounts } from '../../hooks/combine/useProfitAccounts.tsx';
+import { formatDatetime } from '../../util/time.ts';
 
 export const CexData = () => {
   const styleMr = useStyleMr(styles);
 
+  const { user, team, platform, snapshotTime, platformDelta, userDelta, teamDelta } = useProfitAccounts();
+  const teamTotal = team.reduce((acc, cur) => {
+    return Number(cur.accProfit) + acc;
+  }, 0);
+
   const data = [
     {
-      key: "1",
-      label: "累计充值(USD)",
-      children: "1000000.00",
+      key: '5',
+      label: '*平台累积收益(USD)',
+      children: Number(platform?.accProfit).toFixed(6),
     },
     {
-      key: "2",
-      label: "累计提现(USD)",
-      children: "500000.00",
+      key: '6',
+      label: '*用户累计收益(USD)',
+      children: Number(user?.accProfit).toFixed(6),
     },
     {
-      key: "3",
-      label: "24小时盈利(USD)",
-      children: "100.00",
+      key: '7',
+      label: '*团队累计收益(USD)',
+      children: teamTotal.toFixed(6),
     },
     {
-      key: "4",
-      label: "基金累计收益(USD)",
-      children: "100000.00",
+      key: '5',
+      label: '*平台24小时变动(USD)',
+      children: platformDelta?.toFixed(6),
     },
     {
-      key: "5",
-      label: "*平台累积收益(USD)",
-      children: "100000.00",
+      key: '6',
+      label: '*用户24小时变动(USD)',
+      children: userDelta?.toFixed(6),
     },
     {
-      key: "6",
-      label: "*用户累计收益(USD)",
-      children: "100000.00",
-    },
-    {
-      key: "7",
-      label: "*团队累计收益(USD)",
-      children: "100000.00",
+      key: '7',
+      label: '*团队24小时变动(USD)',
+      children: teamDelta?.toFixed(6),
     },
   ];
 
   return (
     <div className={styleMr(styles.info)}>
-      <Descriptions title="Cex数据" items={data} />
+      <Descriptions
+        className={styleMr(styles.description)}
+        title={<div>收益账户 ( 截至: {snapshotTime ? formatDatetime(snapshotTime) : ''} )</div>}
+        items={data}
+      />
     </div>
   );
 };

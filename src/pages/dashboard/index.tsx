@@ -15,7 +15,7 @@ export const Dashboard = () => {
 
       <CexData />
 
-      <RedeemData />
+      {/*<RedeemData />*/}
     </>
   );
 };
