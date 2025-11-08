@@ -1,0 +1,56 @@
+.selection {
+  border: none;
+
+  &:global(.ant-select-focused) {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  :global(.ant-select-selector) {
+    border: none !important;
+    width: 110px !important;
+    background-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
+.withdrawBox {
+  display: grid;
+  grid-row-gap: 16px;
+}
+
+.actionButton {
+  width: 100%;
+  height: 50px;
+}
+
+.listHead {
+  display: flex;
+  justify-content: space-between;
+}
+
+.listNo {
+  display: inline-block;
+  width: 70px;
+}
+
+.listTime {
+  display: inline-block;
+  font-family: monospace;
+  margin-right: 16px;
+}
+
+.listDesc {
+  padding-left: 73px;
+}
+
+.listAsset {
+  display: inline-block;
+  width: 150px;
+  font-family: monospace;
+}
+
+.listAmount {
+  font-family: monospace;
+}

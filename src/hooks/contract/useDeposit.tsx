@@ -65,7 +65,7 @@ export const useDeposit = (needApprove: boolean, asset: Asset | undefined, amoun
     // approve
     const doApprove$: Observable<boolean> = writeCallContract(genApproveParam(asset?.id), {}).pipe(
       map((rs): boolean => {
-        if (rs.isFinal && !rs.isSuccess) {
+        if (rs.isFinal && rs.isSuccess === false) {
           setIsFinal(rs.isFinal);
           setIsSuccess(false);
           setApproved(false);

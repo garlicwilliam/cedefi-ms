@@ -82,6 +82,9 @@ import { SafeModal } from './components/safe-wallet/SafeModal.tsx';
 import { CURRENT_ENV, ENV, REST_API, SUBQUERY_URL } from './const/env.ts';
 import { DepositPage } from './pages/onchain-opts/deposit.tsx';
 import { accessControlProvider } from './accessControlProvider.ts';
+import { WithdrawPage } from './pages/onchain-opts/withdraw.tsx';
+import Icon from '@ant-design/icons';
+import WithdrawSvg from './icons/withdraw.svg?react';
 
 function App() {
   const Link = useLink();
@@ -499,6 +502,15 @@ function App() {
                           },
                         },
                         {
+                          name: 'withdraws',
+                          list: '/withdraws',
+                          meta: {
+                            parent: 'chain_ops',
+                            label: '赎回(withdraw)',
+                            icon: <Icon component={WithdrawSvg} />,
+                          },
+                        },
+                        {
                           name: 'blacklist',
                           list: '/blacklist',
                           create: '/blacklist/create',
@@ -600,6 +612,7 @@ function App() {
                           <Route path={'/rounds'} element={<Rounds />} />
 
                           <Route path={'/deposits'} element={<DepositPage />} />
+                          <Route path={'/withdraws'} element={<WithdrawPage />} />
 
                           <Route path={'/blacklist'}>
                             <Route index element={<BlackList />} />

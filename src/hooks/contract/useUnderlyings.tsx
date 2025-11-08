@@ -58,14 +58,14 @@ export const useWithdrawUnderlyingAssets = () => {
     return (data || [])
       .map((r, index) => {
         if (r.status === 'success') {
-          if (r.result[0] as boolean) {
+          if (r.result) {
             return assets[index];
           }
         }
 
         return null;
       })
-      .filter((one) => one !== undefined) as Asset[];
+      .filter(Boolean) as Asset[];
   }, [data, assets]);
 
   return {

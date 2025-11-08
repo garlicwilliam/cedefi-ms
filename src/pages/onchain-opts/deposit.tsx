@@ -19,32 +19,8 @@ type InputValue = {
   value: SldDecimal;
 };
 
-export const DepositPage = () => {
-  const { underlyingAssets: assets } = useDepositUnderlyingAssets();
-  const { message: messageApi } = AntdApp.useApp();
-
-  const [selectAssetId, setSelectAssetId] = useState<string | undefined>(undefined);
-  const [inputValue, setInputValue] = useState<InputValue | null>(null);
-  const [needApprove, setNeedApprove] = useState(false);
-  const [isInputError, setIsInputError] = useState(false);
-  //
-  const styleMr: StyleMerger = useStyleMr(styles);
-  const { assetBalances, refresh: refreshBalance } = useUserDepositBalance(assets);
-  const { assetAllowances, refresh: refreshApprove } = useUserDepositApproved(assets);
-  //
-  const curAssetBalance: SldDecimal = useMemo(() => {
-    const s = assetBalances.find((one) => isSameStrNoCase(one.asset.id, selectAssetId || ''));
-    if (s) {
-      return s.balance;
-    }
-    return SldDecimal.ZERO;
-  }, [assetBalances, selectAssetId]);
-  //
-  const selectedAsset: Asset | undefined = useMemo(() => {
-    return assets.find((one) => isSameStrNoCase(one.id, selectAssetId || ''));
-  }, [selectAssetId, assets]);
-  //
-  const depositAssetsOpts = useMemo(() => {
+function useAssetOptions(assets: Asset[]) {
+  return useMemo(() => {
     return assets.map((asset: Asset) => {
       return {
         value: asset.id,
@@ -57,90 +33,133 @@ export const DepositPage = () => {
       };
     });
   }, [assets]);
+}
+
+function useDepositSelect(assets: Asset[], assetsBalances: { asset: Asset; balance: SldDecimal }[]) {
+  const [selectAssetId, setSelectAssetId] = useState<string | undefined>(undefined);
+
+  // auto select
+  useEffect(() => {
+    if (
+      (!selectAssetId && assets.length > 0) ||
+      (selectAssetId && !assets.map((a) => a.id).some((one) => isSameStrNoCase(one, selectAssetId)))
+    ) {
+      if (assets.length > 0) {
+        setSelectAssetId(assets[0].id);
+      }
+    }
+  }, [assets, selectAssetId]);
+
+  //
+  const selectedAsset: Asset | undefined = useMemo(() => {
+    return assets.find((asset) => asset.id === selectAssetId);
+  }, [selectAssetId, assets]);
+
+  //
+  const curAssetBalance: SldDecimal = useMemo(() => {
+    const b = assetsBalances.find((one) => isSameStrNoCase(one.asset.id, selectAssetId || ''));
+    return b ? b.balance : SldDecimal.ZERO;
+  }, [assetsBalances, selectAssetId]);
+
   const placeholder: string = useMemo(() => {
     return curAssetBalance.isZero()
       ? '余额不足 0.00'
       : '钱包余额: ' + curAssetBalance.format({ fix: selectedAsset?.decimals, removeZero: true });
   }, [curAssetBalance, selectedAsset]);
-  //
 
-  const { mutate: mutate2, isSuccess, isFinal, isPending } = useDeposit(needApprove, selectedAsset, inputValue?.value || null);
-  //
+  return {
+    selectAssetId,
+    setSelectAssetId,
+    selectedAsset,
+    curAssetBalance,
+    placeholder,
+  };
+}
 
-  // 默认/自动选中资产
+function useDepositInput(selectedAsset: Asset | undefined, assetAllowances: { asset: Asset; allowance: SldDecimal }[]) {
+  const [inputValue, setInputValue] = useState<InputValue | null>(null);
+  const [needApprove, setNeedApprove] = useState(false);
+  const curAllowance: SldDecimal = useMemo(() => {
+    const curAllow = assetAllowances.find((a) => isSameStrNoCase(a.asset.id, selectedAsset?.id || ''));
+    return curAllow ? curAllow.allowance : SldDecimal.ZERO;
+  }, [assetAllowances, selectedAsset]);
+
   useEffect(() => {
-    if (!selectAssetId && assets.length > 0) {
-      setSelectAssetId(assets[0].id);
-    } else if (assets.length > 0 && !assets.some((one) => one.id === selectAssetId)) {
-      setSelectAssetId(assets[0].id);
-    }
-  }, [assets, selectAssetId]);
-  //
-  useEffect(() => {
-    if (!selectedAsset || assetAllowances.length === 0) {
-      return;
-    }
+    const need: boolean = !!inputValue && !!inputValue.value && inputValue.value.gtZero() && curAllowance.lt(inputValue.value);
+    setNeedApprove(need);
+  }, [inputValue, curAllowance]);
 
-    const allowanceInfo = assetAllowances.find((one) => isSameStrNoCase(one.asset.id, selectedAsset.id));
-
-    if (allowanceInfo) {
-      if (inputValue && inputValue.value.gtZero() && allowanceInfo.allowance.lt(inputValue.value)) {
-        setNeedApprove(true);
-      } else {
-        setNeedApprove(false);
-      }
-    }
-  }, [selectedAsset, assetAllowances, inputValue]);
-  //
-  useEffect(() => {
-    if (isFinal && isSuccess) {
-      refreshApprove();
-      refreshBalance();
-      setInputValue(null);
-
-      messageApi.success('Deposit Successful!');
-    }
-  }, [isFinal, isSuccess, refreshApprove, refreshBalance, messageApi]);
-  //
-  const onMax = useCallback((): void => {
-    if (!selectedAsset) {
-      return;
-    }
-
-    setInputValue({
-      asset: selectedAsset,
-      value: curAssetBalance,
-    });
-  }, [selectedAsset, curAssetBalance]);
-  //
-  const onInputChange = useCallback(
-    (value: SldDecimal | null) => {
+  const setInput = useCallback(
+    (inputVal: SldDecimal | null) => {
       if (!selectedAsset) {
         return;
       }
 
-      setInputValue({
-        asset: selectedAsset,
-        value: value || SldDecimal.ZERO,
-      });
+      setInputValue(
+        inputVal === null
+          ? null
+          : {
+              asset: selectedAsset,
+              value: inputVal,
+            },
+      );
     },
     [selectedAsset],
   );
+
+  return {
+    needApprove,
+    inputValue,
+    setInput,
+  };
+}
+
+function useActions(setInput: (v: SldDecimal | null) => void, setSelectAssetId: (id?: string) => void, curAssetBalance: SldDecimal) {
+  const onMax = useCallback((): void => {
+    setInput(curAssetBalance);
+  }, [curAssetBalance, setInput]);
+
+  const onSelectAsset = useCallback(
+    (assetId: string) => {
+      setSelectAssetId(assetId);
+      setInput(null);
+    },
+    [setSelectAssetId, setInput],
+  );
+
+  return { onMax, onSelectAsset };
+}
+
+export const DepositPage = () => {
+  const { underlyingAssets: assets } = useDepositUnderlyingAssets();
+  const { message: messageApi } = AntdApp.useApp();
+  const [isInputError, setIsInputError] = useState(false);
   //
-  const onError = useCallback((isError: boolean) => {
-    setIsInputError(isError);
-  }, []);
+  const styleMr: StyleMerger = useStyleMr(styles);
+  const { assetBalances, refresh: refreshBalance } = useUserDepositBalance(assets);
+  const { assetAllowances, refresh: refreshApprove } = useUserDepositApproved(assets);
+  const { curAssetBalance, selectedAsset, selectAssetId, setSelectAssetId, placeholder } = useDepositSelect(assets, assetBalances);
+  const depositAssetsOpts = useAssetOptions(assets);
+  const { inputValue, setInput, needApprove } = useDepositInput(selectedAsset, assetAllowances);
+  const { mutate: mutate2, isSuccess, isFinal, isPending } = useDeposit(needApprove, selectedAsset, inputValue?.value || null);
+  const { onMax, onSelectAsset } = useActions(setInput, setSelectAssetId, curAssetBalance);
   //
-  const onSelectAsset = useCallback((assetId: string) => {
-    setSelectAssetId(assetId);
-    setInputValue(null);
-  }, []);
+
+  useEffect(() => {
+    if (isFinal && isSuccess) {
+      refreshApprove();
+      refreshBalance();
+      setInput(null);
+
+      messageApi.success('Deposit Successful!');
+    }
+  }, [isFinal, isSuccess, refreshApprove, refreshBalance, messageApi, setInput]);
+
   //
   const onDeposit = useCallback((): void => {
     if (!selectedAsset || !inputValue || inputValue.value.isZero() || inputValue.asset.id !== selectedAsset.id) {
       return;
     }
-
     mutate2();
   }, [mutate2, selectedAsset, inputValue]);
   //
@@ -152,8 +171,8 @@ export const DepositPage = () => {
         max={curAssetBalance}
         placeholder={placeholder}
         value={inputValue === null || inputValue.value.isZero() ? null : inputValue.value}
-        onChange={onInputChange}
-        onErrorChange={onError}
+        onChange={setInput}
+        onErrorChange={setIsInputError}
         prefix={
           <Select
             value={selectAssetId}

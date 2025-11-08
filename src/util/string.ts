@@ -24,3 +24,8 @@ export function formatBigDec(val: string, fix: number = 18, decimal = 18): strin
 export function toBigDec(val: string, decimal = 18): SldDecimal {
   return SldDecimal.fromOrigin(BigInt(val), decimal);
 }
+
+export function isValidAddress(addr: string): boolean {
+  const ethAddressRegex = /^0x[a-fA-F0-9]{40}$/;
+  return ethAddressRegex.test(addr);
+}
