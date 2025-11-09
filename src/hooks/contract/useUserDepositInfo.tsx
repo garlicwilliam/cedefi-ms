@@ -46,8 +46,21 @@ export const useUserDepositBalance = (assets: Asset[]) => {
       .filter((v) => v !== null);
   }, [data, assets]);
   //
+
+  const balanceMap = useMemo(() => {
+    return balances.reduce(
+      (acc, cur) => {
+        acc[cur.asset.id] = cur.balance;
+        return acc;
+      },
+      {} as { [k: string]: SldDecimal },
+    );
+  }, [balances]);
+
+  //
   return {
     assetBalances: balances,
+    balanceMap: balanceMap,
     refresh: refetch,
     isPending,
     isLoading,

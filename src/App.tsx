@@ -85,6 +85,8 @@ import { accessControlProvider } from './accessControlProvider.ts';
 import { WithdrawPage } from './pages/onchain-opts/withdraw.tsx';
 import Icon from '@ant-design/icons';
 import WithdrawSvg from './icons/withdraw.svg?react';
+import PayBackSvg from './icons/payback.svg?react';
+import { PaybackPage } from './pages/onchain-opts/payback.tsx';
 
 function App() {
   const Link = useLink();
@@ -511,6 +513,15 @@ function App() {
                           },
                         },
                         {
+                          name: 'paybacks',
+                          list: '/paybacks',
+                          meta: {
+                            parent: 'chain_ops',
+                            label: '划拨(payback)',
+                            icon: <Icon component={PayBackSvg} />,
+                          },
+                        },
+                        {
                           name: 'blacklist',
                           list: '/blacklist',
                           create: '/blacklist/create',
@@ -613,6 +624,7 @@ function App() {
 
                           <Route path={'/deposits'} element={<DepositPage />} />
                           <Route path={'/withdraws'} element={<WithdrawPage />} />
+                          <Route path={'/paybacks'} element={<PaybackPage />} />
 
                           <Route path={'/blacklist'}>
                             <Route index element={<BlackList />} />

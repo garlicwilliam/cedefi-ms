@@ -19,6 +19,12 @@ export const SUB_FUNDS: OneTokenSubFund[] = [
     name: 'SS-USD-ZenX-1',
     userRate: 7000,
   },
+  {
+    id: "fund/wxrsm9",
+    inceptionTime: 1762506139,
+    name: 'SS-USD-BinQ-资费套利-1',
+    userRate: 7000
+  }
 ] as const;
 
 //

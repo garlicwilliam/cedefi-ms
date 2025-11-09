@@ -57,6 +57,8 @@ enum ErrorType {
 export function DecimalNumInput(props: IProps) {
   const { onErrorChange, onFocus, onChange } = props;
   const onChangeRef = useRef(onChange);
+  const onErrorChangeRef = useRef(onErrorChange);
+  const onFocusRef = useRef(onFocus);
 
   const [isFocus, setIsFocus] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -115,19 +117,16 @@ export function DecimalNumInput(props: IProps) {
     setValueCondition(condition);
   };
 
-  const updateErrorState = useCallback(
-    (newErrorType: ErrorType | null) => {
-      const isNowError: boolean = newErrorType !== null;
+  const updateErrorState = useCallback((newErrorType: ErrorType | null) => {
+    const isNowError: boolean = newErrorType !== null;
 
-      setIsError(isNowError);
-      setErrorType(newErrorType);
+    setIsError(isNowError);
+    setErrorType(newErrorType);
 
-      if (onErrorChange) {
-        onErrorChange(isNowError, newErrorType);
-      }
-    },
-    [onErrorChange],
-  );
+    if (onErrorChangeRef.current) {
+      onErrorChangeRef.current(isNowError, newErrorType);
+    }
+  }, []);
 
   const syncCorrectValueString = useCallback((valueString: string) => {
     if (inputRef.current) {
@@ -282,6 +281,14 @@ export function DecimalNumInput(props: IProps) {
     onChangeRef.current = onChange;
   }, [onChange]);
 
+  useEffect(() => {
+    onErrorChangeRef.current = onErrorChange;
+  }, [onErrorChange]);
+
+  useEffect(() => {
+    onFocusRef.current = onFocus;
+  }, [onFocus]);
+
   // watch output
   useEffect(() => {
     if (outputValue === undefined) {
@@ -383,7 +390,6 @@ export function DecimalNumInput(props: IProps) {
     const isDecimalChange = prevOriginDecimal !== props.originDecimal;
 
     if (isValue || isMax || isMin || isMaxIllegal || isMinIllegal || isMustInt || isFixChange || isDecimalChange) {
-      console.log('update condition 000000');
       updateCondition(props);
     }
   }, [props, prevProps]);
@@ -400,16 +406,13 @@ export function DecimalNumInput(props: IProps) {
     [correctValue],
   );
 
-  const onInputFocus = useCallback(
-    (isFocus: boolean) => {
-      setIsFocus(isFocus);
+  const onInputFocus = useCallback((isFocus: boolean) => {
+    setIsFocus(isFocus);
 
-      if (onFocus) {
-        onFocus(isFocus);
-      }
-    },
-    [onFocus],
-  );
+    if (onFocusRef.current) {
+      onFocusRef.current(isFocus);
+    }
+  }, []);
 
   const hasPrefix: boolean = !!props.prefix;
   const hasSuffix: boolean = !!props.suffix;
