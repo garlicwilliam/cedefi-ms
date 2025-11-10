@@ -1,37 +1,37 @@
-import { useEffect, useState } from 'react';
-import { SldDecimal } from '../../util/decimal.ts';
-import { oneTokenService } from '../../service/one_token.service.ts';
-import { Subscription } from 'rxjs';
 import { formatDatetime } from '../../util/time.ts';
 import { useStyleMr } from '../../hooks/useStyleMr.tsx';
 import styles from './RateValue.module.scss';
 import { StyleMerger } from '../../util/css.ts';
+import { useList } from '@refinedev/core';
+import { RateSnapshot } from '../../service/types.ts';
+import { ReloadOutlined } from '@ant-design/icons';
+import { useCallback, useState } from 'react';
 
-export type ExchangeRateValueProps = {
-  snapshotAt: number;
-};
+export const ExchangeRateValue = () => {
+  const { result, query } = useList({
+    resource: 'rate_snapshots',
+    sorters: [{ field: 'snapshotAt', order: 'desc' }],
+    pagination: { pageSize: 1, currentPage: 1 },
+  });
 
-export const ExchangeRateValue = ({ snapshotAt }: ExchangeRateValueProps) => {
-  const [rate, setRate] = useState<SldDecimal | null>(null);
+  const shot: RateSnapshot | null = result.data.length > 0 ? (result.data[0] as RateSnapshot) : null;
+  const rate: number | null = shot?.exchangeRate || null;
+
   const styleMr: StyleMerger = useStyleMr(styles);
+  const [isAction, setIsAction] = useState(false);
 
-  useEffect(() => {
-    if (snapshotAt) {
-      const sub: Subscription = oneTokenService.getExchangeRate(snapshotAt).subscribe({
-        next: (theRate) => {
-          setRate(theRate);
-        },
-      });
-
-      return () => {
-        sub.unsubscribe();
-      };
-    }
-  }, [snapshotAt]);
+  const onRefresh = useCallback(() => {
+    query.refetch();
+    setIsAction(true);
+    setTimeout(() => {
+      setIsAction(false);
+    }, 1000);
+  }, [query]);
 
   return (
     <div className={styleMr(styles.rateRow)}>
-      {formatDatetime(snapshotAt)} : {rate == null ? '--' : rate.format({ fix: 18, removeZero: true })}
+      {formatDatetime(shot?.snapshotAt || 0)} : {rate == null ? '--' : rate}{' '}
+      <ReloadOutlined spin={query.isPending || query.isLoading || isAction} onClick={onRefresh} />
     </div>
   );
 };

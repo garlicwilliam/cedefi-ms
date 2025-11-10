@@ -194,3 +194,15 @@ export type Round = {
 
   sumAssets: RoundAsset[];
 };
+
+export type RateSnapshot = {
+  id: number;
+  snapshotAt: number;
+  exchangeRate: number;
+  userDeposit: string;
+  userWithdraw: string;
+  userProfit: string;
+  lpLockedValue: string;
+  lpActive: string;
+  createdAt: number;
+};

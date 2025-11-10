@@ -74,11 +74,11 @@ export const TopCards = () => {
 
   return (
     <div className={styleMr(styles.cards)}>
-      <IndexCard
-        title={<IndexCardTitle title={'今日NAV'} desc={'From 1token'} />}
-        value={`${navText}`}
-        actions={[<IndexCardAction route={'/nav_snapshots'} text={'更多'} />]}
-      />
+      {/*<IndexCard*/}
+      {/*  title={<IndexCardTitle title={'今日NAV'} desc={'From 1token'} />}*/}
+      {/*  value={`${navText}`}*/}
+      {/*  actions={[<IndexCardAction route={'/nav_snapshots'} text={'更多'} />]}*/}
+      {/*/>*/}
 
       <IndexCard
         title={<IndexCardTitle title={'今日Rate'} desc={'On Chain for User'} />}

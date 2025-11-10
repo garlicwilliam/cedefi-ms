@@ -566,9 +566,7 @@ function App() {
                           }
                         >
                           <Route index element={<Navigate to={'/dashboard'} />} />
-
                           <Route path="/dashboard" element={<Dashboard />} />
-
                           <Route path={'/users'}>
                             <Route index element={<AdminList />} />
                             <Route path={'show/:id'} element={<ShowAdmin />} />
