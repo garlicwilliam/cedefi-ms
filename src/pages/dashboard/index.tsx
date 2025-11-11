@@ -9,11 +9,7 @@ export const Dashboard = () => {
 
       <ChainData />
 
-      {/*<CeffuData />*/}
-
       <CexData />
-
-      {/*<RedeemData />*/}
     </>
   );
 };

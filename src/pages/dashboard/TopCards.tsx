@@ -1,15 +1,14 @@
 import { StyleMerger } from '../../util/css.ts';
 import { useStyleMr } from '../../hooks/useStyleMr.tsx';
 import styles from './index.module.scss';
-import { useList } from '@refinedev/core';
 import { formatDateHour } from '../../util/time.ts';
 import { IndexCard } from '../../components/dashboard/IndexCard.tsx';
 import { IndexCardTitle } from '../../components/dashboard/IndexCardTitle.tsx';
 import { IndexCardAction } from '../../components/dashboard/IndexCardAction.tsx';
-import { useCurNav } from '../../hooks/one-token/useCurNav.tsx';
 import { usePrices } from '../../hooks/graph/usePrices.tsx';
 import { SldDecimal, SldDecPercent } from '../../util/decimal.ts';
 import { Price } from '../../service/types.ts';
+import { useLiabilities } from '../../hooks/combine/useLiabilities.tsx';
 
 function rate7DayApy(prices: Price[]): SldDecPercent {
   if (prices.length < 2) {
@@ -19,8 +18,6 @@ function rate7DayApy(prices: Price[]): SldDecPercent {
   const period: number = 7 * 24 * 3600;
 
   const last: Price = prices[0];
-
-  console.log('last', last);
 
   let from: Price = prices[prices.length - 1];
   for (let i = 1; i < prices.length; i++) {
@@ -46,24 +43,13 @@ function rate7DayApy(prices: Price[]): SldDecPercent {
 
 export const TopCards = () => {
   const styleMr: StyleMerger = useStyleMr(styles);
-  const { nav, snapshotAt: navSnapshotAt } = useCurNav();
   const { data: lpRates } = usePrices();
-
-  const { result: assets } = useList({
-    resource: 'assets_snapshots',
-    pagination: { pageSize: 1 },
-  });
-
-  const navText: string = nav ? `${nav.format({ fix: 6, removeZero: true })} (${formatDateHour(navSnapshotAt || 0)})` : 'N/A';
 
   const rateItem: Price | null = lpRates[0] || null;
   const rateVal = rateItem ? SldDecimal.fromOrigin(BigInt(rateItem.price), 18) : null;
   const rateText: string = rateVal
     ? `1 LP = ${rateVal.format({ fix: 6, removeZero: true })} USD  (Updated At ${formatDateHour(Number(rateItem.timestamp))})`
     : 'N/A';
-
-  const assetsVal = assets.data[0];
-  const assetsText: string = assetsVal ? `${assetsVal.assetsValue} USD  (${formatDateHour(assetsVal?.snapshotAt)})` : 'N/A';
 
   const apy: SldDecPercent = rate7DayApy(lpRates);
   const apyText = (
@@ -72,14 +58,10 @@ export const TopCards = () => {
     </span>
   );
 
+  const { liabilitiesText, assetsText } = useLiabilities(rateVal || SldDecimal.ZERO);
+
   return (
     <div className={styleMr(styles.cards)}>
-      {/*<IndexCard*/}
-      {/*  title={<IndexCardTitle title={'今日NAV'} desc={'From 1token'} />}*/}
-      {/*  value={`${navText}`}*/}
-      {/*  actions={[<IndexCardAction route={'/nav_snapshots'} text={'更多'} />]}*/}
-      {/*/>*/}
-
       <IndexCard
         title={<IndexCardTitle title={'今日Rate'} desc={'On Chain for User'} />}
         value={`${rateText}`}
@@ -93,10 +75,12 @@ export const TopCards = () => {
       />
 
       <IndexCard
-        title={<IndexCardTitle title={'今日总资产'} desc={''} />}
+        title={<IndexCardTitle title={'当前总资产'} desc={''} />}
         value={`${assetsText}`}
-        actions={[<IndexCardAction route={'/assets_snapshots'} text={'更多'} />]}
+        actions={[<IndexCardAction route={'/net_asset_snapshots'} text={'更多'} />]}
       />
+
+      <IndexCard title={<IndexCardTitle title={'当前负债'} desc={''} />} value={`${liabilitiesText}`} actions={[]} />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { useList } from '@refinedev/core';
 import { PlatformAccProfit, TeamAccProfit, UserAccProfit } from '../../service/types.ts';
 import { useEffect, useState } from 'react';
 
+// 虚拟收益账户的数据
 export function useProfitAccounts() {
   const deltaTime: number = 86400;
   const [snapshotTime, setSnapshotTime] = useState<number | null>(null);

@@ -146,8 +146,8 @@ function App() {
                           },
                         },
                         {
-                          name: 'assets_snapshots',
-                          list: '/assets_snapshots',
+                          name: 'net_asset_snapshots',
+                          list: '/net_asset_snapshots',
                           meta: {
                             canDelete: false,
                             canEdit: false,
@@ -576,7 +576,7 @@ function App() {
 
                           <Route path={'/nav_snapshots'} element={<NavList />} />
                           <Route path={'/rate_snapshots'} element={<RateList />} />
-                          <Route path={'/assets_snapshots'} element={<AssetsList />} />
+                          <Route path={'/net_asset_snapshots'} element={<AssetsList />} />
 
                           <Route path={'/teams'}>
                             <Route index element={<TeamList />} />
