@@ -3,8 +3,8 @@ import { useProfitAccounts } from './useProfitAccounts.tsx';
 import { SldDecimal } from '../../util/decimal.ts';
 import { E18 } from '../../util/big-number.ts';
 import { useList } from '@refinedev/core';
-import { formatDateHour } from '../../util/time.ts';
 import { useMemo } from 'react';
+import { NetAssetSnapshot } from '../../service/types.ts';
 
 export function useLiabilities(rateVal: SldDecimal) {
   const { statistic } = useStatistics();
@@ -24,16 +24,12 @@ export function useLiabilities(rateVal: SldDecimal) {
     const profitReserved = teamFinal + platformProfit;
     const reserved = SldDecimal.fromNumeric(String(profitReserved), 18);
 
-    const assetsVal = assets.data[0];
+    const assetsVal = assets.data[0] as NetAssetSnapshot | undefined;
     const totalAsset = SldDecimal.fromNumeric(assetsVal?.netAssetValue || '0', 18);
-    const assetsText: string = assetsVal ? `${totalAsset.format()} USD  (${formatDateHour(assetsVal?.snapshotAt)})` : 'N/A';
-
     const expectedBalance = !!lpActive && !!rateVal ? lpActive.mul(rateVal.toE18()).div(E18) : null;
-
     const liabilities = !!expectedBalance && !!totalAsset ? totalAsset.sub(expectedBalance).sub(reserved) : SldDecimal.ZERO;
-    const liabilitiesText = `${liabilities.format({ sign: true })} USD`;
 
-    return { liabilitiesText, assetsText };
+    return { liabilities, totalAsset, expectedBalance, time: assetsVal?.snapshotAt };
   }, [lpActive, assets, platform, rateVal, team]);
 
   return liabilities;

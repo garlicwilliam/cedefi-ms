@@ -206,3 +206,16 @@ export type RateSnapshot = {
   lpActive: string;
   createdAt: number;
 };
+
+export type NetAssetSnapshot = {
+  id: string;
+  snapshotAt: number;
+  netAssetValue: string;
+  valueCefi: string;
+  valueContract: string;
+  valueSafeWallet: string;
+  valueCeffu: string;
+  detailContract: string;
+  detailSafeWallet: string;
+  detailCeffu: string;
+};
