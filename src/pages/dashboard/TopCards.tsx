@@ -66,7 +66,7 @@ export const TopCards = () => {
   const styleMr: StyleMerger = useStyleMr(styles);
   const { rate, rateTime, rateApy } = useLpPrice();
 
-  const { liabilities, totalAsset, time: assetTime, expectedBalance: lpValues } = useLiabilities(rate || SldDecimal.ZERO);
+  const { liabilities, totalAsset, time: assetTime } = useLiabilities();
 
   return (
     <div className={styleMr(styles.cards)}>
@@ -115,6 +115,8 @@ export const TopCards = () => {
           }
           time={assetTime}
         />
+
+        <div className={styleMr(styles.vDesc, styles.secondaryText)}>负债 = 总资产 - 团队/平台留存收益 - LP价值</div>
       </IndexCard>
     </div>
   );

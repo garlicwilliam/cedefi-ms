@@ -73,12 +73,17 @@ type StatisticResponseData = {
     symbol: string;
     decimals: number;
   }[];
+  prices: {
+    price: string;
+  }[];
 };
 export type StatisticData = {
   accDeposit: SldDecimal;
   accWithdrawal: SldDecimal;
   lpActive: SldDecimal;
+  lpPrice: SldDecimal;
   lpLocked: SldDecimal;
+  lpLockedUsdValue: SldDecimal;
   lpProcessed: SldDecimal;
   lpForfeited: SldDecimal;
   //
@@ -137,6 +142,16 @@ export class SubgraphService {
           realAmount
           requiredAmount
           requiredUsdVal
+        },
+        prices(
+          orderBy: idx,
+          orderDirection: desc,
+          first:1,
+          where: {
+            token: "0x6a6e3a4396993a4ec98a6f4a654cc0819538721e"
+          }
+        ) {
+          price
         }
       }
       `,
@@ -154,7 +169,9 @@ export class SubgraphService {
           const deposit: SldDecimal = SldDecimal.fromOrigin(BigInt(data.accDeposit.totalUsdValue), 18);
           const withdraw: SldDecimal = SldDecimal.fromOrigin(BigInt(data.accWithdrawal.totalUsdValue), 18);
           const lpActive: SldDecimal = SldDecimal.fromOrigin(BigInt(data.lpSupply.lpActive), 18);
+          const lpPrice: SldDecimal = SldDecimal.fromOrigin(BigInt(data.prices[0].price), 18);
           const lpLocked: SldDecimal = SldDecimal.fromOrigin(BigInt(data.lpSupply.lpLocked), 18);
+          const lpLockedUsdValue: SldDecimal = SldDecimal.fromOrigin(BigInt(data.lpSupply.usdValLocked), 18);
           const lpProcessed: SldDecimal = SldDecimal.fromOrigin(BigInt(data.lpSupply.lpAccProcessed), 18);
           const lpForfeited: SldDecimal = SldDecimal.fromOrigin(BigInt(data.lpSupply.lpAccForfeited), 18);
 
@@ -196,7 +213,9 @@ export class SubgraphService {
             accDeposit: deposit,
             accWithdrawal: withdraw,
             lpActive: lpActive,
+            lpPrice,
             lpLocked: lpLocked,
+            lpLockedUsdValue,
             lpProcessed,
             lpForfeited,
             accounts,

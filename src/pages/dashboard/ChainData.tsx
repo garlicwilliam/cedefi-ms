@@ -5,13 +5,14 @@ import { useStatistics } from '../../hooks/graph/useStatistics.tsx';
 import { Typography } from 'antd';
 import { SldDecimal } from '../../util/decimal.ts';
 import { DepositAssetAccount, WithdrawAssetAccount } from '../../service/subgraph.service.ts';
+import { E18 } from '../../util/big-number.ts';
 
 const { Title } = Typography;
 
 export const ChainData = () => {
   const styleMr = useStyleMr(styles);
   const { statistic } = useStatistics();
-  const { accDeposit, accWithdrawal, lpActive, lpLocked, accounts, deposits } = statistic || {};
+  const { accDeposit, accWithdrawal, lpActive, lpPrice, lpLocked, lpLockedUsdValue, accounts, deposits } = statistic || {};
 
   const accForfeitedUsd: SldDecimal =
     accounts
@@ -67,34 +68,38 @@ export const ChainData = () => {
     ...(forfeited || []),
   ];
 
-  const fund = [
-    {
-      key: '3',
-      label: '流通LP数量',
-      children: lpActive?.format({ fix: 2 }) || '0.00',
-    },
-    {
-      key: '3.1',
-      label: '锁定LP数量',
-      children: lpLocked?.format({ fix: 2 }) || '0.00',
-    },
-  ];
-
-  const deposit = [
-    {
-      key: '1',
-      label: '累计存入(USD)',
-      children: accDeposit?.format({ fix: 2 }) || '0.00',
-    },
-    ...(depositTokens || []),
-  ];
-
   const claim = [
     {
       label: '待用户提取(USD)',
       children: allRequired.format({ fix: 2 }) || '0.00',
     },
     ...(balances || []),
+  ];
+
+  // 累计存入
+  const deposit = [
+    {
+      label: '累计存入(USD)',
+      children: accDeposit?.format({ fix: 2 }) || '0.00',
+    },
+    ...(depositTokens || []),
+  ];
+
+  // 现在流通
+  const activeLpValue = lpActive?.mul(lpPrice?.toE18() || E18).div(E18);
+  const fund = [
+    {
+      label: 'LP价值(USD)',
+      children: (activeLpValue || SldDecimal.ZERO).add(lpLockedUsdValue || SldDecimal.ZERO).format({ fix: 2 }) || '0.00',
+    },
+    {
+      label: '流通LP数量',
+      children: (lpActive?.format({ fix: 2 }) || '0.00') + ` (≈${activeLpValue?.format({ fix: 2 })} USD)`,
+    },
+    {
+      label: '锁定LP数量',
+      children: (lpLocked?.format({ fix: 2 }) || '0.00') + ` (≈${lpLockedUsdValue?.format({ fix: 2 })} USD)`,
+    },
   ];
 
   return (

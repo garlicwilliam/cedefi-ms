@@ -16,6 +16,7 @@ export function useProfitAccounts() {
   const [team, setTeam] = useState<TeamAccProfit[]>([]);
   const [teamDelta, setTeamDelta] = useState<number | null>(null);
 
+  // 获取最新的数据
   const { result, query } = useList({
     resource: 'acc_profit_user',
     sorters: [{ field: 'id', order: 'desc' }],
@@ -25,6 +26,7 @@ export function useProfitAccounts() {
     },
   });
 
+  // 获取24小时前的数据
   const { result: user24, query: user24Query } = useList({
     resource: 'acc_profit_user',
     sorters: [{ field: 'id', order: 'desc' }],

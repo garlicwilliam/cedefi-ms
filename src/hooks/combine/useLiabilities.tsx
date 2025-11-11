@@ -6,16 +6,16 @@ import { useList } from '@refinedev/core';
 import { useMemo } from 'react';
 import { NetAssetSnapshot } from '../../service/types.ts';
 
-export function useLiabilities(rateVal: SldDecimal) {
+export function useLiabilities() {
   const { statistic } = useStatistics();
-  const { lpActive } = statistic || {};
+  const { lpActive, lpPrice, lpLockedUsdValue } = statistic || {};
   const { platform, team } = useProfitAccounts();
   const { result: assets } = useList({
     resource: 'net_asset_snapshots',
     pagination: { pageSize: 1 },
   });
 
-  const liabilities = useMemo(() => {
+  return useMemo(() => {
     const platformProfit = Math.max(platform?.accProfit || 0, 0);
     const teamTotal = team.reduce((acc, cur) => {
       return Number(cur.accProfit) + acc;
@@ -26,11 +26,13 @@ export function useLiabilities(rateVal: SldDecimal) {
 
     const assetsVal = assets.data[0] as NetAssetSnapshot | undefined;
     const totalAsset = SldDecimal.fromNumeric(assetsVal?.netAssetValue || '0', 18);
-    const expectedBalance = !!lpActive && !!rateVal ? lpActive.mul(rateVal.toE18()).div(E18) : null;
+    // lp价值 = lpActive * lpPrice + lp Locked Value
+
+    const activeValue = !!lpActive && !!lpPrice ? lpActive.mul(lpPrice.toE18()).div(E18) : null;
+    const expectedBalance = lpLockedUsdValue && activeValue ? lpLockedUsdValue.add(activeValue) : activeValue;
+
     const liabilities = !!expectedBalance && !!totalAsset ? totalAsset.sub(expectedBalance).sub(reserved) : SldDecimal.ZERO;
 
     return { liabilities, totalAsset, expectedBalance, time: assetsVal?.snapshotAt };
-  }, [lpActive, assets, platform, rateVal, team]);
-
-  return liabilities;
+  }, [lpActive, lpPrice, assets, platform, team, lpLockedUsdValue]);
 }

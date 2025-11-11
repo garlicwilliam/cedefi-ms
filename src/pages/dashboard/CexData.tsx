@@ -14,34 +14,30 @@ export const CexData = () => {
 
   const data = [
     {
-      key: '5',
-      label: '*平台累积收益(USD)',
-      children: Number(platform?.accProfit).toFixed(6),
+      label: '用户历史累计收益(USD)',
+      children: Number(user?.accProfit).toFixed(2),
     },
     {
-      key: '6',
-      label: '*用户累计收益(USD)',
-      children: Number(user?.accProfit).toFixed(6),
+      label: '平台留存收益余额(USD)',
+      children: Number(platform?.accProfit).toFixed(2),
+    },
+
+    {
+      label: '团队留存收益余额(USD)',
+      children: teamTotal.toFixed(2),
     },
     {
-      key: '7',
-      label: '*团队累计收益(USD)',
-      children: teamTotal.toFixed(6),
+      label: '用户24时收益变动(USD)',
+      children: `${userDelta || 0 > 0 ? '+' : '-'}` + userDelta?.toFixed(2),
     },
     {
-      key: '5',
-      label: '*平台24小时变动(USD)',
-      children: platformDelta?.toFixed(6),
+      label: '平台24时余额变动(USD)',
+      children: `${platformDelta || 0 > 0 ? '+' : '-'}` + platformDelta?.toFixed(2),
     },
+
     {
-      key: '6',
-      label: '*用户24小时变动(USD)',
-      children: userDelta?.toFixed(6),
-    },
-    {
-      key: '7',
-      label: '*团队24小时变动(USD)',
-      children: teamDelta?.toFixed(6),
+      label: '团队24时余额变动(USD)',
+      children: `${teamDelta || 0 > 0 ? '+' : '-'}` + teamDelta?.toFixed(2),
     },
   ];
 
@@ -49,7 +45,7 @@ export const CexData = () => {
     <div className={styleMr(styles.info)}>
       <Descriptions
         className={styleMr(styles.description)}
-        title={<div>收益账户 ( 截至: {snapshotTime ? formatDatetime(snapshotTime) : ''} )</div>}
+        title={<div>收益虚拟账户 ( 截至: {snapshotTime ? formatDatetime(snapshotTime) : ''} )</div>}
         items={data}
       />
     </div>
