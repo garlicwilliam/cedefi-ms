@@ -582,17 +582,14 @@ function App() {
                             <Route index element={<TeamList />} />
                             <Route path={'create'} element={<CreateTeam />} />
                           </Route>
-
                           <Route path={'/portfolios'}>
                             <Route index element={<PortfolioList />} />
                             <Route path={'edit/:id'} element={<PortfolioEdit />} />
                           </Route>
-
                           <Route path={'/profit_allocation_ratios'}>
                             <Route path={'/profit_allocation_ratios'} element={<ProfitAllocationRatioList />} />
                             <Route path={'create/:portfolioId'} element={<CreateProfitAllocationRatio />} />
                           </Route>
-
                           <Route path={'/accounts_view'} element={<ProfitBalanceList />} />
 
                           <Route path={'/acc_profit_user'} element={<UserProfitList />} />

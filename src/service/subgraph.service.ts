@@ -77,6 +77,59 @@ type StatisticResponseData = {
     price: string;
   }[];
 };
+type StatisticResponseData2 = {
+  lpSupplySnapshots: {
+    lpAccBurned: string;
+    lpAccDestroyed: string;
+    lpAccForfeited: string;
+    lpAccMinted: string;
+    lpAccProcessed: string;
+    lpActive: string;
+    lpLocked: string;
+    lpSupply: string;
+    usdValLocked: string;
+    snapshotAt: string;
+  }[];
+  accWithdrawalSnapshots: {
+    snapshotAt: string;
+    totalUsdValue: string;
+  }[];
+  accDepositSnapshots: {
+    snapshotAt: string;
+    totalUsdValue: string;
+  }[];
+  depositAssetsAccountSnapshots: {
+    snapshotAt: string;
+    asset: string;
+    accDepositedUsdVal: string;
+    accDepositedShares: string;
+    accDepositedAmount: string;
+  }[];
+  withdrawAssetsAccountSnapshots: {
+    asset: string;
+    snapshotAt: string;
+    accProcessedUsdVal: string;
+    accProcessedAmount: string;
+    accForfeitedUsdVal: string;
+    accForfeitedAmount: string;
+    accForceRoutedAmount: string;
+    accClaimedUsdVal: string;
+    accClaimedAmount: string;
+    netAmount: string;
+    realAmount: string;
+    requiredAmount: string;
+    requiredUsdVal: string;
+  }[];
+  assets: {
+    id: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+  }[];
+  prices: {
+    price: string;
+  }[];
+};
 export type StatisticData = {
   accDeposit: SldDecimal;
   accWithdrawal: SldDecimal;
@@ -90,6 +143,10 @@ export type StatisticData = {
   accounts: WithdrawAssetAccount[];
   deposits: DepositAssetAccount[];
 };
+
+function toDecimal(val: string): SldDecimal {
+  return SldDecimal.fromOrigin(BigInt(val), 18);
+}
 
 export class SubgraphService {
   public getStatistics(): Observable<StatisticData | null> {
@@ -166,14 +223,15 @@ export class SubgraphService {
         if (res.status === 200 && res.body && _.has(res.body, 'data')) {
           const body = res.body as { data: StatisticResponseData };
           const data = body.data;
-          const deposit: SldDecimal = SldDecimal.fromOrigin(BigInt(data.accDeposit.totalUsdValue), 18);
-          const withdraw: SldDecimal = SldDecimal.fromOrigin(BigInt(data.accWithdrawal.totalUsdValue), 18);
-          const lpActive: SldDecimal = SldDecimal.fromOrigin(BigInt(data.lpSupply.lpActive), 18);
-          const lpPrice: SldDecimal = SldDecimal.fromOrigin(BigInt(data.prices[0].price), 18);
-          const lpLocked: SldDecimal = SldDecimal.fromOrigin(BigInt(data.lpSupply.lpLocked), 18);
-          const lpLockedUsdValue: SldDecimal = SldDecimal.fromOrigin(BigInt(data.lpSupply.usdValLocked), 18);
-          const lpProcessed: SldDecimal = SldDecimal.fromOrigin(BigInt(data.lpSupply.lpAccProcessed), 18);
-          const lpForfeited: SldDecimal = SldDecimal.fromOrigin(BigInt(data.lpSupply.lpAccForfeited), 18);
+
+          const deposit: SldDecimal = toDecimal(data.accDeposit.totalUsdValue);
+          const withdraw: SldDecimal = toDecimal(data.accWithdrawal.totalUsdValue);
+          const lpActive: SldDecimal = toDecimal(data.lpSupply.lpActive);
+          const lpPrice: SldDecimal = toDecimal(data.prices[0].price);
+          const lpLocked: SldDecimal = toDecimal(data.lpSupply.lpLocked);
+          const lpLockedUsdValue: SldDecimal = toDecimal(data.lpSupply.usdValLocked);
+          const lpProcessed: SldDecimal = toDecimal(data.lpSupply.lpAccProcessed);
+          const lpForfeited: SldDecimal = toDecimal(data.lpSupply.lpAccForfeited);
 
           const assetsMap = new Map<string, Asset>();
           data.assets.forEach((asset: Asset) => {
@@ -205,6 +263,161 @@ export class SubgraphService {
             depositAsset.accDepositedAmount = SldDecimal.fromOrigin(BigInt(account.accDepositedAmount), 18);
             depositAsset.accDepositedShares = SldDecimal.fromOrigin(BigInt(account.accDepositedShares), 18);
             depositAsset.accDepositedUsdVal = SldDecimal.fromOrigin(BigInt(account.accDepositedUsdVal), 18);
+
+            return depositAsset;
+          });
+
+          return {
+            accDeposit: deposit,
+            accWithdrawal: withdraw,
+            lpActive: lpActive,
+            lpPrice,
+            lpLocked: lpLocked,
+            lpLockedUsdValue,
+            lpProcessed,
+            lpForfeited,
+            accounts,
+            deposits,
+          } as StatisticData;
+        }
+
+        return null;
+      }),
+    );
+  }
+
+  public getStatisticsByTime(snapshotAt: string): Observable<StatisticData | null> {
+    const param = {
+      query: `
+      {
+        assets {
+          id
+          name
+          symbol
+          decimals
+        }
+        lpSupplySnapshots(
+          where: { snapshotAt: "${snapshotAt}" }
+        ) {
+          lpAccBurned
+          lpAccDestroyed
+          lpAccForfeited
+          lpAccMinted
+          lpAccProcessed
+          lpActive
+          lpLocked
+          lpSupply
+          usdValLocked
+          snapshotAt
+        }
+        accWithdrawalSnapshots(
+          where: {snapshotAt: "${snapshotAt}"}
+        ) {
+          snapshotAt
+          totalUsdValue
+        }
+        accDepositSnapshots(
+          where: {
+            snapshotAt: "${snapshotAt}"
+          }
+        ) {
+          snapshotAt
+          totalUsdValue
+        }
+        depositAssetsAccountSnapshots (
+          where: {
+            snapshotAt: "${snapshotAt}"
+          }
+        ) {
+          snapshotAt
+          asset
+          accDepositedUsdVal
+          accDepositedShares
+          accDepositedAmount
+        }
+        withdrawAssetsAccountSnapshots(
+          where: {
+            snapshotAt: "${snapshotAt}"
+          }
+        ) {
+          asset
+          snapshotAt
+          accProcessedUsdVal
+          accProcessedAmount
+          accForfeitedUsdVal
+          accForfeitedAmount
+          accForceRoutedAmount
+          accClaimedUsdVal
+          accClaimedAmount
+          netAmount
+          realAmount
+          requiredAmount
+          requiredUsdVal
+        },
+        prices(
+          orderBy: idx,
+          orderDirection: desc,
+          first:1,
+          where: {
+            token: "0x6a6e3a4396993a4ec98a6f4a654cc0819538721e",
+            timestamp_lte: "${snapshotAt}"
+          }
+        ) {
+          price
+        }
+      }
+      `,
+    };
+
+    return httpPost(SUBQUERY_ST_URL, param, {
+      header: {
+        Authorization: `Bearer ${THE_GRAPH_API_KEY}`,
+      },
+    }).pipe(
+      map((res) => {
+        if (res.status === 200 && res.body && _.has(res.body, 'data')) {
+          const body = res.body as { data: StatisticResponseData2 };
+          const data = body.data;
+
+          const deposit: SldDecimal = toDecimal(data.accDepositSnapshots[0].totalUsdValue);
+          const withdraw: SldDecimal = toDecimal(data.accWithdrawalSnapshots[0].totalUsdValue);
+          const lpActive: SldDecimal = toDecimal(data.lpSupplySnapshots[0].lpActive);
+          const lpPrice: SldDecimal = toDecimal(data.prices[0].price);
+          const lpLocked: SldDecimal = toDecimal(data.lpSupplySnapshots[0].lpLocked);
+          const lpLockedUsdValue: SldDecimal = toDecimal(data.lpSupplySnapshots[0].usdValLocked);
+          const lpProcessed: SldDecimal = toDecimal(data.lpSupplySnapshots[0].lpAccProcessed);
+          const lpForfeited: SldDecimal = toDecimal(data.lpSupplySnapshots[0].lpAccForfeited);
+
+          const assetsMap = new Map<string, Asset>();
+          data.assets.forEach((asset: Asset) => {
+            assetsMap.set(asset.id, asset);
+          });
+
+          const withdrawAccounts = data.withdrawAssetsAccountSnapshots;
+          const accounts: WithdrawAssetAccount[] = withdrawAccounts.map((account) => {
+            const asset: Asset = assetsMap.get(account.asset)!;
+            const withdrawAsset: WithdrawAssetAccount = {} as WithdrawAssetAccount;
+            withdrawAsset.asset = asset;
+            withdrawAsset.accProcessedAmount = toDecimal(account.accProcessedAmount);
+            withdrawAsset.accForfeitedAmount = toDecimal(account.accForfeitedAmount);
+            withdrawAsset.accProcessedUsdVal = toDecimal(account.accProcessedUsdVal);
+            withdrawAsset.accForfeitedUsdVal = toDecimal(account.accForfeitedUsdVal);
+            withdrawAsset.requiredAmount = toDecimal(account.requiredAmount);
+            withdrawAsset.requiredUsdVal = toDecimal(account.requiredUsdVal);
+            withdrawAsset.realAmount = toDecimal(account.realAmount);
+            withdrawAsset.netAmount = toDecimal(account.netAmount);
+
+            return withdrawAsset;
+          });
+
+          const depositAccounts = data.depositAssetsAccountSnapshots;
+          const deposits = depositAccounts.map((account) => {
+            const asset: Asset = assetsMap.get(account.asset)!;
+            const depositAsset: DepositAssetAccount = {} as DepositAssetAccount;
+            depositAsset.asset = asset;
+            depositAsset.accDepositedAmount = toDecimal(account.accDepositedAmount);
+            depositAsset.accDepositedShares = toDecimal(account.accDepositedShares);
+            depositAsset.accDepositedUsdVal = toDecimal(account.accDepositedUsdVal);
 
             return depositAsset;
           });

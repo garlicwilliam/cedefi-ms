@@ -5,7 +5,7 @@ import { useStyleMr } from '../../hooks/useStyleMr.tsx';
 
 type IndexCardValueProps = {
   value: ReactNode;
-  time?: number;
+  time?: number | null;
 };
 
 export function IndexCardValue({ value, time }: IndexCardValueProps) {

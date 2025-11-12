@@ -52,14 +52,14 @@ export type Portfolio = {
 export type PlatformAccProfit = {
   id: number;
   snapshotAt: number;
-  accProfit: number;
+  accProfit: string;
   createdAt: number;
 };
 
 export type UserAccProfit = {
   id: number;
   snapshotAt: number;
-  accProfit: number;
+  accProfit: string;
   createdAt: number;
 };
 

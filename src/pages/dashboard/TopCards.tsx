@@ -6,12 +6,14 @@ import { IndexCardTitle } from '../../components/dashboard/IndexCardTitle.tsx';
 import { IndexCardAction } from '../../components/dashboard/IndexCardAction.tsx';
 import { usePrices } from '../../hooks/graph/usePrices.tsx';
 import { SldDecimal, SldDecPercent } from '../../util/decimal.ts';
-import { Price } from '../../service/types.ts';
+import { NetAssetSnapshot, Price } from '../../service/types.ts';
 import { useLiabilities } from '../../hooks/combine/useLiabilities.tsx';
 import { IndexCardValue } from '../../components/dashboard/IndexCardValue.tsx';
 import { useMemo } from 'react';
 import { PercentValue } from '../../components/value/PercentValue.tsx';
 import { DecimalValue } from '../../components/value/DecimalValue.tsx';
+import { useLatestSnapshotAt } from '../../hooks/useLatestSnapshotAt.tsx';
+import { useList } from '@refinedev/core';
 
 function rate7DayApy(prices: Price[]): SldDecPercent {
   if (prices.length < 2) {
@@ -62,11 +64,38 @@ function useLpPrice() {
   return { rate, rateTime: time, rateApy: apy };
 }
 
+function useLatestNetAssetSnapshot() {
+  const {
+    result: { data: netAssets },
+  } = useList({
+    resource: 'net_asset_snapshots',
+    pagination: { pageSize: 1 },
+    sorters: [{ field: 'snapshotAt', order: 'desc' }],
+  });
+
+  return useMemo(() => {
+    let assetValue: SldDecimal = SldDecimal.ZERO;
+    let assetTime: number | null = null;
+
+    if (netAssets.length > 0) {
+      assetValue = SldDecimal.fromNumeric((netAssets[0] as NetAssetSnapshot).netAssetValue, 18);
+      assetTime = (netAssets[0] as NetAssetSnapshot).snapshotAt;
+    }
+
+    return { assetValue, assetTime };
+  }, [netAssets]);
+}
+
 export const TopCards = () => {
   const styleMr: StyleMerger = useStyleMr(styles);
   const { rate, rateTime, rateApy } = useLpPrice();
 
-  const { liabilities, totalAsset, time: assetTime } = useLiabilities();
+  // 最新资产快照
+  const { assetValue, assetTime } = useLatestNetAssetSnapshot();
+
+  // 负债计算
+  const { snapshotAt: liaTime } = useLatestSnapshotAt();
+  const { liabilities } = useLiabilities(liaTime);
 
   return (
     <div className={styleMr(styles.cards)}>
@@ -78,7 +107,8 @@ export const TopCards = () => {
           value={
             <div>
               <span className={styleMr(styles.secondaryText)}>1 LP = </span>
-              <DecimalValue value={rate} fix={3} noneStr={''} /> <span className={styleMr(styles.secondaryText)}>USD</span>
+              <DecimalValue value={rate} fix={4} noneStr={''} />{' '}
+              <span className={styleMr(styles.secondaryText)}>USD</span>
             </div>
           }
           time={rateTime}
@@ -99,7 +129,7 @@ export const TopCards = () => {
         <IndexCardValue
           value={
             <div>
-              <DecimalValue value={totalAsset} /> <span className={styleMr(styles.secondaryText)}>USD</span>
+              <DecimalValue value={assetValue} /> <span className={styleMr(styles.secondaryText)}>USD</span>
             </div>
           }
           time={assetTime}
@@ -110,13 +140,16 @@ export const TopCards = () => {
         <IndexCardValue
           value={
             <div>
-              <DecimalValue value={liabilities} sign={true} /> <span className={styleMr(styles.secondaryText)}>USD</span>
+              <DecimalValue value={liabilities} sign={true} />{' '}
+              <span className={styleMr(styles.secondaryText)}>USD</span>
             </div>
           }
-          time={assetTime}
+          time={liaTime}
         />
 
-        <div className={styleMr(styles.vDesc, styles.secondaryText)}>负债 = 总资产 - 团队/平台留存收益 - LP价值</div>
+        <div className={styleMr(styles.vDesc, styles.secondaryText)}>
+          负债 = 总资产 - 团队/平台留存收益 - LP价值
+        </div>
       </IndexCard>
     </div>
   );

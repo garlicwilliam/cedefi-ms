@@ -6,12 +6,11 @@ type HookReturnType = {
   arr: Portfolio[];
   map: Map<number, Portfolio>;
   isLoading: boolean;
+  isError: boolean;
 };
 
 // 全部portfolios的hook
-export const usePortfolios: (enabled?: boolean) => HookReturnType = (
-  enabled: boolean | undefined,
-): HookReturnType => {
+export const usePortfolios: (enabled?: boolean) => HookReturnType = (enabled: boolean | undefined): HookReturnType => {
   //
   const { result, query } = useList({
     resource: 'portfolios',
@@ -26,19 +25,15 @@ export const usePortfolios: (enabled?: boolean) => HookReturnType = (
   }
 
   const isLoading = query.isLoading;
+  const isError = query.isError;
   const data = result?.data;
 
-  const map = useMemo(() => {
-    const map = (data as any[]).reduce(
-      (map: Map<number, Portfolio>, portfolio: Portfolio) => {
-        map.set(portfolio.id, portfolio);
-        return map;
-      },
-      new Map<number, Portfolio>(),
-    );
-
-    return map;
+  const map: Map<number, Portfolio> = useMemo(() => {
+    return (data as any[]).reduce((map: Map<number, Portfolio>, portfolio: Portfolio) => {
+      map.set(portfolio.id, portfolio);
+      return map;
+    }, new Map<number, Portfolio>());
   }, [data]);
 
-  return { arr: data as Portfolio[], isLoading, map };
+  return { arr: data as Portfolio[], isLoading, isError, map };
 };

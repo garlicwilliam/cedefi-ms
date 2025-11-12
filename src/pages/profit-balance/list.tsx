@@ -1,13 +1,13 @@
 import { List } from '@refinedev/antd';
 import { Table, Tooltip } from 'antd';
-import { useAccounts } from '../../hooks/combine/useAccounts.tsx';
 import { formatDatetime } from '../../util/time.ts';
-import { InfoCircleOutlined, InfoOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { SldDecimal } from '../../util/decimal.ts';
 import { NumberValue } from '../../components/value/NumberValue.tsx';
+import { useProfitAccountsDatasource } from '../../hooks/combine/useProfitAccountsDatasource.tsx';
 
 export const ProfitBalanceList = () => {
-  const { accounts } = useAccounts();
+  const { accountRows: accounts } = useProfitAccountsDatasource();
 
   return (
     <List>
