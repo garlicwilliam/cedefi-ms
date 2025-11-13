@@ -11,7 +11,7 @@ export const usePortfolioFilters = () => {
     return portfolios.map((one) => {
       const team = teamMap.get(one.teamId!);
       return {
-        text: `${team?.name} - ${one.fundAlias}`,
+        text: `【${team?.name}】 ${one.fundAlias}`,
         value: one.id,
       };
     });

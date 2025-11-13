@@ -1,3 +1,5 @@
+import { SldDecimal } from './decimal.ts';
+
 export function apyCompute(
   rateFrom: { value: number; timestamp: number },
   rateTo: { value: number; timestamp: number },
@@ -10,4 +12,8 @@ export function apyCompute(
   const apy: number = (deltaValue * year * 100) / deltaTime / base;
 
   return apy;
+}
+
+export function decimalFormat(val: string, fix: number = 2): string {
+  return SldDecimal.fromNumeric(val.toString(), 18).format({ fix });
 }

@@ -36,7 +36,7 @@ export const RateConfirm = ({ execute, onDone }: RateConfirmProps) => {
     setIsCancel(true);
     mutate(
       { abi: AbiNoDelayTimelockController, address: DEPLOYED_CONTRACTS.ADDR_TIMELOCK_0, function: 'cancel', args: [execute.exHash] },
-      { gasLimit: BigInt(16770000) },
+      { gasLimit: BigInt(400000) },
     );
   };
   const onConfirm = () => {
@@ -49,7 +49,7 @@ export const RateConfirm = ({ execute, onDone }: RateConfirmProps) => {
         args: [target, value, callData, execute.predecessorId, salt],
       },
       {
-        gasLimit: BigInt(1677000),
+        gasLimit: BigInt(400000),
       },
     );
   };

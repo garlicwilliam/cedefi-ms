@@ -71,6 +71,14 @@ export type TeamAccProfit = {
   createdAt: number;
 };
 
+export type PortfolioAccProfit = {
+  id: number;
+  portfolioId: number;
+  snapshotAt: number;
+  accProfit: string;
+  createdAt: number;
+};
+
 export type ProfitBalance = {
   key: string;
   accountType: 'platform' | 'user' | 'team' | 'team_portfolio';

@@ -4,6 +4,7 @@ import { SnapshotAtFilter } from '../../components/dropdown/SnapshotAtFilter.tsx
 import { formatDateHour, formatDatetime } from '../../util/time.ts';
 import React from 'react';
 import { SldDecimal } from '../../util/decimal.ts';
+import { filtered } from '../../util/filter.ts';
 
 export const RateList = () => {
   const { tableProps, setFilters, filters } = useTable({
@@ -19,7 +20,11 @@ export const RateList = () => {
           title={'Rate'}
           align={'right'}
           render={(r) => {
-            return <span style={{ fontFamily: 'monospace' }}>{SldDecimal.fromNumeric(r.toString(), 18).format({ fix: 10 })}</span>;
+            return (
+              <span style={{ fontFamily: 'monospace' }}>
+                {SldDecimal.fromNumeric(r.toString(), 18).format({ fix: 10 })}
+              </span>
+            );
           }}
         />
         <Table.Column
@@ -29,9 +34,15 @@ export const RateList = () => {
           filterDropdown={() => {
             return <SnapshotAtFilter filters={filters} setFilters={setFilters} />;
           }}
+          filtered={filtered(filters, 'snapshotAt')}
           render={(snapshotAt: number) => formatDateHour(snapshotAt)}
         />
-        <Table.Column dataIndex="createdAt" align={'right'} title={'Created At'} render={(time: number) => formatDatetime(time)} />
+        <Table.Column
+          dataIndex="createdAt"
+          align={'right'}
+          title={'Created At'}
+          render={(time: number) => formatDatetime(time)}
+        />
       </Table>
     </List>
   );

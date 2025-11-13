@@ -22,7 +22,7 @@ export function setFilter(setFilters: SetFilterFn, field: string, op: FilterOp, 
   });
 }
 
-export function delFilter(setFilters: SetFilterFn, field: string, op: FilterOp) {
+export function delFilter(setFilters: SetFilterFn, field: string, op: FilterOp): void {
   const modifier = (prevFilters: CrudFilter[]): CrudFilter[] => {
     return prevFilters
       .map((one: CrudFilter) => {
@@ -36,6 +36,34 @@ export function delFilter(setFilters: SetFilterFn, field: string, op: FilterOp) 
           }
         } else {
           if ('field' in one && one.field === field && one.operator === op) {
+            return null;
+          } else {
+            return one;
+          }
+        }
+      })
+      .filter((one) => one !== null);
+  };
+
+  setFilters((prevFilters: CrudFilter[]): CrudFilter[] => {
+    return modifier(prevFilters);
+  });
+}
+
+export function delFiltersBy(setFilters: SetFilterFn, field: string): void {
+  const modifier = (prevFilters: CrudFilter[]): CrudFilter[] => {
+    return prevFilters
+      .map((one: CrudFilter) => {
+        if (one.operator === 'or' || one.operator === 'and') {
+          one.value = modifier(one.value as CrudFilter[]);
+
+          if (one.value.length === 0) {
+            return null;
+          } else {
+            return one;
+          }
+        } else {
+          if ('field' in one && one.field === field) {
             return null;
           } else {
             return one;
@@ -183,7 +211,9 @@ function genGraphFilterLogical(filter: ConditionalFilter | LogicalFilter): any {
   }
 }
 
-export function generateSort(sorters: CrudSorting): null | { orderBy: string; orderDirection: 'asc' | 'desc' } {
+export function generateSort(
+  sorters: CrudSorting,
+): null | { orderBy: string; orderDirection: 'asc' | 'desc' } {
   if (sorters.length > 0) {
     return {
       orderBy: sorters[0].field,

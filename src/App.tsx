@@ -5,7 +5,15 @@ import { ErrorComponent, ThemedLayout, ThemedSider, useNotificationProvider } fr
 import '@refinedev/antd/dist/reset.css';
 import '@rainbow-me/rainbowkit/styles.css';
 import './index.css';
-import { config, darkTheme, lightTheme, queryClient, QueryClientProvider, RainbowKitProvider, WagmiProvider } from './wallet.tsx';
+import {
+  config,
+  darkTheme,
+  lightTheme,
+  queryClient,
+  QueryClientProvider,
+  RainbowKitProvider,
+  WagmiProvider,
+} from './wallet.tsx';
 import { App as AntdApp } from 'antd';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router';
 import routerProvider, {
@@ -87,6 +95,7 @@ import Icon from '@ant-design/icons';
 import WithdrawSvg from './icons/withdraw.svg?react';
 import PayBackSvg from './icons/payback.svg?react';
 import { PaybackPage } from './pages/onchain-opts/payback.tsx';
+import { PortfolioProfitList } from './pages/snapshots/list-portfolio-profit.tsx';
 
 function App() {
   const Link = useLink();
@@ -158,9 +167,53 @@ function App() {
                           },
                         },
                         {
+                          name: 'acc_profit',
+                          meta: {
+                            label: '虚拟账户',
+                            parent: 'snapshots',
+                            icon: <CameraOutlined />,
+                          },
+                        },
+                        {
+                          name: 'acc_profit_user',
+                          list: '/acc_profit_user',
+                          meta: {
+                            label: '用户累计',
+                            parent: 'acc_profit',
+                            icon: <CameraOutlined />,
+                          },
+                        },
+                        {
+                          name: 'acc_profit_platform',
+                          list: '/acc_profit_platform',
+                          meta: {
+                            label: '平台留存',
+                            parent: 'acc_profit',
+                            icon: <CameraOutlined />,
+                          },
+                        },
+                        {
+                          name: 'acc_profit_team',
+                          list: '/acc_profit_team',
+                          meta: {
+                            label: '团队留存',
+                            parent: 'acc_profit',
+                            icon: <CameraOutlined />,
+                          },
+                        },
+                        {
+                          name: 'acc_profit_from_portfolio',
+                          list: '/acc_profit_from_portfolio',
+                          meta: {
+                            label: '投组累计收益',
+                            parent: 'snapshots',
+                            icon: <CameraOutlined />,
+                          },
+                        },
+                        {
                           name: 'funds',
                           meta: {
-                            label: '基金',
+                            label: '基金管理',
                           },
                         },
                         {
@@ -204,7 +257,7 @@ function App() {
                         {
                           name: 'accounts',
                           meta: {
-                            label: '收益虚拟账户',
+                            label: '虚拟账户',
                             icon: <AccountBookOutlined />,
                           },
                         },
@@ -212,44 +265,9 @@ function App() {
                           name: 'accounts_view',
                           list: 'accounts_view',
                           meta: {
-                            label: '收益账户总览',
+                            label: '账户总览',
                             parent: 'accounts',
                             icon: <FundViewOutlined />,
-                          },
-                        },
-                        {
-                          name: 'acc_profit',
-                          meta: {
-                            label: '收益累计',
-                            parent: 'accounts',
-                            icon: <CameraOutlined />,
-                          },
-                        },
-                        {
-                          name: 'acc_profit_user',
-                          list: '/acc_profit_user',
-                          meta: {
-                            label: '用户快照',
-                            parent: 'acc_profit',
-                            icon: <CameraOutlined />,
-                          },
-                        },
-                        {
-                          name: 'acc_profit_platform',
-                          list: '/acc_profit_platform',
-                          meta: {
-                            label: '平台快照',
-                            parent: 'acc_profit',
-                            icon: <CameraOutlined />,
-                          },
-                        },
-                        {
-                          name: 'acc_profit_team',
-                          list: '/acc_profit_team',
-                          meta: {
-                            label: '团队快照',
-                            parent: 'acc_profit',
-                            icon: <CameraOutlined />,
                           },
                         },
                         {
@@ -398,7 +416,15 @@ function App() {
                             dataProviderName: 'graph',
                             entityName: 'price',
                             entityType: 'Price',
-                            entityFields: ['id', 'idx', 'token', 'tokenSymbol', 'price', 'timestamp', 'blockNumber'],
+                            entityFields: [
+                              'id',
+                              'idx',
+                              'token',
+                              'tokenSymbol',
+                              'price',
+                              'timestamp',
+                              'blockNumber',
+                            ],
                           },
                         },
                         {
@@ -407,7 +433,15 @@ function App() {
                             dataProviderName: 'graph',
                             entityName: 'cutOffPrice',
                             entityType: 'CutOffPrice',
-                            entityFields: ['id', 'idx', 'token', 'tokenSymbol', 'price', 'timestamp', 'blockNumber'],
+                            entityFields: [
+                              'id',
+                              'idx',
+                              'token',
+                              'tokenSymbol',
+                              'price',
+                              'timestamp',
+                              'blockNumber',
+                            ],
                           },
                         },
                         {
@@ -477,7 +511,12 @@ function App() {
                             ],
                             entitySub: {
                               sumAssets: {
-                                entityFields: ['id', 'processedAmount', 'processingAmount', 'forfeitedAmount'],
+                                entityFields: [
+                                  'id',
+                                  'processedAmount',
+                                  'processingAmount',
+                                  'forfeitedAmount',
+                                ],
                                 entitySub: {
                                   asset: {
                                     entityFields: ['id', 'name', 'symbol', 'decimals'],
@@ -545,7 +584,10 @@ function App() {
                       <Routes>
                         <Route
                           element={
-                            <Authenticated key="authenticated-inner" fallback={<CatchAllNavigate to="/login" />}>
+                            <Authenticated
+                              key="authenticated-inner"
+                              fallback={<CatchAllNavigate to="/login" />}
+                            >
                               <ThemedLayout
                                 Header={Header}
                                 Sider={(props) => {
@@ -574,10 +616,16 @@ function App() {
                             <Route path={'create'} element={<CreateAdmin />} />
                           </Route>
 
+                          {/* 快照 */}
                           <Route path={'/nav_snapshots'} element={<NavList />} />
                           <Route path={'/rate_snapshots'} element={<RateList />} />
                           <Route path={'/net_asset_snapshots'} element={<AssetsList />} />
+                          <Route path={'/acc_profit_user'} element={<UserProfitList />} />
+                          <Route path={'/acc_profit_platform'} element={<PlatformProfitList />} />
+                          <Route path={'/acc_profit_team'} element={<TeamProfitList />} />
+                          <Route path={'/acc_profit_from_portfolio'} element={<PortfolioProfitList />} />
 
+                          {/* 基金 */}
                           <Route path={'/teams'}>
                             <Route index element={<TeamList />} />
                             <Route path={'create'} element={<CreateTeam />} />
@@ -587,29 +635,28 @@ function App() {
                             <Route path={'edit/:id'} element={<PortfolioEdit />} />
                           </Route>
                           <Route path={'/profit_allocation_ratios'}>
-                            <Route path={'/profit_allocation_ratios'} element={<ProfitAllocationRatioList />} />
+                            <Route
+                              path={'/profit_allocation_ratios'}
+                              element={<ProfitAllocationRatioList />}
+                            />
                             <Route path={'create/:portfolioId'} element={<CreateProfitAllocationRatio />} />
                           </Route>
+
+                          {/* 虚拟账户 */}
                           <Route path={'/accounts_view'} element={<ProfitBalanceList />} />
-
-                          <Route path={'/acc_profit_user'} element={<UserProfitList />} />
-                          <Route path={'/acc_profit_platform'} element={<PlatformProfitList />} />
-                          <Route path={'/acc_profit_team'} element={<TeamProfitList />} />
-
                           <Route path={'/hourly_profit_user'} element={<UserHourlyProfitList />} />
                           <Route path={'/hourly_profit_platform'} element={<PlatformHourlyProfitList />} />
                           <Route path={'/hourly_profit_team'} element={<TeamHourlyProfitList />} />
-
                           <Route path={'/profit_reallocations'}>
                             <Route index element={<ProfitReallocationList />} />
                             <Route path={'create'} element={<CreateProfitReallocation />} />
                           </Route>
-
                           <Route path={'/profit_withdrawals'}>
                             <Route index element={<ProfitWithdrawList />} />
                             <Route path={'create'} element={<CreateProfitWithdrawal />} />
                           </Route>
 
+                          {/**/}
                           <Route path={'/rate_submit'} element={<UpdateRate />} />
                           <Route path={'/rate_history'} element={<RateHistory />} />
 
