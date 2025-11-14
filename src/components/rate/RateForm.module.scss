@@ -1,39 +1,59 @@
-.box {
+.formArea {
   display: grid;
-  row-gap: 12px;
-  width: 100%;
-  max-width: 300px;
+  grid-row-gap: 50px;
 
-  &.hide {
-    visibility: hidden;
+  .rateValueSelect {
+    padding-bottom: 0px;
+  }
+
+  .inputArea {
+    display: block;
+    position: relative;
+
+    width: 100%;
+
+    .box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: grid;
+      row-gap: 16px;
+      width: 100%;
+      max-width: 400px;
+
+      background: #f5f5f5;
+
+      &.dark {
+        background: #000;
+      }
+
+      &.hide {
+        visibility: hidden;
+      }
+    }
+
+    .displayBox {
+      display: grid;
+      row-gap: 12px;
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        'a c'
+        'b c';
+      align-items: center;
+
+      .price {
+        grid-area: a;
+      }
+      .cutOff {
+        grid-area: b;
+      }
+      .submit {
+        grid-area: c;
+      }
+    }
   }
 }
 
-.displayBox {
-  display: grid;
-  row-gap: 12px;
-  grid-template-columns: 1fr auto;
-  grid-template-areas:
-    'a c'
-    'b c';
-  align-items: center;
-
-  .price {
-    grid-area: a;
-  }
-  .cutOff {
-    grid-area: b;
-  }
-  .submit {
-    grid-area: c;
-  }
-}
-
-.rateValueSelect {
-  padding-bottom: 30px;
-
-  .title {
-    color: #888888;
-    padding-bottom: 6px;
-  }
+.descText {
+  color: rgba(128, 128, 128, 0.6);
 }

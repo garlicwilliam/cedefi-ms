@@ -67,3 +67,26 @@ export function hourEndAt(last: number = 0, delay = 0): number {
   const hourIndex = Math.floor(now / 3600);
   return (hourIndex - last) * 3600;
 }
+
+export function timeAgo(time: number): { day: number; hour: number; minute: number } {
+  if (!time) {
+    return { day: 0, hour: 0, minute: 0 };
+  }
+
+  const now = Math.floor(new Date().getTime() / 1000);
+  let diff = now - time;
+
+  if (diff < 0) {
+    diff = 0;
+  }
+
+  const day = Math.floor(diff / (24 * 3600));
+  diff = diff % (24 * 3600);
+
+  const hour = Math.floor(diff / 3600);
+  diff = diff % 3600;
+
+  const minute = Math.floor(diff / 60);
+
+  return { day, hour, minute };
+}

@@ -14,6 +14,9 @@ import { PercentValue } from '../../components/value/PercentValue.tsx';
 import { DecimalValue } from '../../components/value/DecimalValue.tsx';
 import { useLatestSnapshotAt } from '../../hooks/useLatestSnapshotAt.tsx';
 import { useList } from '@refinedev/core';
+import { Tooltip } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { formatDatetime } from '../../util/time.ts';
 
 function rate7DayApy(prices: Price[]): SldDecPercent {
   if (prices.length < 2) {
@@ -95,7 +98,7 @@ export const TopCards = () => {
 
   // 负债计算
   const { snapshotAt: liaTime } = useLatestSnapshotAt();
-  const { liabilities } = useLiabilities(liaTime);
+  const { liabilities, allReserved, expectedBalance, totalAsset, time } = useLiabilities(liaTime);
 
   return (
     <div className={styleMr(styles.cards)}>
@@ -136,7 +139,16 @@ export const TopCards = () => {
         />
       </IndexCard>
 
-      <IndexCard title={<IndexCardTitle title={'当前负债'} desc={''} />} actions={[]}>
+      <IndexCard
+        title={
+          <IndexCardTitle
+            title={'当前负债'}
+            tips={'由于 ‘团队/平台留存收益’ 的计算有滞后，所以准确的负债值也只能一同滞后'}
+            desc={''}
+          />
+        }
+        actions={[]}
+      >
         <IndexCardValue
           value={
             <div>
@@ -148,7 +160,20 @@ export const TopCards = () => {
         />
 
         <div className={styleMr(styles.vDesc, styles.secondaryText)}>
-          负债 = 总资产 - 团队/平台留存收益 - LP价值
+          负债 = 总资产 - 团队/平台留存收益 - LP价值{' '}
+          <Tooltip
+            title={
+              <div>
+                <span>{formatDatetime(liaTime || 0)}</span>
+                <br />
+                <span>
+                  {totalAsset.format()} - {allReserved.format()} - {expectedBalance?.format()}
+                </span>
+              </div>
+            }
+          >
+            <InfoCircleOutlined />
+          </Tooltip>
         </div>
       </IndexCard>
     </div>

@@ -11,11 +11,10 @@ export const ExchangeRateValue = () => {
   const { result, query } = useList({
     resource: 'rate_snapshots',
     sorters: [{ field: 'snapshotAt', order: 'desc' }],
-    pagination: { pageSize: 1, currentPage: 1 },
+    pagination: { pageSize: 5, currentPage: 1 },
   });
 
-  const shot: RateSnapshot | null = result.data.length > 0 ? (result.data[0] as RateSnapshot) : null;
-  const rate: number | null = shot?.exchangeRate || null;
+  const shots: RateSnapshot[] = result.data as RateSnapshot[];
 
   const styleMr: StyleMerger = useStyleMr(styles);
   const [isAction, setIsAction] = useState(false);
@@ -29,9 +28,21 @@ export const ExchangeRateValue = () => {
   }, [query]);
 
   return (
-    <div className={styleMr(styles.rateRow)}>
-      {formatDatetime(shot?.snapshotAt || 0)} : {rate == null ? '--' : rate}{' '}
-      <ReloadOutlined spin={query.isPending || query.isLoading || isAction} onClick={onRefresh} />
-    </div>
+    <>
+      <div className={styleMr(styles.titleBox)}>
+        <div className={styleMr(styles.title)}>当前计算所得 Exchange Rate</div>
+        <ReloadOutlined spin={query.isPending || query.isLoading || isAction} onClick={onRefresh} />
+      </div>
+      <div className={styleMr(styles.rateRow)}>
+        {shots.map((shot: RateSnapshot) => {
+          return (
+            <div className={styleMr(styles.rateBox)}>
+              <div>{formatDatetime(shot?.snapshotAt || 0)}</div>
+              <div>{shot.exchangeRate.toString().trim()}</div>
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 };

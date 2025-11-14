@@ -1,3 +1,30 @@
 .rateRow {
+  width: 100%;
   font-family: monospace;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 185px);
+  justify-items: start;
+  justify-content: start;
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+}
+
+.titleBox {
+  display: flex;
+  column-gap: 16px;
+  align-items: center;
+  padding-bottom: 16px;
+
+  .title {
+    color: #888888;
+  }
+}
+
+.rateBox {
+  display: grid;
+  justify-items: end;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(153, 153, 153, 0.4);
+  row-gap: 10px;
 }

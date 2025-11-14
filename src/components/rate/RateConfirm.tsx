@@ -35,8 +35,13 @@ export const RateConfirm = ({ execute, onDone }: RateConfirmProps) => {
   const onCancel = () => {
     setIsCancel(true);
     mutate(
-      { abi: AbiNoDelayTimelockController, address: DEPLOYED_CONTRACTS.ADDR_TIMELOCK_0, function: 'cancel', args: [execute.exHash] },
-      { gasLimit: BigInt(400000) },
+      {
+        abi: AbiNoDelayTimelockController,
+        address: DEPLOYED_CONTRACTS.ADDR_TIMELOCK_0,
+        function: 'cancel',
+        args: [execute.exHash],
+      },
+      { gasLimit: BigInt(30000) },
     );
   };
   const onConfirm = () => {
@@ -69,11 +74,25 @@ export const RateConfirm = ({ execute, onDone }: RateConfirmProps) => {
         </Descriptions.Item>
         <Descriptions.Item label={'操作'}>
           <div style={{ display: 'flex', columnGap: '10px' }}>
-            <Button type="primary" shape="round" icon={<CheckOutlined />} size={'middle'} onClick={onConfirm} disabled={isDisabled}>
+            <Button
+              type="primary"
+              shape="round"
+              icon={<CheckOutlined />}
+              size={'middle'}
+              onClick={onConfirm}
+              disabled={isDisabled}
+            >
               提交 {isDisabled && isConfirm ? <LoadingOutlined /> : ''}
             </Button>
 
-            <Button type="default" shape="round" icon={<DeleteOutlined />} size={'middle'} onClick={onCancel} disabled={isDisabled}>
+            <Button
+              type="default"
+              shape="round"
+              icon={<DeleteOutlined />}
+              size={'middle'}
+              onClick={onCancel}
+              disabled={isDisabled}
+            >
               取消 {isDisabled && isCancel ? <LoadingOutlined /> : ''}
             </Button>
           </div>
