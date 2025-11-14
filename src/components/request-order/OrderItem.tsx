@@ -9,6 +9,7 @@ import { formatBigDec } from '../../util/string.ts';
 import { useAssets } from '../../hooks/graph/useAssets.tsx';
 import { Checkbox, CheckboxChangeEvent } from 'antd';
 import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
+import { NumberValue } from '../value/NumberValue.tsx';
 
 export type OrderItemProps = {
   order: RequestOrder;
@@ -34,26 +35,31 @@ export const OrderItem = ({ order, onCheck, curChecked }: OrderItemProps) => {
       </div>
 
       <div className={styleMr(styles.metaLine)}>
-        <ValueItem label={'申请时间'} value={formatDatetime(Number(order.requestedAt))} />
+        <ValueItem
+          label={'申请时间'}
+          value={<NumberValue>{formatDatetime(Number(order.requestedAt))}</NumberValue>}
+        />
         <ValueItem label={'当前状态'} value={<OrderStatusTag status={order.status} />} />
       </div>
 
       <div className={styleMr(styles.requestLine)}>
-        <ValueItem label={'申请地址'} value={order.requester} />
+        <ValueItem label={'申请地址'} value={<NumberValue>{order.requester}</NumberValue>} />
         <ValueItem
           label={'申请数量'}
           value={
-            <span>
-              <span className={styleMr(styles.highlight)}>{formatBigDec(order.requestShares)}</span> {lp?.symbol}
-            </span>
+            <NumberValue>
+              <span className={styleMr(styles.highlight)}>{formatBigDec(order.requestShares)}</span>{' '}
+              {lp?.symbol}
+            </NumberValue>
           }
         />
         <ValueItem
           label={'申请资产'}
           value={
-            <span>
-              <span className={styleMr(styles.highlight2)}>{formatBigDec(order.assetAmount, 6)}</span> {order.requestAsset.symbol}
-            </span>
+            <NumberValue>
+              <span className={styleMr(styles.highlight2)}>{formatBigDec(order.assetAmount, 6)}</span>{' '}
+              {order.requestAsset.symbol}
+            </NumberValue>
           }
         />
       </div>

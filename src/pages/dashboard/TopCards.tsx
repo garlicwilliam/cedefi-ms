@@ -126,7 +126,7 @@ export const TopCards = () => {
       </IndexCard>
 
       <IndexCard
-        title={<IndexCardTitle title={'当前总资产'} desc={'Total Managed Assets'} />}
+        title={<IndexCardTitle title={'持有总资产'} desc={'Total Managed Assets'} />}
         actions={[<IndexCardAction route={'/net_asset_snapshots'} text={'更多'} />]}
       >
         <IndexCardValue

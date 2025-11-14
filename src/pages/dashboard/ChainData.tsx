@@ -12,7 +12,8 @@ const { Title } = Typography;
 export const ChainData = () => {
   const styleMr = useStyleMr(styles);
   const { statistic } = useStatistics();
-  const { accDeposit, accWithdrawal, lpActive, lpPrice, lpLocked, lpLockedUsdValue, accounts, deposits } = statistic || {};
+  const { accDeposit, accWithdrawal, lpActive, lpPrice, lpLocked, lpLockedUsdValue, accounts, deposits } =
+    statistic || {};
 
   const accForfeitedUsd: SldDecimal =
     accounts
@@ -22,14 +23,22 @@ export const ChainData = () => {
   const processed = accounts?.map((account) => {
     return {
       label: account.asset.symbol,
-      children: account.accProcessedAmount.format({ fix: 2 }) + ' (≈' + account.accProcessedUsdVal.format({ fix: 2 }) + ' USD)',
+      children:
+        account.accProcessedAmount.format({ fix: 2 }) +
+        ' (≈' +
+        account.accProcessedUsdVal.format({ fix: 2 }) +
+        ' USD)',
     };
   });
 
   const forfeited = accounts?.map((account) => {
     return {
       label: account.asset.symbol,
-      children: account.accForfeitedAmount.format({ fix: 2 }) + ' (≈' + account.accForfeitedUsdVal.format({ fix: 2 }) + ' USD)',
+      children:
+        account.accForfeitedAmount.format({ fix: 2 }) +
+        ' (≈' +
+        account.accForfeitedUsdVal.format({ fix: 2 }) +
+        ' USD)',
     };
   });
 
@@ -90,7 +99,9 @@ export const ChainData = () => {
   const fund = [
     {
       label: 'LP价值(USD)',
-      children: (activeLpValue || SldDecimal.ZERO).add(lpLockedUsdValue || SldDecimal.ZERO).format({ fix: 2 }) || '0.00',
+      children:
+        (activeLpValue || SldDecimal.ZERO).add(lpLockedUsdValue || SldDecimal.ZERO).format({ fix: 2 }) ||
+        '0.00',
     },
     {
       label: '流通LP数量',
@@ -107,25 +118,30 @@ export const ChainData = () => {
       <div className={styleMr(styles.chainBox)}>
         <Title level={5}>链上数据</Title>
         <div className={styleMr(styles.chainData)}>
-          <Card>
+          <Card size={'small'} title={'资产进入'}>
             <Descriptions title="" column={1} items={deposit} className={styleMr(styles.description)} />
           </Card>
 
-          <Card>
+          <Card size={'small'} title={'当前资金池'}>
             <Descriptions title="" column={1} items={fund} className={styleMr(styles.description)} />
           </Card>
 
-          <Card>
+          <Card size={'small'} title={'资产退出'}>
             <div className={styleMr(styles.processCard)}>
               <div>
                 <Descriptions title="" column={1} items={out} className={styleMr(styles.description)} />
               </div>
               <div>
-                <Descriptions title="" column={1} items={forfeitedOut} className={styleMr(styles.description)} />
+                <Descriptions
+                  title=""
+                  column={1}
+                  items={forfeitedOut}
+                  className={styleMr(styles.description)}
+                />
               </div>
             </div>
           </Card>
-          <Card>
+          <Card size={'small'} title={'取款合约'}>
             <Descriptions title="" column={1} items={claim} className={styleMr(styles.description)} />
           </Card>
         </div>

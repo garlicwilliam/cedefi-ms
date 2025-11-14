@@ -14,6 +14,7 @@ import { useMultiTimesCall } from '../../util/refresh.ts';
 import { AbiWithdrawController } from '../../const/abis/WithdrawController.ts';
 import { LoadingOutlined } from '@ant-design/icons';
 import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
+import { NumberValue } from '../../components/value/NumberValue.tsx';
 
 function computeRequestOrderStatistics(orders: RequestOrder[]) {
   const groups = orders.reduce(
@@ -95,7 +96,7 @@ export const Rounds = () => {
 
         <Table.Column
           dataIndex={'id'}
-          title={'待处理'}
+          title={'待处理(Requested)'}
           align={'right'}
           onCell={() => {
             return { style: { verticalAlign: 'top' } };
@@ -106,15 +107,15 @@ export const Rounds = () => {
 
             return (
               <div className={styleMr(styles.numValues)}>
-                <span>
+                <NumberValue>
                   <span className={styleMr(styles.sym)}>未处理订单：</span>
                   {count}
-                </span>
+                </NumberValue>
                 <Divider dashed={true} size={'small'} orientation="right"></Divider>
-                <span>
+                <NumberValue>
                   <span className={styleMr(styles.sym)}>未处理LP数量：</span>
                   {lpAmount.format({ fix: 6, removeZero: true })}
-                </span>
+                </NumberValue>
                 <Divider dashed={true} size={'small'} orientation="right"></Divider>
               </div>
             );
@@ -123,7 +124,7 @@ export const Rounds = () => {
 
         <Table.Column
           dataIndex={'sumProcessingLpAmount'}
-          title={'封账数量'}
+          title={'封账数量(Processing)'}
           align={'right'}
           onCell={() => {
             return { style: { verticalAlign: 'top' } };
@@ -135,26 +136,26 @@ export const Rounds = () => {
             const roundAssets: RoundAsset[] = row.sumAssets;
             return (
               <div className={styleMr(styles.numValues)}>
-                <span>
+                <NumberValue>
                   <span className={styleMr(styles.sym)}>封账订单</span>: {orders}
-                </span>
+                </NumberValue>
 
                 <Divider dashed={true} size={'small'} orientation="right"></Divider>
 
-                <span>
+                <NumberValue>
                   {lpAmount} <span className={styleMr(styles.sym)}>{lpAsset?.symbol}</span> ≈ {usdValue}{' '}
                   <span className={styleMr(styles.sym)}>USD</span>
-                </span>
+                </NumberValue>
 
                 <Divider dashed={true} size={'small'} orientation="right"></Divider>
 
                 <>
                   {roundAssets.map((one: RoundAsset) => {
                     return (
-                      <span>
-                        {formatBigDec(one.processingAmount, one.asset.decimals)}{' '}
+                      <NumberValue>
+                        {formatBigDec(one.processingAmount, 6)}{' '}
                         <span className={styleMr(styles.sym)}>{one.asset.symbol}</span>
-                      </span>
+                      </NumberValue>
                     );
                   })}
                 </>
@@ -165,7 +166,7 @@ export const Rounds = () => {
 
         <Table.Column
           dataIndex={'sumProcessedLpAmount'}
-          title={'结算数量'}
+          title={'结算数量(Processed)'}
           align={'right'}
           onCell={() => {
             return { style: { verticalAlign: 'top' } };
@@ -178,26 +179,27 @@ export const Rounds = () => {
 
             return (
               <div className={styleMr(styles.numValues)}>
-                <span>
+                <NumberValue>
                   <span className={styleMr(styles.sym)}>结算订单:</span>
                   {orders}
-                </span>
+                </NumberValue>
 
                 <Divider dashed={true} size={'small'} orientation="right" />
 
-                <span>
+                <NumberValue>
                   {lpAmount} <span className={styleMr(styles.sym)}>{lpAsset?.symbol}</span> ≈ {usdValue}{' '}
                   <span className={styleMr(styles.sym)}>USD</span>
-                </span>
+                </NumberValue>
 
                 <Divider dashed={true} size={'small'} orientation="right" />
 
                 <>
                   {roundAssets.map((one) => {
                     return (
-                      <span>
-                        {formatBigDec(one.processedAmount)} <span className={styleMr(styles.sym)}>{one.asset.symbol}</span>
-                      </span>
+                      <NumberValue>
+                        {formatBigDec(one.processedAmount, 6)}{' '}
+                        <span className={styleMr(styles.sym)}>{one.asset.symbol}</span>
+                      </NumberValue>
                     );
                   })}
                 </>

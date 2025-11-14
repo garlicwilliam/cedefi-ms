@@ -38,6 +38,10 @@ export const ValueFilter = ({ setFilters, filters, fieldName, isNumber, inputWid
     setValue(val);
   }, []);
 
+  const onChangeStr = useCallback((event: any) => {
+    setValue(event.target.value);
+  }, []);
+
   return (
     <FilterDropdown>
       <div className={styleMr(styles.wrapper)}>
@@ -47,7 +51,12 @@ export const ValueFilter = ({ setFilters, filters, fieldName, isNumber, inputWid
           {isNumber ? (
             <InputNumber style={{ width: px(inputWidth) }} value={value} onChange={onChange} />
           ) : (
-            <Input style={{ width: px(inputWidth) }} maxLength={inputWidth} value={value} onChange={onChange} />
+            <Input
+              style={{ width: px(inputWidth) }}
+              maxLength={inputWidth}
+              value={value}
+              onChange={onChangeStr}
+            />
           )}
         </div>
 

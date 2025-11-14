@@ -11,7 +11,7 @@ const tagToColor: Record<RequestOrderStatus, string> = {
   [RequestOrderStatus.Rejected]: 'gray',
   [RequestOrderStatus.Processing]: 'red',
   [RequestOrderStatus.Processed]: 'green',
-  [RequestOrderStatus.Completed]: 'green',
+  [RequestOrderStatus.Completed]: 'gray',
   [RequestOrderStatus.Reviewing]: 'volcano',
   [RequestOrderStatus.Forfeited]: 'orange',
 };

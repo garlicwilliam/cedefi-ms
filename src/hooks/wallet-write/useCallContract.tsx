@@ -3,7 +3,20 @@ import { Abi, encodeFunctionData } from 'viem';
 import Safe, { Eip1193Provider } from '@safe-global/protocol-kit';
 import SafeApiKit from '@safe-global/api-kit';
 import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { filter, finalize, from, Observable, of, startWith, Subscription, switchMap, take, takeWhile, timer, zip } from 'rxjs';
+import {
+  filter,
+  finalize,
+  from,
+  Observable,
+  of,
+  startWith,
+  Subscription,
+  switchMap,
+  take,
+  takeWhile,
+  timer,
+  zip,
+} from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { MetaTransactionData, SafeMultisigTransactionResponse } from '@safe-global/types-kit';
 import { useIsSafeWallet } from './useIsSafeWallet.tsx';
@@ -84,7 +97,10 @@ function useWriteByEOA(): UseWriteResultType {
   } as UseWriteResultType;
 }
 
-const safeTxService: SafeApiKit = new SafeApiKit({ chainId: BigInt(DEPLOYED_NETWORK.id), txServiceUrl: SAFE_TX_SERVICE_URL });
+const safeTxService: SafeApiKit = new SafeApiKit({
+  chainId: BigInt(DEPLOYED_NETWORK.id),
+  txServiceUrl: SAFE_TX_SERVICE_URL,
+});
 
 function useWriteBySafe(params: UseWriteBySafeParamType) {
   const safeAddressRef = useRef(params.safeAddress);
@@ -102,7 +118,9 @@ function useWriteBySafe(params: UseWriteBySafeParamType) {
       return;
     }
 
-    const sub: Subscription = from(Safe.init({ provider: params.safeProvider, safeAddress: params.safeAddress }))
+    const sub: Subscription = from(
+      Safe.init({ provider: params.safeProvider, safeAddress: params.safeAddress }),
+    )
       .pipe(
         tap((safe: Safe) => {
           setSafeClient(safe);
@@ -134,7 +152,9 @@ function useWriteBySafe(params: UseWriteBySafeParamType) {
       .pipe(
         take(1),
         switchMap((nonce: string) => {
-          const tx$ = from(client.createTransaction({ transactions: [meta], options: { nonce: Number(nonce) } }));
+          const tx$ = from(
+            client.createTransaction({ transactions: [meta], options: { nonce: Number(nonce) } }),
+          );
 
           return zip(tx$, of(nonce));
         }),
@@ -201,8 +221,20 @@ function useWriteBySafe(params: UseWriteBySafeParamType) {
 export function useCallContract() {
   const { address: accountAddress } = useAccount();
   const { isSafe, safeProvider } = useIsSafeWallet();
-  const { eoaError: error, eoaMutate, isEoaError: isError, isEoaSuccess, isEoaPending, hasSubmitted, isSubmitting } = useWriteByEOA();
-  const { safeTx, mutate: safeMutate } = useWriteBySafe({ isSafe, safeAddress: accountAddress, safeProvider });
+  const {
+    eoaError: error,
+    eoaMutate,
+    isEoaError: isError,
+    isEoaSuccess,
+    isEoaPending,
+    hasSubmitted,
+    isSubmitting,
+  } = useWriteByEOA();
+  const { safeTx, mutate: safeMutate } = useWriteBySafe({
+    isSafe,
+    safeAddress: accountAddress,
+    safeProvider,
+  });
   const [sub, setSub] = useState<Subscription | null>(null);
 
   const mutate = useCallback(
@@ -283,7 +315,6 @@ export function useCallContractState(onSuccess?: () => void) {
   }, [sub]);
 
   useEffect(() => {
-    console.log('is safe', isSafe, safeTx);
     if (safeTx && isSafe) {
       setGlobalSafeTx(safeTx);
       setIsSafePending(true);

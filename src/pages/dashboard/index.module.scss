@@ -1,27 +1,38 @@
+.board {
+  display: grid;
+  grid-row-gap: 44px;
+}
+
+//
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   column-gap: 16px;
   row-gap: 16px;
 }
-
-.info {
-  margin-top: 24px;
-  padding: 16px 16px 24px 16px;
-  border-bottom: 1px solid #cdcdcd;
+.vDesc {
+  padding-top: 24px;
+  font-size: 12px;
+  padding-left: 16px;
 }
 
+//
+.accounts {
+  .accountsData {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    column-gap: 16px;
+    row-gap: 16px;
+  }
+}
+
+//
 .chainBox {
-  margin-top: 24px;
   display: grid;
-  border-bottom: 1px solid #cdcdcd;
-  padding: 0 16px;
 }
-
 .chainData {
   display: grid;
 
-  padding: 16px 0 24px 0;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   column-gap: 16px;
   row-gap: 16px;
@@ -32,19 +43,13 @@
   }
 }
 
-.vDesc {
-  padding-top: 24px;
-  font-size: 12px;
-  padding-left: 16px;
-}
-
+//
 .secondaryText {
   color: rgba(0, 0, 0, 0.3);
   &.dark {
     color: rgba(255, 255, 255, 0.3);
   }
 }
-
 .description {
   :global(.ant-descriptions-item-label) {
   }
