@@ -167,7 +167,7 @@ export const ActionModal = ({
               label={'预估负债'}
               value={
                 <>
-                  <NumberValue>{liabilities.format({})} USD</NumberValue>
+                  <NumberValue>{liabilities.format({ sign: true })} USD</NumberValue>
                   {estTime ? ` (基于 ${formatDatetime(estTime)} 快照数据)` : ''}
                 </>
               }
