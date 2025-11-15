@@ -6,7 +6,7 @@ import { Button, Checkbox, Divider } from 'antd';
 import { RequestOrder, RequestOrderStatus } from '../../service/types.ts';
 import { ActionModal } from './ActionModal.tsx';
 import { Action, ActionNames, ActionTypes } from './action.types.tsx';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useCallContractState } from '../../hooks/wallet-write/useCallContract.tsx';
 import { AbiWithdrawController } from '../../const/abis/WithdrawController.ts';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -29,6 +29,27 @@ const ACTIONS: { [s in RequestOrderStatus]?: Action[] } = {
   [RequestOrderStatus.Reviewing]: [Action.Processed, Action.Forfeited],
 } as const;
 
+function getCheckedOrderStatus(
+  checkOrders: Set<string>,
+  curOrders: RequestOrder[],
+): { isSame: boolean; status: RequestOrderStatus | null; isSelectedAll: boolean; actions: Action[] } {
+  const status = curOrders
+    .filter((one) => checkOrders.has(one.id))
+    .map((one) => one.status)
+    .reduce((acc, cur: RequestOrderStatus) => {
+      acc.add(cur);
+      return acc;
+    }, new Set<RequestOrderStatus>());
+
+  const isSameStatus = status.size <= 1;
+  const curStatus = status.size === 1 ? Array.from(status)[0] : null;
+
+  const isSelectedAll: boolean = curOrders.length > 0 && curOrders.length <= checkOrders.size;
+  const actions: Action[] = (curStatus ? ACTIONS[curStatus] : []) || [];
+
+  return { isSame: isSameStatus, status: curStatus, isSelectedAll, actions };
+}
+
 export const OrderListHeader = ({
   checkedOrders,
   currentOrders,
@@ -41,74 +62,69 @@ export const OrderListHeader = ({
   const styleMr: StyleMerger = useStyleMr(styles);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [curAction, setCurAction] = useState<Action | null>(null);
-
-  const { mutate, isDisabled } = useCallContractState(refresh);
   const [lastAction, setLastAction] = useState<Action | null>(null);
 
-  const checkedOrderStatus = currentOrders
-    .filter((one) => checkedOrders.has(one.id))
-    .map((one) => one.status)
-    .reduce((acc, cur: RequestOrderStatus) => {
-      acc.add(cur);
-      return acc;
-    }, new Set<RequestOrderStatus>());
+  const { mutate, isDisabled } = useCallContractState(refresh);
+  const { isSame, status, isSelectedAll, actions } = useMemo(
+    () => getCheckedOrderStatus(checkedOrders, currentOrders),
+    [checkedOrders, currentOrders],
+  );
+
   //
-  const isCheckedSameStatus: boolean = checkedOrderStatus.size <= 1;
-  const isSelectedAll: boolean = currentOrders.length > 0 && currentOrders.length <= checkedOrders.size;
-  //
-  const curStatus: RequestOrderStatus | null = checkedOrderStatus.size == 1 ? Array.from(checkedOrderStatus)[0] : null;
-  const actions: Action[] = curStatus === null ? [] : ACTIONS[curStatus] || [];
-  //
-  const popAction = (action: Action) => {
+  const popAction = useCallback((action: Action) => {
     setCurAction(action);
     setIsOpenModal(true);
-  };
-  // 执行订单状态改变
-  const exeAction = (action: Action, checked: Set<string>, priceIndex?: number) => {
-    const ids: bigint[] = Array.from(checked).map((id) => BigInt(id));
-    const priceIdx = priceIndex || 0;
+  }, []);
 
-    let args = [];
-    let fun = '';
+  // 改变订单状态
+  const exeAction = useCallback(
+    (action: Action, checked: Set<string>, priceIndex?: number) => {
+      const ids: bigint[] = Array.from(checked).map((id) => BigInt(id));
+      const priceIdx = priceIndex || 0;
 
-    switch (action) {
-      case Action.Processing: {
-        fun = 'markAsProcessing';
-        args = [ids, priceIdx, false];
-        break;
-      }
-      case Action.Rejected: {
-        fun = 'markAsRejected';
-        args = [ids];
-        break;
-      }
-      case Action.Processed: {
-        fun = 'markAsProcessed';
-        args = [ids];
-        break;
-      }
-      case Action.Reviewing: {
-        fun = 'markAsReviewing';
-        args = [ids];
-        break;
-      }
-      case Action.Forfeited: {
-        fun = 'markAsForfeited';
-        args = [ids];
-        break;
-      }
-    }
+      let args = [];
+      let fun = '';
 
-    setIsOpenModal(false);
-    setLastAction(action);
+      switch (action) {
+        case Action.Processing: {
+          fun = 'markAsProcessing';
+          args = [ids, priceIdx, false];
+          break;
+        }
+        case Action.Rejected: {
+          fun = 'markAsRejected';
+          args = [ids];
+          break;
+        }
+        case Action.Processed: {
+          fun = 'markAsProcessed';
+          args = [ids];
+          break;
+        }
+        case Action.Reviewing: {
+          fun = 'markAsReviewing';
+          args = [ids];
+          break;
+        }
+        case Action.Forfeited: {
+          fun = 'markAsForfeited';
+          args = [ids];
+          break;
+        }
+      }
 
-    mutate({
-      abi: AbiWithdrawController,
-      address: DEPLOYED_CONTRACTS.ADDR_WITHDRAW,
-      function: fun,
-      args: args,
-    });
-  };
+      setIsOpenModal(false);
+      setLastAction(action);
+
+      mutate({
+        abi: AbiWithdrawController,
+        address: DEPLOYED_CONTRACTS.ADDR_WITHDRAW,
+        function: fun,
+        args: args,
+      });
+    },
+    [mutate],
+  );
 
   return (
     <div className={styleMr(styles.header)}>
@@ -126,7 +142,7 @@ export const OrderListHeader = ({
         </Checkbox>
 
         <div className={styleMr(styles.checkState)}>
-          <div className={styleMr(styles.warn)}>{!isCheckedSameStatus ? '请选择相同状态的订单' : ''}</div>
+          <div className={styleMr(styles.warn)}>{!isSame ? '请选择相同状态的订单' : ''}</div>
           <div className={styleMr()}>当前选中：{checkedOrders.size}</div>
         </div>
 
@@ -134,7 +150,13 @@ export const OrderListHeader = ({
           {actions.map((action: Action, index: number) => {
             // action button
             return (
-              <Button key={index} type={'primary'} danger={ActionTypes[action]} disabled={isDisabled} onClick={() => popAction(action)}>
+              <Button
+                key={index}
+                type={'primary'}
+                danger={ActionTypes[action]}
+                disabled={isDisabled}
+                onClick={() => popAction(action)}
+              >
                 {ActionNames[action]} {isDisabled && lastAction == action ? <LoadingOutlined /> : ''}
               </Button>
             );
@@ -147,8 +169,9 @@ export const OrderListHeader = ({
         onClose={() => setIsOpenModal(false)}
         onConfirm={exeAction}
         checkedOrders={checkedOrders}
-        checkedStatus={curStatus}
+        checkedStatus={status}
         action={curAction}
+        currentOrders={currentOrders}
       />
     </div>
   );

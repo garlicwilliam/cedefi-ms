@@ -23,7 +23,10 @@ export type WriteCallResultType = {
  * 使用wagmi与智能合约进行写操作，使用引入的config配置，同时将wagmi的writeContract的操作参数映射到这里定义的函数上
  * 返回交易hash的Observable
  */
-export function writeCallContract(param: UseWriteParamType, opt: { gasLimit?: bigint }): Observable<WriteCallResultType> {
+export function writeCallContract(
+  param: UseWriteParamType,
+  opt: { gasLimit?: bigint },
+): Observable<WriteCallResultType> {
   const accountInfo = getAccount(config as any);
   if (!accountInfo.isConnected || !accountInfo.address) {
     return throwError(() => new Error('Wallet not connected'));
@@ -132,7 +135,10 @@ function doCall(params: UseWriteParamType, opt: { gasLimit?: bigint }): Observab
 /**
  *
  */
-function isUseSafeWallet(): Observable<{ isSafe: boolean; safeProvider?: IUniversalProvider | Eip1193Provider | null }> {
+function isUseSafeWallet(): Observable<{
+  isSafe: boolean;
+  safeProvider?: IUniversalProvider | Eip1193Provider | null;
+}> {
   const account = getAccount(config as any);
   if (!account.isConnected || !account.connector) {
     return of({ isSafe: false });

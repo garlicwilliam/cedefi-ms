@@ -445,6 +445,15 @@ function App() {
                           },
                         },
                         {
+                          name: 'idxes',
+                          meta: {
+                            dataProviderName: 'graph',
+                            entityName: 'idx',
+                            entityType: 'Idx',
+                            entityFields: ['id', 'counter'],
+                          },
+                        },
+                        {
                           name: 'requestOrders',
                           meta: {
                             dataProviderName: 'graph',

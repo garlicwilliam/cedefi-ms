@@ -1,3 +1,5 @@
+import { SldDecimal } from '../util/decimal.ts';
+
 export type RestResponseBody = {
   isOK: boolean;
   message: string | null;
@@ -226,4 +228,10 @@ export type NetAssetSnapshot = {
   detailContract: string;
   detailSafeWallet: string;
   detailCeffu: string;
+};
+
+export type AssetCutOffPrice = {
+  index: number;
+  updateTime: number;
+  assets: Record<string, SldDecimal | null>;
 };

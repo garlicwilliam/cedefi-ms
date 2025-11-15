@@ -64,7 +64,9 @@ function genSubStr(subs: { [key: string]: GraphSubEntity } | undefined): string 
   return subStrs.join('\n');
 }
 
-export const graphProvider = (url: string): Omit<Required<DataProvider>, 'createMany' | 'updateMany' | 'deleteMany' | 'custom'> => ({
+export const graphProvider = (
+  url: string,
+): Omit<Required<DataProvider>, 'createMany' | 'updateMany' | 'deleteMany' | 'custom'> => ({
   getList: async ({ resource, pagination, filters, sorters, meta }: GetListParams) => {
     const { currentPage = 1, pageSize = 10 } = pagination ?? {};
     const { entityFields, entityType, entitySub } = meta as GraphMetaFields;
@@ -100,7 +102,9 @@ export const graphProvider = (url: string): Omit<Required<DataProvider>, 'create
     };
 
     const { data, total } = await firstValueFrom(
-      httpPost<GraphListResponseBody>(url, param, { header: { Authorization: `Bearer ${THE_GRAPH_API_KEY}` } }).pipe(
+      httpPost<GraphListResponseBody>(url, param, {
+        header: { Authorization: `Bearer ${THE_GRAPH_API_KEY}` },
+      }).pipe(
         map((res: HttpResponse<GraphListResponseBody>) => {
           const resOK: boolean = res.status === 200;
           const hasData: boolean = !!res.body.data;
@@ -144,7 +148,11 @@ export const graphProvider = (url: string): Omit<Required<DataProvider>, 'create
     };
   },
 
-  getMany: async <T extends BaseRecord>({ resource, ids, meta }: GetManyParams): Promise<GetManyResponse<T>> => {
+  getMany: async <T extends BaseRecord>({
+    resource,
+    ids,
+    meta,
+  }: GetManyParams): Promise<GetManyResponse<T>> => {
     const { entityType, entityFields, entitySub } = meta as GraphMetaFields;
 
     const subEntities: string = genSubStr(entitySub);
@@ -196,7 +204,7 @@ export const graphProvider = (url: string): Omit<Required<DataProvider>, 'create
 
     const param = {
       query: `{
-        ${entityName}(id: ${id}) {
+        ${entityName}(id: "${id}") {
           ${entityFields.join('\n')}
           \n
           ${subEntities}
@@ -246,7 +254,9 @@ export const graphProvider = (url: string): Omit<Required<DataProvider>, 'create
     return Promise.resolve({ data: {} as T });
   },
 
-  deleteOne: async <T extends BaseRecord, P = object>(params: DeleteOneParams<P>): Promise<DeleteOneResponse<T>> => {
+  deleteOne: async <T extends BaseRecord, P = object>(
+    params: DeleteOneParams<P>,
+  ): Promise<DeleteOneResponse<T>> => {
     console.log('params', params);
     return Promise.resolve({ data: {} as T });
   },
