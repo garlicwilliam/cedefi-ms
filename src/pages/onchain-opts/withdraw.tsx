@@ -112,6 +112,7 @@ function useInputLimit(assets: Asset[]) {
 
 function useWithdrawRecords() {
   const { address, isConnected } = useAccount();
+
   const { result, query } = useList({
     resource: 'requestOrders',
     sorters: [{ order: 'desc', field: 'requestedAt' }],
@@ -120,7 +121,7 @@ function useWithdrawRecords() {
       {
         field: 'status',
         operator: 'in',
-        value: ['Requested'],
+        value: ['Requested', 'Processing', 'Processed'],
       },
     ],
     queryOptions: {
@@ -139,12 +140,31 @@ export const WithdrawPage = () => {
   const [isInputError, setIsInputError] = useState(false);
   const { underlyingAssets: assets } = useWithdrawUnderlyingAssets();
   const options = useAssetOptions(assets);
-  const { setSelectAsset, selectedAsset, inputValue, setInputValue, needApprove, refreshBalance, balance, onMax, placeholder } =
-    useInputLimit(assets);
+  const {
+    setSelectAsset,
+    selectedAsset,
+    inputValue,
+    setInputValue,
+    needApprove,
+    refreshBalance,
+    balance,
+    onMax,
+    placeholder,
+  } = useInputLimit(assets);
   const { mutate, isPending, isSuccess, isFinal } = useWithdraw();
   const { orders, refresh: refreshOrders } = useWithdrawRecords();
-  const { mutate: cancelRequest, curCancelId, isSuccess: isCancelled, isPending: isPendingCancel } = useCancelWithdraw();
-  const { mutate: claimWithdraw, curClaimId, isSuccess: isClaimed, isPending: isPendingClaim } = useClaimWithdraw();
+  const {
+    mutate: cancelRequest,
+    curCancelId,
+    isSuccess: isCancelled,
+    isPending: isPendingCancel,
+  } = useCancelWithdraw();
+  const {
+    mutate: claimWithdraw,
+    curClaimId,
+    isSuccess: isClaimed,
+    isPending: isPendingClaim,
+  } = useClaimWithdraw();
 
   useEffect(() => {
     if (isFinal && isSuccess) {
@@ -252,7 +272,9 @@ export const WithdrawPage = () => {
                   title={
                     <div>
                       <span className={styleMr(styles.listNo)}>#{order.id}</span>{' '}
-                      <span className={styleMr(styles.listTime)}>提交时间：{formatDatetime(Number(order.requestedAt))}</span>{' '}
+                      <span className={styleMr(styles.listTime)}>
+                        提交时间：{formatDatetime(Number(order.requestedAt))}
+                      </span>{' '}
                       <Tag>{StatusMap[order.status]}</Tag>
                     </div>
                   }
@@ -264,7 +286,10 @@ export const WithdrawPage = () => {
 
                       <span className={styleMr(styles.listAmount)}>
                         赎回数量(STONEUSD): &nbsp;
-                        {SldDecimal.fromOrigin(BigInt(order.requestShares), 18).format({ fix: 6, removeZero: true })}
+                        {SldDecimal.fromOrigin(BigInt(order.requestShares), 18).format({
+                          fix: 6,
+                          removeZero: true,
+                        })}
                       </span>
                     </div>
                   }
