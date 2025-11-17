@@ -235,3 +235,30 @@ export type AssetCutOffPrice = {
   updateTime: number;
   assets: Record<string, SldDecimal | null>;
 };
+
+export type ProfitAllocationLog = {
+  id: number;
+  portfolioId: number;
+  hourEndAt: number;
+  hourlySnapshotPrevId: number;
+  hourlySnapshotCurrId: number;
+  hourlyProfit: string;
+
+  profitToTeam: string;
+  profitToUser: string;
+  profitToPlatform: string;
+
+  allocationRatioId: number;
+  createdAt: number;
+};
+
+export type ProfitAllocationRatio = {
+  id: number;
+  portfolioId: number;
+  version: number;
+  toTeamRatio: number;
+  toPlatformRatio: number;
+  toUserRatio: number;
+  createdAt: number;
+  createdBy: number;
+};

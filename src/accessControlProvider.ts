@@ -9,6 +9,8 @@ const PERMIT_KEY = {
   PROFIT: 'profit',
   PORTFOLIO: 'portfolio',
   BLACKLIST: 'blacklist',
+  ANALYZE: 'analyze',
+  ONCHAIN: 'onchain',
 };
 
 export const accessControlProvider: AccessControlProvider = {
@@ -40,8 +42,18 @@ export const accessControlProvider: AccessControlProvider = {
 
     if (resource === 'funds') {
       return {
-        can: permissions.includes(PERMIT_KEY.TEAM) || permissions.includes(PERMIT_KEY.PORTFOLIO) || permissions.includes(PERMIT_KEY.PROFIT),
+        can:
+          permissions.includes(PERMIT_KEY.TEAM) ||
+          permissions.includes(PERMIT_KEY.PORTFOLIO) ||
+          permissions.includes(PERMIT_KEY.PROFIT),
       };
+    }
+
+    if (
+      ['data_sources', 'acc_profit_from_portfolio', 'profit_allocation_logs'].includes(resource || '') &&
+      !permissions.includes(PERMIT_KEY.ANALYZE)
+    ) {
+      return { can: false };
     }
 
     if (
@@ -61,6 +73,25 @@ export const accessControlProvider: AccessControlProvider = {
         'profit_withdrawals',
       ].includes(resource || '') &&
       !permissions.includes(PERMIT_KEY.PROFIT)
+    ) {
+      return { can: false };
+    }
+
+    if (
+      [
+        'redeem_view',
+        'redeems',
+        'round_orders',
+        'rounds',
+        'rate',
+        'rate_submit',
+        'rate_history',
+        'chain_ops',
+        'deposits',
+        'withdraws',
+        'paybacks',
+      ].includes(resource || '') &&
+      !permissions.includes(PERMIT_KEY.ONCHAIN)
     ) {
       return { can: false };
     }

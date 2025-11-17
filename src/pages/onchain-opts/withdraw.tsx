@@ -12,7 +12,7 @@ import { useLpBalanceAndApprove } from '../../hooks/contract/useUserWithdrawInfo
 import { useCancelWithdraw, useClaimWithdraw, useWithdraw } from '../../hooks/contract/useWithdraw.tsx';
 import { App as AntdApp } from 'antd';
 import { LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
-import { useAccount, useCall } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useList } from '@refinedev/core';
 import { formatDatetime } from '../../util/time.ts';
 
@@ -121,7 +121,7 @@ function useWithdrawRecords() {
       {
         field: 'status',
         operator: 'in',
-        value: ['Requested', 'Processing', 'Processed'],
+        value: ['Requested', 'Processing', 'Processed', 'Reviewing', 'Forfeited'],
       },
     ],
     queryOptions: {

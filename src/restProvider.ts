@@ -9,9 +9,14 @@ import { AUTH_TOKEN_STORAGE_NAME } from './const/const.ts';
 import { generateFilter } from './util/filter.ts';
 
 type SortDirection = 'asc' | 'desc';
-type SortString = SortDirection | `${SortDirection},${SortDirection}` | `${SortDirection},${SortDirection},${SortDirection}`;
+type SortString =
+  | SortDirection
+  | `${SortDirection},${SortDirection}`
+  | `${SortDirection},${SortDirection},${SortDirection}`;
 
-export const restProvider = (apiUrl: string): Omit<Required<DataProvider>, 'createMany' | 'updateMany' | 'deleteMany'> => ({
+export const restProvider = (
+  apiUrl: string,
+): Omit<Required<DataProvider>, 'createMany' | 'updateMany' | 'deleteMany'> => ({
   getList: async ({ resource, pagination, filters, sorters, meta }: GetListParams) => {
     const url = `${apiUrl}/${resource}`;
 

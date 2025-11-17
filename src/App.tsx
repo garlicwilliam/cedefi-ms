@@ -94,8 +94,465 @@ import { WithdrawPage } from './pages/onchain-opts/withdraw.tsx';
 import Icon from '@ant-design/icons';
 import WithdrawSvg from './icons/withdraw.svg?react';
 import PayBackSvg from './icons/payback.svg?react';
+import DataSourceSvg from './icons/datasource.svg?react';
+import LogsSvg from './icons/logs.svg?react';
 import { PaybackPage } from './pages/onchain-opts/payback.tsx';
 import { PortfolioProfitList } from './pages/snapshots/list-portfolio-profit.tsx';
+import { AllocationLogs } from './pages/snapshots/list-allocation-logs.tsx';
+
+const RESOURCES = [
+  {
+    name: 'permissions',
+  },
+  {
+    name: 'users',
+    list: '/users',
+    show: '/users/show/:id',
+    edit: '/users/edit/:id',
+    create: '/users/create',
+    meta: {
+      label: '管理员',
+      method: 'patch',
+      icon: <UsergroupAddOutlined />,
+    },
+  },
+  {
+    name: 'snapshots',
+    meta: {
+      label: '整时快照',
+    },
+  },
+  {
+    name: 'rate_snapshots',
+    list: '/rate_snapshots',
+    meta: {
+      canDelete: false,
+      canEdit: false,
+      canCreate: false,
+      label: 'Rate 快照',
+      parent: 'snapshots',
+      icon: <CameraOutlined />,
+    },
+  },
+  {
+    name: 'net_asset_snapshots',
+    list: '/net_asset_snapshots',
+    meta: {
+      canDelete: false,
+      canEdit: false,
+      canCreate: false,
+      label: '总资产快照',
+      parent: 'snapshots',
+      icon: <CameraOutlined />,
+    },
+  },
+  {
+    name: 'acc_profit',
+    meta: {
+      label: '虚拟账户',
+      parent: 'snapshots',
+      icon: <CameraOutlined />,
+    },
+  },
+  {
+    name: 'acc_profit_user',
+    list: '/acc_profit_user',
+    meta: {
+      label: '用户累计',
+      parent: 'acc_profit',
+      icon: <CameraOutlined />,
+    },
+  },
+  {
+    name: 'acc_profit_platform',
+    list: '/acc_profit_platform',
+    meta: {
+      label: '平台留存',
+      parent: 'acc_profit',
+      icon: <CameraOutlined />,
+    },
+  },
+  {
+    name: 'acc_profit_team',
+    list: '/acc_profit_team',
+    meta: {
+      label: '团队留存',
+      parent: 'acc_profit',
+      icon: <CameraOutlined />,
+    },
+  },
+  {
+    name: 'data_sources',
+    meta: {
+      label: '原始数据',
+      icon: <Icon component={DataSourceSvg} />,
+    },
+  },
+  {
+    name: 'acc_profit_from_portfolio',
+    list: '/acc_profit_from_portfolio',
+    meta: {
+      label: '投组累计收益',
+      parent: 'data_sources',
+      icon: <CameraOutlined />,
+    },
+  },
+  {
+    name: 'profit_allocation_logs',
+    list: '/profit_allocation_logs',
+    meta: {
+      label: '收益分配日志',
+      parent: 'data_sources',
+      icon: <Icon component={LogsSvg} />,
+    },
+  },
+  {
+    name: 'funds',
+    meta: {
+      label: '基金管理',
+    },
+  },
+  {
+    name: 'teams',
+    list: '/teams',
+    edit: '/teams/edit/:id',
+    create: '/teams/create',
+    meta: {
+      label: '量化团队',
+      canDelete: false,
+      method: 'patch',
+      parent: 'funds',
+      icon: <TeamOutlined />,
+    },
+  },
+  {
+    name: 'portfolios',
+    list: '/portfolios',
+    edit: '/portfolios/edit/:id',
+    meta: {
+      label: '投资组合',
+      canDelete: false,
+      canCreate: false,
+      parent: 'funds',
+      icon: <GroupOutlined />,
+    },
+  },
+  {
+    name: 'profit_allocation_ratios',
+    list: '/profit_allocation_ratios',
+    create: '/profit_allocation_ratios/create/:portfolioId',
+    meta: {
+      label: '收益分配比例',
+      canDelete: false,
+      canEdit: false,
+      parent: 'funds',
+      icon: <SettingOutlined />,
+    },
+  },
+  {
+    name: 'accounts',
+    meta: {
+      label: '虚拟账户',
+      icon: <AccountBookOutlined />,
+    },
+  },
+  {
+    name: 'accounts_view',
+    list: 'accounts_view',
+    meta: {
+      label: '账户总览',
+      parent: 'accounts',
+      icon: <FundViewOutlined />,
+    },
+  },
+  {
+    name: 'hourly_profit',
+    meta: {
+      label: '收益变动',
+      parent: 'accounts',
+      icon: <FieldTimeOutlined />,
+    },
+  },
+  {
+    name: 'hourly_profit_user',
+    list: '/hourly_profit_user',
+    meta: {
+      label: '用户',
+      parent: 'hourly_profit',
+      icon: <FieldTimeOutlined />,
+    },
+  },
+  {
+    name: 'hourly_profit_platform',
+    list: '/hourly_profit_platform',
+    meta: {
+      label: '平台',
+      parent: 'hourly_profit',
+      icon: <FieldTimeOutlined />,
+    },
+  },
+  {
+    name: 'hourly_profit_team',
+    list: '/hourly_profit_team',
+    meta: {
+      label: '团队',
+      parent: 'hourly_profit',
+      icon: <FieldTimeOutlined />,
+    },
+  },
+  {
+    name: 'profit_reallocations',
+    list: '/profit_reallocations',
+    create: '/profit_reallocations/create',
+    meta: {
+      label: '调账记录',
+      parent: 'accounts',
+      icon: <DatabaseOutlined />,
+    },
+  },
+  {
+    name: 'profit_withdrawals',
+    list: '/profit_withdrawals',
+    create: '/profit_withdrawals/create',
+    meta: {
+      label: '提现记录',
+      parent: 'accounts',
+      icon: <DatabaseOutlined />,
+    },
+  },
+  {
+    name: 'redeem_view',
+    meta: {
+      label: '赎回',
+      icon: <LinkOutlined />,
+    },
+  },
+  {
+    name: 'redeems',
+    list: '/request_orders',
+    meta: {
+      label: '赎回记录',
+      parent: 'redeem_view',
+      icon: <LinkOutlined />,
+    },
+  },
+  {
+    name: 'round_orders',
+    list: '/round_orders',
+    meta: {
+      label: '封账操作',
+      parent: 'redeem_view',
+      icon: <FlagOutlined />,
+    },
+  },
+  {
+    name: 'rounds',
+    list: '/rounds',
+    meta: {
+      label: '封账周期',
+      parent: 'redeem_view',
+      icon: <ClockCircleOutlined />,
+    },
+  },
+  {
+    name: 'rate',
+    meta: {
+      label: 'Exchange Rate',
+      icon: <LinkOutlined />,
+    },
+  },
+  {
+    name: 'rate_submit',
+    list: '/rate_submit',
+    meta: {
+      label: 'Rate 上链',
+      parent: 'rate',
+      icon: <WalletOutlined />,
+    },
+  },
+  {
+    name: 'rate_history',
+    list: '/rate_history',
+    meta: {
+      label: 'Rate 历史',
+      parent: 'rate',
+      icon: <HistoryOutlined />,
+    },
+  },
+  {
+    name: 'timeLockExecutes',
+    meta: {
+      dataProviderName: 'graph',
+      entityName: 'timeLockExecute',
+      entityType: 'TimeLockExecute',
+      entityFields: [
+        'id',
+        'type',
+        'exHash',
+        'status',
+        'predecessorId',
+        'salt',
+        'delay',
+        'batchSize',
+        'executeDone',
+        'target',
+        'value',
+        'callData',
+        'createdAt',
+        'createdBlock',
+        'updatedAt',
+        'updatedBlock',
+      ],
+    },
+  },
+  {
+    name: 'prices',
+    meta: {
+      dataProviderName: 'graph',
+      entityName: 'price',
+      entityType: 'Price',
+      entityFields: ['id', 'idx', 'token', 'tokenSymbol', 'price', 'timestamp', 'blockNumber'],
+    },
+  },
+  {
+    name: 'cutOffPrices',
+    meta: {
+      dataProviderName: 'graph',
+      entityName: 'cutOffPrice',
+      entityType: 'CutOffPrice',
+      entityFields: ['id', 'idx', 'token', 'tokenSymbol', 'price', 'timestamp', 'blockNumber'],
+    },
+  },
+  {
+    name: 'idxes',
+    meta: {
+      dataProviderName: 'graph',
+      entityName: 'idx',
+      entityType: 'Idx',
+      entityFields: ['id', 'counter'],
+    },
+  },
+  {
+    name: 'requestOrders',
+    meta: {
+      dataProviderName: 'graph',
+      entityName: 'requestOrder',
+      entityType: 'RequestOrder',
+      entityFields: [
+        'id',
+        'round',
+        'status',
+        'requester',
+        'requestShares',
+        'sharePrice',
+        'assetAmount',
+        'assetPrice',
+        'usdValue',
+
+        'cancelledAt',
+        'completedAt',
+        'forfeitedAt',
+        'processedAt',
+        'processingAt',
+        'rejectedAt',
+        'requestedAt',
+        'reviewedAt',
+
+        'updatedAt',
+      ],
+      entitySub: {
+        requestAsset: {
+          entityFields: ['id', 'name', 'symbol', 'decimals'],
+        },
+      },
+    },
+  },
+  {
+    name: 'assets',
+    meta: {
+      dataProviderName: 'graph',
+      entityName: 'asset',
+      entityType: 'Asset',
+      entityFields: ['id', 'name', 'symbol', 'decimals'],
+    },
+  },
+  {
+    name: 'withdrawRounds',
+    meta: {
+      dataProviderName: 'graph',
+      entityName: 'withdrawRound',
+      entityType: 'WithdrawRound',
+      entityFields: [
+        'id',
+        'startedAt',
+        'closedAt',
+        'updatedAt',
+        'sumForfeitedLpAmount',
+        'sumForfeitedOrderCount',
+        'sumForfeitedUsdValue',
+        'sumProcessedLpAmount',
+        'sumProcessedOrderCount',
+        'sumProcessedUsdValue',
+        'sumProcessingLpAmount',
+        'sumProcessingOrderCount',
+        'sumProcessingUsdValue',
+      ],
+      entitySub: {
+        sumAssets: {
+          entityFields: ['id', 'processedAmount', 'processingAmount', 'forfeitedAmount'],
+          entitySub: {
+            asset: {
+              entityFields: ['id', 'name', 'symbol', 'decimals'],
+            },
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'chain_ops',
+    meta: {
+      label: '链上操作',
+      icon: <LinkOutlined />,
+    },
+  },
+  {
+    name: 'deposits',
+    list: '/deposits',
+    meta: {
+      parent: 'chain_ops',
+      label: '存入(deposit)',
+      icon: <DollarOutlined />,
+    },
+  },
+  {
+    name: 'withdraws',
+    list: '/withdraws',
+    meta: {
+      parent: 'chain_ops',
+      label: '赎回(withdraw)',
+      icon: <Icon component={WithdrawSvg} />,
+    },
+  },
+  {
+    name: 'paybacks',
+    list: '/paybacks',
+    meta: {
+      parent: 'chain_ops',
+      label: '划拨(payback)',
+      icon: <Icon component={PayBackSvg} />,
+    },
+  },
+  {
+    name: 'blacklist',
+    list: '/blacklist',
+    create: '/blacklist/create',
+    meta: {
+      label: '黑名单',
+      canEdit: false,
+    },
+  },
+];
 
 function App() {
   const Link = useLink();
@@ -120,465 +577,7 @@ function App() {
                       notificationProvider={useNotificationProvider}
                       routerProvider={routerProvider}
                       authProvider={authProvider}
-                      resources={[
-                        {
-                          name: 'permissions',
-                        },
-                        {
-                          name: 'users',
-                          list: '/users',
-                          show: '/users/show/:id',
-                          edit: '/users/edit/:id',
-                          create: '/users/create',
-                          meta: {
-                            label: '管理员',
-                            method: 'patch',
-                            icon: <UsergroupAddOutlined />,
-                          },
-                        },
-                        {
-                          name: 'snapshots',
-                          meta: {
-                            label: '整时快照',
-                          },
-                        },
-                        {
-                          name: 'rate_snapshots',
-                          list: '/rate_snapshots',
-                          meta: {
-                            canDelete: false,
-                            canEdit: false,
-                            canCreate: false,
-                            label: 'Rate 快照',
-                            parent: 'snapshots',
-                            icon: <CameraOutlined />,
-                          },
-                        },
-                        {
-                          name: 'net_asset_snapshots',
-                          list: '/net_asset_snapshots',
-                          meta: {
-                            canDelete: false,
-                            canEdit: false,
-                            canCreate: false,
-                            label: '总资产快照',
-                            parent: 'snapshots',
-                            icon: <CameraOutlined />,
-                          },
-                        },
-                        {
-                          name: 'acc_profit',
-                          meta: {
-                            label: '虚拟账户',
-                            parent: 'snapshots',
-                            icon: <CameraOutlined />,
-                          },
-                        },
-                        {
-                          name: 'acc_profit_user',
-                          list: '/acc_profit_user',
-                          meta: {
-                            label: '用户累计',
-                            parent: 'acc_profit',
-                            icon: <CameraOutlined />,
-                          },
-                        },
-                        {
-                          name: 'acc_profit_platform',
-                          list: '/acc_profit_platform',
-                          meta: {
-                            label: '平台留存',
-                            parent: 'acc_profit',
-                            icon: <CameraOutlined />,
-                          },
-                        },
-                        {
-                          name: 'acc_profit_team',
-                          list: '/acc_profit_team',
-                          meta: {
-                            label: '团队留存',
-                            parent: 'acc_profit',
-                            icon: <CameraOutlined />,
-                          },
-                        },
-                        {
-                          name: 'acc_profit_from_portfolio',
-                          list: '/acc_profit_from_portfolio',
-                          meta: {
-                            label: '投组累计收益',
-                            parent: 'snapshots',
-                            icon: <CameraOutlined />,
-                          },
-                        },
-                        {
-                          name: 'funds',
-                          meta: {
-                            label: '基金管理',
-                          },
-                        },
-                        {
-                          name: 'teams',
-                          list: '/teams',
-                          edit: '/teams/edit/:id',
-                          create: '/teams/create',
-                          meta: {
-                            label: '量化团队',
-                            canDelete: false,
-                            method: 'patch',
-                            parent: 'funds',
-                            icon: <TeamOutlined />,
-                          },
-                        },
-                        {
-                          name: 'portfolios',
-                          list: '/portfolios',
-                          edit: '/portfolios/edit/:id',
-                          meta: {
-                            label: '投资组合',
-                            canDelete: false,
-                            canCreate: false,
-                            parent: 'funds',
-                            icon: <GroupOutlined />,
-                          },
-                        },
-                        {
-                          name: 'profit_allocation_ratios',
-                          list: '/profit_allocation_ratios',
-                          create: '/profit_allocation_ratios/create/:portfolioId',
-                          meta: {
-                            label: '收益分配比例',
-                            canDelete: false,
-                            canEdit: false,
-                            parent: 'funds',
-                            icon: <SettingOutlined />,
-                          },
-                        },
-
-                        {
-                          name: 'accounts',
-                          meta: {
-                            label: '虚拟账户',
-                            icon: <AccountBookOutlined />,
-                          },
-                        },
-                        {
-                          name: 'accounts_view',
-                          list: 'accounts_view',
-                          meta: {
-                            label: '账户总览',
-                            parent: 'accounts',
-                            icon: <FundViewOutlined />,
-                          },
-                        },
-                        {
-                          name: 'hourly_profit',
-                          meta: {
-                            label: '收益变动',
-                            parent: 'accounts',
-                            icon: <FieldTimeOutlined />,
-                          },
-                        },
-                        {
-                          name: 'hourly_profit_user',
-                          list: '/hourly_profit_user',
-                          meta: {
-                            label: '用户',
-                            parent: 'hourly_profit',
-                            icon: <FieldTimeOutlined />,
-                          },
-                        },
-                        {
-                          name: 'hourly_profit_platform',
-                          list: '/hourly_profit_platform',
-                          meta: {
-                            label: '平台',
-                            parent: 'hourly_profit',
-                            icon: <FieldTimeOutlined />,
-                          },
-                        },
-                        {
-                          name: 'hourly_profit_team',
-                          list: '/hourly_profit_team',
-                          meta: {
-                            label: '团队',
-                            parent: 'hourly_profit',
-                            icon: <FieldTimeOutlined />,
-                          },
-                        },
-                        {
-                          name: 'profit_reallocations',
-                          list: '/profit_reallocations',
-                          create: '/profit_reallocations/create',
-                          meta: {
-                            label: '调账记录',
-                            parent: 'accounts',
-                            icon: <DatabaseOutlined />,
-                          },
-                        },
-                        {
-                          name: 'profit_withdrawals',
-                          list: '/profit_withdrawals',
-                          create: '/profit_withdrawals/create',
-                          meta: {
-                            label: '提现记录',
-                            parent: 'accounts',
-                            icon: <DatabaseOutlined />,
-                          },
-                        },
-                        {
-                          name: 'redeem_view',
-                          meta: {
-                            label: '赎回',
-                            icon: <LinkOutlined />,
-                          },
-                        },
-                        {
-                          name: 'redeems',
-                          list: '/request_orders',
-                          meta: {
-                            label: '赎回记录',
-                            parent: 'redeem_view',
-                            icon: <LinkOutlined />,
-                          },
-                        },
-                        {
-                          name: 'round_orders',
-                          list: '/round_orders',
-                          meta: {
-                            label: '封账操作',
-                            parent: 'redeem_view',
-                            icon: <FlagOutlined />,
-                          },
-                        },
-                        {
-                          name: 'rounds',
-                          list: '/rounds',
-                          meta: {
-                            label: '封账周期',
-                            parent: 'redeem_view',
-                            icon: <ClockCircleOutlined />,
-                          },
-                        },
-                        {
-                          name: 'rate',
-                          meta: {
-                            label: 'Exchange Rate',
-                            icon: <LinkOutlined />,
-                          },
-                        },
-                        {
-                          name: 'rate_submit',
-                          list: '/rate_submit',
-                          meta: {
-                            label: 'Rate 上链',
-                            parent: 'rate',
-                            icon: <WalletOutlined />,
-                          },
-                        },
-                        {
-                          name: 'rate_history',
-                          list: '/rate_history',
-                          meta: {
-                            label: 'Rate 历史',
-                            parent: 'rate',
-                            icon: <HistoryOutlined />,
-                          },
-                        },
-                        {
-                          name: 'timeLockExecutes',
-                          meta: {
-                            dataProviderName: 'graph',
-                            entityName: 'timeLockExecute',
-                            entityType: 'TimeLockExecute',
-                            entityFields: [
-                              'id',
-                              'type',
-                              'exHash',
-                              'status',
-                              'predecessorId',
-                              'salt',
-                              'delay',
-                              'batchSize',
-                              'executeDone',
-                              'target',
-                              'value',
-                              'callData',
-                              'createdAt',
-                              'createdBlock',
-                              'updatedAt',
-                              'updatedBlock',
-                            ],
-                          },
-                        },
-                        {
-                          name: 'prices',
-                          meta: {
-                            dataProviderName: 'graph',
-                            entityName: 'price',
-                            entityType: 'Price',
-                            entityFields: [
-                              'id',
-                              'idx',
-                              'token',
-                              'tokenSymbol',
-                              'price',
-                              'timestamp',
-                              'blockNumber',
-                            ],
-                          },
-                        },
-                        {
-                          name: 'cutOffPrices',
-                          meta: {
-                            dataProviderName: 'graph',
-                            entityName: 'cutOffPrice',
-                            entityType: 'CutOffPrice',
-                            entityFields: [
-                              'id',
-                              'idx',
-                              'token',
-                              'tokenSymbol',
-                              'price',
-                              'timestamp',
-                              'blockNumber',
-                            ],
-                          },
-                        },
-                        {
-                          name: 'idxes',
-                          meta: {
-                            dataProviderName: 'graph',
-                            entityName: 'idx',
-                            entityType: 'Idx',
-                            entityFields: ['id', 'counter'],
-                          },
-                        },
-                        {
-                          name: 'requestOrders',
-                          meta: {
-                            dataProviderName: 'graph',
-                            entityName: 'requestOrder',
-                            entityType: 'RequestOrder',
-                            entityFields: [
-                              'id',
-                              'round',
-                              'status',
-                              'requester',
-                              'requestShares',
-                              'sharePrice',
-                              'assetAmount',
-                              'assetPrice',
-                              'usdValue',
-
-                              'cancelledAt',
-                              'completedAt',
-                              'forfeitedAt',
-                              'processedAt',
-                              'processingAt',
-                              'rejectedAt',
-                              'requestedAt',
-                              'reviewedAt',
-
-                              'updatedAt',
-                            ],
-                            entitySub: {
-                              requestAsset: {
-                                entityFields: ['id', 'name', 'symbol', 'decimals'],
-                              },
-                            },
-                          },
-                        },
-                        {
-                          name: 'assets',
-                          meta: {
-                            dataProviderName: 'graph',
-                            entityName: 'asset',
-                            entityType: 'Asset',
-                            entityFields: ['id', 'name', 'symbol', 'decimals'],
-                          },
-                        },
-                        {
-                          name: 'withdrawRounds',
-                          meta: {
-                            dataProviderName: 'graph',
-                            entityName: 'withdrawRound',
-                            entityType: 'WithdrawRound',
-                            entityFields: [
-                              'id',
-                              'startedAt',
-                              'closedAt',
-                              'updatedAt',
-                              'sumForfeitedLpAmount',
-                              'sumForfeitedOrderCount',
-                              'sumForfeitedUsdValue',
-                              'sumProcessedLpAmount',
-                              'sumProcessedOrderCount',
-                              'sumProcessedUsdValue',
-                              'sumProcessingLpAmount',
-                              'sumProcessingOrderCount',
-                              'sumProcessingUsdValue',
-                            ],
-                            entitySub: {
-                              sumAssets: {
-                                entityFields: [
-                                  'id',
-                                  'processedAmount',
-                                  'processingAmount',
-                                  'forfeitedAmount',
-                                ],
-                                entitySub: {
-                                  asset: {
-                                    entityFields: ['id', 'name', 'symbol', 'decimals'],
-                                  },
-                                },
-                              },
-                            },
-                          },
-                        },
-                        {
-                          name: 'chain_ops',
-                          meta: {
-                            label: '链上操作',
-                            icon: <LinkOutlined />,
-                          },
-                        },
-                        {
-                          name: 'deposits',
-                          list: '/deposits',
-                          meta: {
-                            parent: 'chain_ops',
-                            label: '存入(deposit)',
-                            icon: <DollarOutlined />,
-                          },
-                        },
-                        {
-                          name: 'withdraws',
-                          list: '/withdraws',
-                          meta: {
-                            parent: 'chain_ops',
-                            label: '赎回(withdraw)',
-                            icon: <Icon component={WithdrawSvg} />,
-                          },
-                        },
-                        {
-                          name: 'paybacks',
-                          list: '/paybacks',
-                          meta: {
-                            parent: 'chain_ops',
-                            label: '划拨(payback)',
-                            icon: <Icon component={PayBackSvg} />,
-                          },
-                        },
-                        {
-                          name: 'blacklist',
-                          list: '/blacklist',
-                          create: '/blacklist/create',
-                          meta: {
-                            label: '黑名单',
-                            canEdit: false,
-                          },
-                        },
-                      ]}
+                      resources={RESOURCES}
                       accessControlProvider={accessControlProvider}
                       options={{
                         syncWithLocation: true,
@@ -632,6 +631,9 @@ function App() {
                           <Route path={'/acc_profit_user'} element={<UserProfitList />} />
                           <Route path={'/acc_profit_platform'} element={<PlatformProfitList />} />
                           <Route path={'/acc_profit_team'} element={<TeamProfitList />} />
+
+                          {/* 数据源 */}
+                          <Route path={'/profit_allocation_logs'} element={<AllocationLogs />} />
                           <Route path={'/acc_profit_from_portfolio'} element={<PortfolioProfitList />} />
 
                           {/* 基金 */}
@@ -665,7 +667,7 @@ function App() {
                             <Route path={'create'} element={<CreateProfitWithdrawal />} />
                           </Route>
 
-                          {/**/}
+                          {/*  */}
                           <Route path={'/rate_submit'} element={<UpdateRate />} />
                           <Route path={'/rate_history'} element={<RateHistory />} />
 

@@ -147,8 +147,6 @@ export const generateFilter = (filters?: CrudFilters) => {
       if ('field' in filter) {
         const { field, operator, value } = filter;
 
-        console.log('filters', filter, operator, value);
-
         if (operator === 'eq') {
           queryFilters[field] = value;
           return;

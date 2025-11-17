@@ -1,0 +1,35 @@
+.item {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  row-gap: 4px;
+
+  &.labelTop {
+    grid-template-areas:
+      'label'
+      'value';
+  }
+  &.labelBottom {
+    grid-template-areas:
+      'value'
+      'label';
+  }
+
+  &.alignLeft {
+    justify-items: start;
+  }
+  &.alignCenter {
+    justify-items: center;
+  }
+  &.alignRight {
+    justify-items: end;
+  }
+
+  .label {
+    grid-area: label;
+  }
+
+  .value {
+    grid-area: value;
+  }
+}
