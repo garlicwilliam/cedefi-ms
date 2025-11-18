@@ -23,8 +23,9 @@ function useRefData(datasource: ProfitAllocationLog[]) {
     }
 
     const pnlIds: Set<number> = new Set(
-      datasource.map((item) => [item.hourlySnapshotCurrId, item.hourlySnapshotCurrId]).flat(),
+      datasource.map((item) => [item.hourlySnapshotPrevId, item.hourlySnapshotCurrId]).flat(),
     );
+    console.log('pnl ids', pnlIds);
     const ratioIds: Set<number> = new Set(datasource.map((item) => item.allocationRatioId));
 
     return { pnlIds, ratioIds };
@@ -84,7 +85,7 @@ export function AllocationLogs() {
   const { map: portfolioMap } = usePortfolios();
   const filterItems = usePortfolioFilters();
   const dataSource = tableProps.dataSource as ProfitAllocationLog[];
-  const { pnlMap, ratioMap, isPending } = useRefData(dataSource);
+  const { pnlMap, ratioMap } = useRefData(dataSource);
 
   const onCheck = useCallback((checked: boolean) => {
     setIs18Decimals(checked);
