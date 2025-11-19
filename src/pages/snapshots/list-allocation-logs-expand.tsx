@@ -11,10 +11,21 @@ export type AllocationLogExpandProps = {
   ratioMap: Record<number, ProfitAllocationRatio>;
 };
 
+function getStartProfit(first: PortfolioAccProfit): PortfolioAccProfit {
+  return {
+    id: 0,
+    portfolioId: first.portfolioId,
+    snapshotAt: first.snapshotAt,
+    accProfit: '0',
+    createdAt: first.createdAt,
+  };
+}
+
 export function AllocationLogExpand({ log, pnlMap, ratioMap }: AllocationLogExpandProps) {
   const styleMr = useStyleMr(styles);
   const cur: PortfolioAccProfit = pnlMap[log.hourlySnapshotCurrId];
-  const pre: PortfolioAccProfit = pnlMap[log.hourlySnapshotPrevId];
+  const pre: PortfolioAccProfit =
+    log.hourlySnapshotPrevId === -1 ? getStartProfit(cur) : pnlMap[log.hourlySnapshotPrevId];
   const ratio: ProfitAllocationRatio = ratioMap[log.allocationRatioId];
 
   return (
