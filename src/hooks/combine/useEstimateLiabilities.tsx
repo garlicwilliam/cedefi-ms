@@ -30,14 +30,30 @@ export function useEstimateLiabilities(
 
   //
   return useMemo(() => {
-    const platformProfit: SldDecimal = toDecimal(platform?.accProfit || '0');
+    // 平台累计收益
+    let platformProfit: SldDecimal = toDecimal(platform?.accProfit || '0');
+    if (platformProfit.lt(SldDecimal.ZERO)) {
+      platformProfit = SldDecimal.ZERO;
+    }
+
+    // 各团队存留的收益
     const teamProfit: SldDecimal = Array.from(teams.entries()).reduce(
       (acc: SldDecimal, entry: [number, TeamProfits]) => {
-        return toDecimal(entry[1].totalAccProfit.toString()).add(acc);
+        const profit = toDecimal(entry[1].totalAccProfit.toString());
+        if (profit.gtZero()) {
+          return profit.add(acc);
+        }
+        return acc;
       },
       SldDecimal.ZERO,
     );
-    const noTeamProfit: SldDecimal = toDecimal(noTeam.totalAccProfit.toString());
+
+    // 无团队关联的投资组合累计收益
+    let noTeamProfit: SldDecimal = toDecimal(noTeam.totalAccProfit.toString());
+    if (noTeamProfit.lt(SldDecimal.ZERO)) {
+      noTeamProfit = SldDecimal.ZERO;
+    }
+
     const allReserved: SldDecimal = platformProfit.add(teamProfit).add(noTeamProfit);
 
     //

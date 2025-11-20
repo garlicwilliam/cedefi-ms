@@ -98,7 +98,7 @@ export const TopCards = () => {
 
   // 负债计算
   const { snapshotAt: liaTime } = useLatestSnapshotAt();
-  const { liabilities, allReserved, expectedBalance, totalAsset, time } = useLiabilities(liaTime);
+  const { liabilities, allReserved, expectedBalance, totalAsset } = useLiabilities(liaTime);
 
   return (
     <div className={styleMr(styles.cards)}>
