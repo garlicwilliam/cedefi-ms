@@ -15,6 +15,9 @@ import { AbiWithdrawController } from '../../const/abis/WithdrawController.ts';
 import { LoadingOutlined } from '@ant-design/icons';
 import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
 import { NumberValue } from '../../components/value/NumberValue.tsx';
+import { RepayCell } from '../../components/request-order/RepayCell.tsx';
+import { RepayModal } from '../../components/request-order/RepayModal.tsx';
+import { useCallback, useState } from 'react';
 
 function computeRequestOrderStatistics(orders: RequestOrder[]) {
   const groups = orders.reduce(
@@ -49,6 +52,7 @@ function computeRequestOrderStatistics(orders: RequestOrder[]) {
 }
 
 export const Rounds = () => {
+  const [repayModal, setRepayModal] = useState<number | null>(null);
   const { tableProps, tableQuery } = useTable({ resource: 'withdrawRounds', dataProviderName: 'graph' });
   const lpAsset: Asset | undefined = useLp();
   const styleMr: StyleMerger = useStyleMr(styles);
@@ -57,14 +61,18 @@ export const Rounds = () => {
   const { refresh } = useMultiTimesCall(tableQuery.refetch);
   const { mutate, isDisabled } = useCallContractState(refresh);
 
-  const onRollNext = () => {
+  const onRollNext = useCallback(() => {
     mutate({
       abi: AbiWithdrawController,
       function: 'markAsProcessingComplete',
       address: DEPLOYED_CONTRACTS.ADDR_WITHDRAW,
       args: [],
     });
-  };
+  }, [mutate]);
+
+  const onCloseModal = useCallback(() => {
+    setRepayModal(null);
+  }, []);
 
   return (
     <List
@@ -211,11 +219,13 @@ export const Rounds = () => {
         <Table.Column
           dataIndex={'id'}
           title={'实际转账'}
-          render={() => {
-            return '待开发';
+          render={(id) => {
+            return <RepayCell roundId={id} onEdit={setRepayModal} />;
           }}
         />
       </Table>
+
+      <RepayModal roundId={repayModal} onClose={onCloseModal} />
     </List>
   );
 };

@@ -1,5 +1,5 @@
 import { Modal } from 'antd';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AssetCutOffPrice, RequestOrder, RequestOrderStatus } from '../../service/types.ts';
 import { Action, ActionNames } from './action.types.tsx';
 import { ValueItem } from './ValueItem.tsx';
@@ -80,22 +80,34 @@ function useSettleAssets(assetsLp: Record<string, SldDecimal>, price: AssetCutOf
   }, [assetsLp, price]);
 }
 
-export const ActionModal = ({
-  isOpen,
-  onClose,
-  onConfirm,
-  checkedOrders,
-  checkedStatus,
-  action,
-  currentOrders,
-}: ActionModalProps) => {
-  const styleMr: StyleMerger = useStyleMr(styles);
+function useLockedAssets(checkedOrders: Set<string>, curOrders: RequestOrder[]): Record<string, SldDecimal> {
+  return useMemo(() => {
+    const orders: RequestOrder[] = curOrders.filter((one) => checkedOrders.has(one.id));
+    const res = {} as Record<string, SldDecimal>;
+    orders.forEach((order) => {
+      const amount: SldDecimal = SldDecimal.fromOrigin(BigInt(order.assetAmount), 18);
+      const asset: string = order.requestAsset.symbol;
+
+      res[asset] = (res[asset] || SldDecimal.ZERO).add(amount);
+    });
+
+    return res;
+  }, [curOrders, checkedOrders]);
+}
+
+type ProcessingItemsProps = {
+  checkedOrders: Set<string>;
+  currentOrders: RequestOrder[];
+  selectedPriceIdx?: (idx: number) => void;
+};
+
+function ProcessingItems({ checkedOrders, currentOrders, selectedPriceIdx }: ProcessingItemsProps) {
+  const styleMr = useStyleMr(styles);
   const [priceIdx, setPriceIdx] = useState<number>(0);
   const [usedPrice, setUsedPrice] = useState<AssetCutOffPrice | null>(null);
   const { map: assetMap } = useAssets();
   const { lps, assetsLp } = useLps(checkedOrders, currentOrders);
   const assetsAmount = useSettleAssets(assetsLp, usedPrice);
-
   const processingLps: { amount: SldDecimal; rate: SldDecimal } | null = useMemo(() => {
     if (!usedPrice || !lps || lps.isZero() || usedPrice.assets[lpAddress] == null) {
       return null;
@@ -108,18 +120,115 @@ export const ActionModal = ({
   }, [lps, usedPrice]);
   const { liabilities, time: estTime } = useEstimateLiabilities(null, processingLps);
 
-  const onOk = useCallback(() => {
-    if (onConfirm && action && checkedOrders && checkedOrders.size > 0) {
-      onConfirm(action!, checkedOrders, priceIdx);
+  useEffect(() => {
+    if (selectedPriceIdx) {
+      selectedPriceIdx(priceIdx);
     }
-  }, [onConfirm, action, checkedOrders, priceIdx]);
+  }, [priceIdx, selectedPriceIdx]);
 
   const onSelectPrice = useCallback((idx: number, price: AssetCutOffPrice) => {
     setPriceIdx(idx);
     setUsedPrice(price);
   }, []);
 
+  return (
+    <>
+      <ValueItem
+        className={styleMr(styles.modalItem)}
+        labelClassName={styleMr(styles.modalLabel)}
+        valueClassName={styleMr(styles.modalValue)}
+        label={'结算价格'}
+        value={<SelectCutOffPrices onSelect={onSelectPrice} />}
+      />
+      <ValueItem
+        className={styleMr(styles.modalItem)}
+        labelClassName={styleMr(styles.modalLabel)}
+        valueClassName={styleMr(styles.modalValue)}
+        label={'预估负债'}
+        value={
+          <>
+            <NumberValue>{liabilities.format({ sign: true })} USD</NumberValue>
+            {estTime ? ` (基于 ${formatDatetime(estTime)} 快照数据)` : ''}
+          </>
+        }
+      />
+      <ValueItem
+        className={styleMr(styles.modalItem, styles.top)}
+        labelClassName={styleMr(styles.modalLabel)}
+        valueClassName={styleMr(styles.modalValue)}
+        label={'结算金额'}
+        value={
+          <>
+            {Object.keys(assetsAmount).map((assetId) => {
+              const asset = assetMap.get(assetId)!;
+              return (
+                <div key={assetId}>
+                  <NumberValue>
+                    {asset.symbol}: {assetsAmount[assetId].format({ fix: 6, ceil: true })}
+                  </NumberValue>
+                </div>
+              );
+            })}
+          </>
+        }
+      />
+    </>
+  );
+}
+
+type ProcessedItemsProps = {
+  checkedOrders: Set<string>;
+  currentOrders: RequestOrder[];
+};
+function ProcessedItems({ checkedOrders, currentOrders }: ProcessedItemsProps) {
+  const styleMr = useStyleMr(styles);
+  const assets = useLockedAssets(checkedOrders, currentOrders);
+
+  return (
+    <>
+      <ValueItem
+        className={styleMr(styles.modalItem, styles.top)}
+        labelClassName={styleMr(styles.modalLabel)}
+        valueClassName={styleMr(styles.modalValue)}
+        label={'结算金额'}
+        value={
+          <div>
+            {Object.keys(assets).map((symbol: string) => {
+              return (
+                <div>
+                  <NumberValue>{`${symbol}: ${assets[symbol].format({ fix: 6 })}`}</NumberValue>
+                </div>
+              );
+            })}
+          </div>
+        }
+      />
+    </>
+  );
+}
+
+export const ActionModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  checkedOrders,
+  checkedStatus,
+  action,
+  currentOrders,
+}: ActionModalProps) => {
+  const styleMr: StyleMerger = useStyleMr(styles);
+  const [priceIdx, setPriceIdx] = useState<number>(0);
+
+  //
+  const onOk = useCallback(() => {
+    if (onConfirm && action && checkedOrders && checkedOrders.size > 0) {
+      onConfirm(action!, checkedOrders, priceIdx);
+    }
+  }, [onConfirm, action, checkedOrders, priceIdx]);
+
+  //
   const needPrice = action === Action.Processing;
+  const needAmount = action === Action.Processed;
 
   return (
     <Modal
@@ -151,49 +260,16 @@ export const ActionModal = ({
           label={'执行操作'}
           value={action ? ActionNames[action] : ''}
         />
+
         {needPrice && (
-          <>
-            <ValueItem
-              className={styleMr(styles.modalItem)}
-              labelClassName={styleMr(styles.modalLabel)}
-              valueClassName={styleMr(styles.modalValue)}
-              label={'结算价格'}
-              value={<SelectCutOffPrices onSelect={onSelectPrice} />}
-            />
-            <ValueItem
-              className={styleMr(styles.modalItem)}
-              labelClassName={styleMr(styles.modalLabel)}
-              valueClassName={styleMr(styles.modalValue)}
-              label={'预估负债'}
-              value={
-                <>
-                  <NumberValue>{liabilities.format({ sign: true })} USD</NumberValue>
-                  {estTime ? ` (基于 ${formatDatetime(estTime)} 快照数据)` : ''}
-                </>
-              }
-            />
-            <ValueItem
-              className={styleMr(styles.modalItem)}
-              labelClassName={styleMr(styles.modalLabel)}
-              valueClassName={styleMr(styles.modalValue)}
-              label={'结算金额'}
-              value={
-                <>
-                  {Object.keys(assetsAmount).map((assetId) => {
-                    const asset = assetMap.get(assetId)!;
-                    return (
-                      <div>
-                        <NumberValue>
-                          {asset.symbol}: {assetsAmount[assetId].format({ fix: 6, ceil: true })}
-                        </NumberValue>
-                      </div>
-                    );
-                  })}
-                </>
-              }
-            />
-          </>
+          <ProcessingItems
+            checkedOrders={checkedOrders}
+            currentOrders={currentOrders}
+            selectedPriceIdx={setPriceIdx}
+          />
         )}
+
+        {needAmount && <ProcessedItems checkedOrders={checkedOrders} currentOrders={currentOrders} />}
       </div>
     </Modal>
   );

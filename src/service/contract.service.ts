@@ -64,7 +64,7 @@ function getValidCutOffIndex(validCutOffLength: number): Observable<{ time: numb
       {
         abi: AbiParamRegistry,
         address: DEPLOYED_CONTRACTS.ADDR_PARAMS,
-        functionName: 'PRICE_MAX_VALIDITY_DURATION',
+        functionName: 'getPriceValidityDuration',
         args: [],
       },
     ],
@@ -164,7 +164,7 @@ function getCutOffPrices(
 }
 
 export function getCutOffPricesByLength(
-  testLength: number,
+  testLength: number, // array length
   assets: string[],
 ): Observable<AssetCutOffPrice[]> {
   return testCutOffPriceLength(testLength).pipe(

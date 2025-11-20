@@ -262,3 +262,13 @@ export type ProfitAllocationRatio = {
   createdAt: number;
   createdBy: number;
 };
+
+export type AssetRepay = {
+  id: number;
+  timestamp: number;
+  hash: string;
+  asset: string;
+  assetSymbol: string;
+  assetAmount: string;
+  roundId: number | null;
+};

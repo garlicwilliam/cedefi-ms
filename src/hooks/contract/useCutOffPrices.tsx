@@ -20,6 +20,7 @@ export function useCutOffPrices() {
       const sub = getCutOffPricesByLength(counter, addresses)
         .pipe(
           tap((prices) => {
+            console.log('prices', prices);
             if (prices.length > 0) {
               setCutOffPrices(prices);
             }

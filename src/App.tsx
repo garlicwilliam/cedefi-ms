@@ -323,7 +323,7 @@ const RESOURCES = [
   {
     name: 'redeem_view',
     meta: {
-      label: '赎回',
+      label: '赎回管理',
       icon: <LinkOutlined />,
     },
   },
@@ -551,6 +551,9 @@ const RESOURCES = [
       label: '黑名单',
       canEdit: false,
     },
+  },
+  {
+    name: 'asset_repay',
   },
 ];
 
