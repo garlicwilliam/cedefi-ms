@@ -57,8 +57,13 @@ export const OrderItem = ({ order, onCheck, curChecked }: OrderItemProps) => {
           label={'申请资产'}
           value={
             <NumberValue>
-              <span className={styleMr(styles.highlight2)}>{formatBigDec(order.assetAmount, 6)}</span>{' '}
-              {order.requestAsset.symbol}
+              {order.assetAmount !== '0' && (
+                <>
+                  <span className={styleMr(styles.highlight2)}>{formatBigDec(order.assetAmount, 6)}</span>
+                  &nbsp;
+                </>
+              )}
+              {`${order.requestAsset.symbol}`}
             </NumberValue>
           }
         />

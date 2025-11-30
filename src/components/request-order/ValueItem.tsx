@@ -10,7 +10,7 @@ export type ValueItemProps = {
 export const ValueItem = ({ label, value, className, labelClassName, valueClassName }: ValueItemProps) => {
   return (
     <div className={className}>
-      <span className={labelClassName}>{label} :</span>
+      <span className={labelClassName}>{label}:&nbsp;&nbsp;</span>
       <span className={valueClassName}>{value}</span>
     </div>
   );
