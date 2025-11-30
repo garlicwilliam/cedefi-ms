@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Card } from 'antd';
+import { useSmall } from '../../hooks/useSmall.tsx';
 
 export type IndexCardProps = {
   title: ReactNode;
@@ -10,8 +11,10 @@ export type IndexCardProps = {
 };
 
 export const IndexCard = ({ title, value, isLoading, actions, children }: IndexCardProps) => {
+  const isSmall: boolean = useSmall();
+
   return (
-    <Card loading={isLoading} actions={actions}>
+    <Card size={isSmall ? 'small' : 'default'} loading={isLoading} actions={actions}>
       <Card.Meta title={title} description={value}></Card.Meta>
       {children}
     </Card>

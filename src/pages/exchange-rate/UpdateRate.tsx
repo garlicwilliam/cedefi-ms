@@ -16,7 +16,7 @@ export const UpdateRate = () => {
   const hasExecute: boolean = priceExecute.length > 0;
 
   return (
-    <div>
+    <div style={{ paddingBottom: '30px' }}>
       <Typography.Title level={4}>
         ExchangeRate上链 {isPending && <Spin indicator={<LoadingOutlined spin />} size="default" />}
       </Typography.Title>

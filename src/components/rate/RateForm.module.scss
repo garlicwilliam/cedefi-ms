@@ -13,7 +13,6 @@
     width: 100%;
 
     .box {
-      position: absolute;
       top: 0;
       left: 0;
       display: grid;
@@ -28,6 +27,7 @@
       }
 
       &.hide {
+        position: absolute;
         visibility: hidden;
       }
     }

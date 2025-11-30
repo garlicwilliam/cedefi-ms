@@ -6,11 +6,13 @@ import { Typography } from 'antd';
 import { SldDecimal } from '../../util/decimal.ts';
 import { DepositAssetAccount, WithdrawAssetAccount } from '../../service/subgraph.service.ts';
 import { E18 } from '../../util/big-number.ts';
+import { useSmall } from '../../hooks/useSmall.tsx';
 
 const { Title } = Typography;
 
 export const ChainData = () => {
   const styleMr = useStyleMr(styles);
+  const isSmall = useSmall();
   const { statistic } = useStatistics();
   const { accDeposit, accWithdrawal, lpActive, lpPrice, lpLocked, lpLockedUsdValue, accounts, deposits } =
     statistic || {};
@@ -23,14 +25,14 @@ export const ChainData = () => {
   const processed = accounts?.map((account) => {
     return {
       label: account.asset.symbol,
-      children:
-        account.accProcessedAmount.format({ fix: 2 }) +
-        ' (≈' +
-        account.accProcessedUsdVal.format({ fix: 2 }) +
-        ' USD)',
+      children: (
+        <>
+          {account.accProcessedAmount.format({ fix: 2 })} {isSmall && <br />}
+          (≈ {account.accProcessedUsdVal.format({ fix: 2 })} USD)
+        </>
+      ),
     };
   });
-
   const forfeited = accounts?.map((account) => {
     return {
       label: account.asset.symbol,
@@ -41,26 +43,27 @@ export const ChainData = () => {
         ' USD)',
     };
   });
-
   const balances = accounts?.map((account) => {
     return {
       label: account.asset.symbol,
       children: `待取：${account.requiredAmount.format({ fix: 2 })}  / 可用：${account.realAmount.format({ fix: 2 })} `,
     };
   });
-
   const allRequired: SldDecimal =
     accounts
       ?.map((account: WithdrawAssetAccount): SldDecimal => account.requiredUsdVal)
       .reduce((a: SldDecimal, b: SldDecimal): SldDecimal => a.add(b), SldDecimal.ZERO) || SldDecimal.ZERO;
-
   const depositTokens = deposits?.map((account: DepositAssetAccount) => {
     return {
       label: account.asset.symbol,
-      children: `${account.accDepositedAmount.format({ fix: 2 })} (≈${account.accDepositedUsdVal.format({ fix: 2 })} USD)`,
+      children: (
+        <>
+          {account.accDepositedAmount.format({ fix: 2 })} {isSmall && <br />}(≈
+          {account.accDepositedUsdVal.format({ fix: 2 })} USD)
+        </>
+      ),
     };
   });
-
   const out = [
     {
       key: '2',
@@ -76,7 +79,6 @@ export const ChainData = () => {
     },
     ...(forfeited || []),
   ];
-
   const claim = [
     {
       label: '待用户提取(USD)',
@@ -84,7 +86,6 @@ export const ChainData = () => {
     },
     ...(balances || []),
   ];
-
   // 累计存入
   const deposit = [
     {
@@ -105,7 +106,12 @@ export const ChainData = () => {
     },
     {
       label: '流通LP数量',
-      children: (lpActive?.format({ fix: 2 }) || '0.00') + ` (≈${activeLpValue?.format({ fix: 2 })} USD)`,
+      children: (
+        <>
+          {lpActive?.format({ fix: 2 }) || '0.00'} {isSmall && <br />}
+          (≈{activeLpValue?.format({ fix: 2 })} USD)
+        </>
+      ),
     },
     {
       label: '锁定LP数量',

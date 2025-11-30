@@ -9,6 +9,10 @@
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   column-gap: 16px;
   row-gap: 16px;
+
+  &.small {
+    grid-template-columns: 1fr;
+  }
 }
 .vDesc {
   padding-top: 24px;
@@ -37,9 +41,18 @@
   column-gap: 16px;
   row-gap: 16px;
 
+  &.small {
+    grid-template-columns: 1fr;
+  }
+
   .processCard {
     display: grid;
     grid-template-columns: 1fr 1fr;
+
+    &.small {
+      grid-template-columns: 1fr;
+      grid-row-gap: 30px;
+    }
   }
 }
 
