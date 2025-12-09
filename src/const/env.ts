@@ -1,4 +1,4 @@
-import { mainnet, sepolia } from 'wagmi/chains';
+import { mainnet } from 'wagmi/chains';
 import { SAFE_SERVICE_URLS, SupportedChainIDsType, SupportedChainType } from './chain-rpc.ts';
 
 type ConfigType = {
@@ -48,17 +48,15 @@ const CONTRACTS_CONFIG: { [k in ENV]: ConfigType } = {
   },
 };
 
-// 统一版本，SubQuery会根据两个部署版本的indexing状态选择最快的那个
+// 统一版本，SubQuery会根据多个部署版本的indexing状态选择最快的那个
 export const SUBQUERY_URL_CONFIG: { [k in ENV]: string } = {
   [ENV.Test]: 'https://gateway.thegraph.com/api/subgraphs/id/2mmjQrxDdLJa3AeWJHm5dZtyg6PzXvJJaPPnjB6vzbPX',
   [ENV.Prod]: 'https://gateway.thegraph.com/api/subgraphs/id/2mmjQrxDdLJa3AeWJHm5dZtyg6PzXvJJaPPnjB6vzbPX',
 };
 // 最新版本，有最新的数据结构，已经修正了旧版本的错误，但是可能会延迟
 export const SUBQUERY_ST_URL_CONFIG: { [k in ENV]: string } = {
-  [ENV.Test]:
-    'https://gateway.thegraph.com/api/deployments/id/QmQFtxpmyVNn5QDPe4t8jfcAfd94znDAsLZC6hLMwVYiAL',
-  [ENV.Prod]:
-    'https://gateway.thegraph.com/api/deployments/id/QmQFtxpmyVNn5QDPe4t8jfcAfd94znDAsLZC6hLMwVYiAL',
+  [ENV.Test]: 'https://gateway.thegraph.com/api/subgraphs/id/2mmjQrxDdLJa3AeWJHm5dZtyg6PzXvJJaPPnjB6vzbPX',
+  [ENV.Prod]: 'https://gateway.thegraph.com/api/subgraphs/id/2mmjQrxDdLJa3AeWJHm5dZtyg6PzXvJJaPPnjB6vzbPX',
 };
 
 const REST_API_CONFIG: { [k in ENV]: string } = {

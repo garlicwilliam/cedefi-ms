@@ -1,11 +1,19 @@
 import Safe from '@safe-global/protocol-kit';
 import { filter, from, Observable, startWith, switchMap, take, takeWhile, timer } from 'rxjs';
-import { MetaTransactionData, SafeTransaction, SafeMultisigTransactionResponse } from '@safe-global/types-kit';
+import {
+  MetaTransactionData,
+  SafeTransaction,
+  SafeMultisigTransactionResponse,
+} from '@safe-global/types-kit';
 import SafeApiKit from '@safe-global/api-kit';
-import { DEPLOYED_NETWORK, SAFE_TX_SERVICE_URL } from '../const/env.ts';
+import { DEPLOYED_NETWORK } from '../const/env.ts';
 import { map } from 'rxjs/operators';
+import { SAFE_WALLET_API_KEY } from '../const/const.ts';
 
-const safeTxService: SafeApiKit = new SafeApiKit({ chainId: BigInt(DEPLOYED_NETWORK.id), txServiceUrl: SAFE_TX_SERVICE_URL });
+const safeTxService: SafeApiKit = new SafeApiKit({
+  chainId: BigInt(DEPLOYED_NETWORK.id),
+  apiKey: SAFE_WALLET_API_KEY,
+});
 
 export function initSafeClient(provider: any, safeAccount: `0x${string}`): Observable<Safe> {
   return from(Safe.init({ provider: provider, safeAddress: safeAccount }));

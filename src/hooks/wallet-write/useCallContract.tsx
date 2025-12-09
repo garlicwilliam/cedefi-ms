@@ -24,7 +24,8 @@ import { useSetAtom } from 'jotai';
 import { S } from '../../state/global.ts';
 import { App as AntdApp } from 'antd';
 import { parseErrorMessage } from '../../util/error.ts';
-import { DEPLOYED_NETWORK, SAFE_TX_SERVICE_URL } from '../../const/env.ts';
+import { DEPLOYED_NETWORK } from '../../const/env.ts';
+import { SAFE_WALLET_API_KEY } from '../../const/const.ts';
 
 export type UseWriteParamType = {
   abi: Abi;
@@ -99,7 +100,7 @@ function useWriteByEOA(): UseWriteResultType {
 
 const safeTxService: SafeApiKit = new SafeApiKit({
   chainId: BigInt(DEPLOYED_NETWORK.id),
-  txServiceUrl: SAFE_TX_SERVICE_URL,
+  apiKey: SAFE_WALLET_API_KEY,
 });
 
 function useWriteBySafe(params: UseWriteBySafeParamType) {
