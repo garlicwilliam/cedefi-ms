@@ -28,14 +28,11 @@ export type DepositAssetAccount = {
 type StatisticResponseData = {
   lpSupply: {
     id: string;
-    lpAccBurned: string;
     lpAccDestroyed: string;
     lpAccForfeited: string;
-    lpAccMinted: string;
     lpAccProcessed: string;
     lpActive: string;
     lpLocked: string;
-    lpSupply: string;
     updatedAt: string;
     usdValLocked: string;
   };
@@ -79,14 +76,11 @@ type StatisticResponseData = {
 };
 type StatisticResponseData2 = {
   lpSupplySnapshots: {
-    lpAccBurned: string;
     lpAccDestroyed: string;
     lpAccForfeited: string;
-    lpAccMinted: string;
     lpAccProcessed: string;
     lpActive: string;
     lpLocked: string;
-    lpSupply: string;
     usdValLocked: string;
     snapshotAt: string;
   }[];
@@ -161,14 +155,11 @@ export class SubgraphService {
         }
         lpSupply(id: "1") {
           id
-          lpAccBurned
           lpAccDestroyed
           lpAccForfeited
-          lpAccMinted
           lpAccProcessed
           lpActive
           lpLocked
-          lpSupply
           updatedAt
           usdValLocked
         }
@@ -299,14 +290,11 @@ export class SubgraphService {
         lpSupplySnapshots(
           where: { snapshotAt: "${snapshotAt}" }
         ) {
-          lpAccBurned
           lpAccDestroyed
           lpAccForfeited
-          lpAccMinted
           lpAccProcessed
           lpActive
           lpLocked
-          lpSupply
           usdValLocked
           snapshotAt
         }

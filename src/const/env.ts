@@ -55,8 +55,10 @@ export const SUBQUERY_URL_CONFIG: { [k in ENV]: string } = {
 };
 // 最新版本，有最新的数据结构，已经修正了旧版本的错误，但是可能会延迟
 export const SUBQUERY_ST_URL_CONFIG: { [k in ENV]: string } = {
-  [ENV.Test]: 'https://gateway.thegraph.com/api/subgraphs/id/2mmjQrxDdLJa3AeWJHm5dZtyg6PzXvJJaPPnjB6vzbPX',
-  [ENV.Prod]: 'https://gateway.thegraph.com/api/subgraphs/id/2mmjQrxDdLJa3AeWJHm5dZtyg6PzXvJJaPPnjB6vzbPX',
+  [ENV.Test]:
+    'https://gateway.thegraph.com/api/deployments/id/Qmaa6vSguLLSAgy4xV59mgMMRuscTDbDgNM9nTYUz8n9XR',
+  [ENV.Prod]:
+    'https://gateway.thegraph.com/api/deployments/id/Qmaa6vSguLLSAgy4xV59mgMMRuscTDbDgNM9nTYUz8n9XR',
 };
 
 const REST_API_CONFIG: { [k in ENV]: string } = {
