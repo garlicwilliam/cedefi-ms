@@ -110,7 +110,7 @@ export const TopCards = () => {
           value={
             <div>
               <span className={styleMr(styles.secondaryText)}>1 LP = </span>
-              <DecimalValue value={rate} fix={4} noneStr={''} />{' '}
+              <DecimalValue value={rate} fix={6} noneStr={''} />{' '}
               <span className={styleMr(styles.secondaryText)}>USD</span>
             </div>
           }
