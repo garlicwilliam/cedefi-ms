@@ -261,30 +261,10 @@ export const restProvider = (
     return apiUrl;
   },
 
-  custom: async ({ url, method, filters, sorters, payload, query, headers }) => {
+  custom: async ({ url, method, payload, query, headers }) => {
     let requestUrl = `${url}`;
 
     let queryArgs: { [k: string]: string } = {};
-
-    if (sorters) {
-      const generatedSort = generateSort(sorters);
-      if (generatedSort) {
-        const { _sort, _order } = generatedSort;
-
-        const sortQuery = {
-          orderBy: _sort.join(','),
-          dir: _order.join(','),
-        };
-
-        queryArgs = { ...queryArgs, ...sortQuery };
-      }
-    }
-
-    if (filters) {
-      const filterQuery = generateFilter(filters);
-
-      queryArgs = { ...queryArgs, ...filterQuery };
-    }
 
     if (query) {
       queryArgs = { ...queryArgs, ...query };
@@ -311,7 +291,6 @@ export const restProvider = (
         request = httpGet(requestUrl, {
           header: {
             ...headers,
-            Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN_STORAGE_NAME)}`,
           },
         });
         break;
@@ -319,10 +298,10 @@ export const restProvider = (
 
     const { data } = await firstValueFrom(
       request.pipe(
-        map((res: HttpResponse<RestResponseBody>) => {
-          if (isStatusOK(res.status) && res.body.isOK) {
+        map((res: HttpResponse<any>) => {
+          if (isStatusOK(res.status)) {
             return {
-              data: res.body.data.list || res.body.data.obj,
+              data: res.body,
             };
           }
 

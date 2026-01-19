@@ -99,6 +99,7 @@ import LogsSvg from './icons/logs.svg?react';
 import { PaybackPage } from './pages/onchain-opts/payback.tsx';
 import { PortfolioProfitList } from './pages/snapshots/list-portfolio-profit.tsx';
 import { AllocationLogs } from './pages/snapshots/list-allocation-logs.tsx';
+import { Charts } from './pages/charts';
 
 const RESOURCES = [
   {
@@ -620,6 +621,7 @@ function App() {
                         >
                           <Route index element={<Navigate to={'/dashboard'} />} />
                           <Route path="/dashboard" element={<Dashboard />} />
+                          <Route path="/charts" element={<Charts />} />
                           <Route path={'/users'}>
                             <Route index element={<AdminList />} />
                             <Route path={'show/:id'} element={<ShowAdmin />} />

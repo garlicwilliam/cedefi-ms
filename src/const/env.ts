@@ -66,6 +66,11 @@ const REST_API_CONFIG: { [k in ENV]: string } = {
   [ENV.Prod]: 'https://cedefiapi.stakestone.io/api',
 };
 
+const STONEUSD_API_CONFIG: { [k in ENV]: string } = {
+  [ENV.Test]: 'https://api.stakestone.io/stoneusd',
+  [ENV.Prod]: 'https://api.stakestone.io/stoneusd',
+};
+
 // ------------------------------------------------------------------------------------
 
 export const CURRENT_ENV: ENV = ENV.Prod;
@@ -75,4 +80,5 @@ export const DEPLOYED_CONTRACTS: ConfigType = CONTRACTS_CONFIG[CURRENT_ENV];
 export const SUBQUERY_URL: string = SUBQUERY_URL_CONFIG[CURRENT_ENV];
 export const SUBQUERY_ST_URL: string = SUBQUERY_ST_URL_CONFIG[CURRENT_ENV];
 export const REST_API: string = REST_API_CONFIG[CURRENT_ENV];
+export const STONEUSD_API: string = STONEUSD_API_CONFIG[CURRENT_ENV];
 export const SAFE_TX_SERVICE_URL: string = SAFE_SERVICE_URLS[DEPLOYED_NETWORK.id as SupportedChainIDsType];

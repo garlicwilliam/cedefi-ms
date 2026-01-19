@@ -36,6 +36,20 @@ export function formatDateHour(seconds: number): string {
   return `${yy}-${mm}-${dd} ${hh}:${min}`;
 }
 
+export function formatDate(seconds: number): string {
+  if (seconds === 0) {
+    return 'N/A';
+  }
+
+  const date: Date = new Date(seconds * 1000);
+
+  const yy = date.getFullYear();
+  const mm = padTimeStr(date.getMonth() + 1);
+  const dd = padTimeStr(date.getDate());
+
+  return `${yy}-${mm}-${dd}`;
+}
+
 export function timestamp(date: Date): number {
   return Math.floor(date.getTime() / 1000);
 }
@@ -89,4 +103,8 @@ export function timeAgo(time: number): { day: number; hour: number; minute: numb
   const minute = Math.floor(diff / 60);
 
   return { day, hour, minute };
+}
+
+export function now(): number {
+  return Math.floor(Date.now() / 1000);
 }
