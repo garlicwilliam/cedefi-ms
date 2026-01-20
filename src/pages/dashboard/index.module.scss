@@ -70,3 +70,23 @@
     font-family: monospace;
   }
 }
+
+.multiItems {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.verticalItem {
+  display: grid;
+  justify-items: center;
+
+  .label {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+
+  .value {
+    font-size: 30px;
+    line-height: 84px;
+  }
+}

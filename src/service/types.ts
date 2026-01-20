@@ -272,3 +272,19 @@ export type AssetRepay = {
   assetAmount: string;
   roundId: number | null;
 };
+
+export type ApyAllDataItem = {
+  dayIndex: number;
+  timestamp: string;
+  copy: boolean;
+  exchangeRate: string;
+  apyFull: string;
+  apyD7: string;
+  apyD14: string;
+  apyD30: string;
+  apyD60: string;
+  apyD90: string;
+  apyD180: string;
+  apyD365: string;
+  apyRealized: string;
+};

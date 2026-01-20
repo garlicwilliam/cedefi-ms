@@ -1,60 +1,24 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import * as echarts from 'echarts';
 import type { ECharts, EChartsOption } from 'echarts';
-import { useCustom } from '@refinedev/core';
-import { STONEUSD_API } from '../../const/env.ts';
 import { SldDecimal, SldDecPercent } from '../../util/decimal.ts';
 import { useAtomValue } from 'jotai';
 import { S } from '../../state/global.ts';
-
-type ApyAllItem = {
-  dayIndex: number;
-  timestamp: string;
-  copy: boolean;
-  exchangeRate: string;
-  apyFull: string;
-  apyD7: string;
-  apyD14: string;
-  apyD30: string;
-  apyD60: string;
-  apyD90: string;
-  apyD180: string;
-  apyD365: string;
-  apyRealized: string;
-};
+import { useApyData } from '../../hooks/apy-data/useApyData.ts';
+import { ApyAllDataItem } from '../../service/types.ts';
 
 export const ApyOnChain = () => {
   const domRef = useRef<HTMLDivElement | null>(null);
   const chart = useRef<ECharts | null>(null);
   const isDark = useAtomValue(S.Theme.IsDark);
-
-  const {
-    result: { data },
-    query: { isLoading },
-  } = useCustom({
-    url: STONEUSD_API + '/apy_chart_all',
-    method: 'get',
-    config: {
-      query: {
-        start: 0,
-      },
-    },
-    queryOptions: {
-      enabled: true,
-    },
-  });
+  const { data: apyItems } = useApyData(0);
 
   const options = useMemo(() => {
-    if (!data) {
-      return null;
-    }
-
-    const apyItems: ApyAllItem[] = data.apyHistory as ApyAllItem[];
     if (!apyItems) {
       return null;
     }
 
-    const xDate: string[] = apyItems.map((item) => {
+    const xDate: string[] = apyItems.map((item: ApyAllDataItem) => {
       return new Date(Number(item.timestamp) * 1000).toLocaleDateString('en-US', {
         day: '2-digit',
         month: 'short',
@@ -183,7 +147,7 @@ export const ApyOnChain = () => {
     };
 
     return op;
-  }, [data, isDark]);
+  }, [apyItems, isDark]);
 
   useEffect(() => {
     if (chart.current === null && domRef.current !== null) {

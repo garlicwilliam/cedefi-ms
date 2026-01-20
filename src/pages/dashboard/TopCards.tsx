@@ -13,10 +13,12 @@ import { useMemo } from 'react';
 import { PercentValue } from '../../components/value/PercentValue.tsx';
 import { DecimalValue } from '../../components/value/DecimalValue.tsx';
 import { useLatestSnapshotAt } from '../../hooks/useLatestSnapshotAt.tsx';
-import { useList } from '@refinedev/core';
+import { useCustom, useList } from '@refinedev/core';
 import { Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { formatDatetime } from '../../util/time.ts';
+import { STONEUSD_API } from '../../const/env.ts';
+import { useLatestApyData } from '../../hooks/apy-data/useApyData.ts';
 
 function rate7DayApy(prices: Price[]): SldDecPercent {
   if (prices.length < 2) {
@@ -100,10 +102,22 @@ export const TopCards = () => {
   const { snapshotAt: liaTime } = useLatestSnapshotAt();
   const { liabilities, allReserved, expectedBalance, totalAsset } = useLiabilities(liaTime);
 
+  //
+  const { data: apyItem, isLoading: apyLoading } = useLatestApyData();
+  const { d14, periods } = useMemo(() => {
+    if (!apyItem) {
+      return { d14: null, periods: null };
+    }
+    const d14 = SldDecPercent.fromDecimal(SldDecimal.fromNumeric(apyItem.apyD14, 18));
+    const periods = SldDecPercent.fromDecimal(SldDecimal.fromNumeric(apyItem.apyRealized, 18));
+
+    return { d14, periods };
+  }, [apyItem]);
+
   return (
     <div className={styleMr(styles.cards)}>
       <IndexCard
-        title={<IndexCardTitle title={'今日RATE'} desc={'On Chain for User'} />}
+        title={<IndexCardTitle title={'今日RATE'} desc={'用户侧链上数据'} />}
         actions={[<IndexCardAction route={'/rate_history'} text={'更多'} />]}
       >
         <IndexCardValue
@@ -119,10 +133,23 @@ export const TopCards = () => {
       </IndexCard>
 
       <IndexCard
-        title={<IndexCardTitle title={'7日APY'} desc={'On Chain for User'} />}
-        actions={[<IndexCardAction route={'/rate_history'} text={'更多'} />]}
+        title={<IndexCardTitle title={'APY'} desc={'用户侧链上数据'} />}
+        actions={[<IndexCardAction route={'/charts'} text={'更多'} />]}
       >
-        <IndexCardValue value={<PercentValue value={rateApy} />} time={rateTime} />
+        <IndexCardValue
+          value={
+            <div className={styleMr(styles.multiItems)}>
+              <div className={styleMr(styles.verticalItem)}>
+                <div className={styleMr(styles.value)}>{d14?.percentFormat()}%</div>
+                <div className={styleMr(styles.label, styles.secondaryText)}>14 Days</div>
+              </div>
+              <div className={styleMr(styles.verticalItem)}>
+                <div className={styleMr(styles.value)}>{periods?.percentFormat()}%</div>
+                <div className={styleMr(styles.label, styles.secondaryText)}>Periods</div>
+              </div>
+            </div>
+          }
+        />
       </IndexCard>
 
       <IndexCard
