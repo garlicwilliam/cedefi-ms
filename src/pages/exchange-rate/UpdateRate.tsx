@@ -29,8 +29,8 @@ export const UpdateRate = () => {
           <RatePreview inputRate={inputRate} />
           <div>
             <ul>
-              <li>APY计算以天为时间单位</li>
-              <li>一天内多次更新Rate会取最后一次的数值覆盖前值</li>
+              <li>APY计算以天 (UTC) 为时间单位</li>
+              <li>一天 (UTC) 内多次更新Rate会取最后一次的数值覆盖前值</li>
             </ul>
           </div>
           <RateForm onDone={multiRefresh} onChange={setInputRate} />
