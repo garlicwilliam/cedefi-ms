@@ -2,7 +2,7 @@ import { InputNumber, Button, Checkbox, CheckboxChangeEvent } from 'antd';
 import { useStyleMr } from '../../hooks/useStyleMr.tsx';
 import { cssPick, StyleMerger } from '../../util/css.ts';
 import styles from './RateForm.module.scss';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useUpdatePriceCallData } from '../../hooks/contract/useUpdatePriceCallData.tsx';
 import { AbiNoDelayTimelockController } from '../../const/abis/NoDelayTimelockController.ts';
 import { ZERO_BYTES32 } from '../../const/contract.ts';
@@ -10,14 +10,16 @@ import { generatePrivateKey } from 'viem/accounts';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useCallContractState } from '../../hooks/wallet-write/useCallContract.tsx';
 import { DEPLOYED_CONTRACTS } from '../../const/env.ts';
-import { ExchangeRateValue } from './RateValue.tsx';
 import { useEstimateLiabilities } from '../../hooks/combine/useEstimateLiabilities.tsx';
 import { SldDecimal } from '../../util/decimal.ts';
 import { formatDatetime } from '../../util/time.ts';
 
-type RateFormProps = { onDone: () => void };
+type RateFormProps = {
+  onDone: () => void;
+  onChange?: (rate: number | undefined) => void;
+};
 
-export const RateForm = ({ onDone }: RateFormProps) => {
+export const RateForm = ({ onDone, onChange }: RateFormProps) => {
   const styleMr: StyleMerger = useStyleMr(styles);
   const [rate, setRate] = useState<number | null>(null);
   const [isCutOff, setCutOff] = useState<boolean>(true);
@@ -35,9 +37,15 @@ export const RateForm = ({ onDone }: RateFormProps) => {
   const { mutate, isDisabled } = useCallContractState(onDone);
 
   //
-  const rChange = (val: number | null): void => {
-    setRate(val);
-  };
+  const rChange = useCallback(
+    (val: number | null): void => {
+      setRate(val);
+      if (onChange) {
+        onChange(val || undefined);
+      }
+    },
+    [onChange],
+  );
   //
   const cChange = (e: CheckboxChangeEvent): void => {
     setCutOff(e.target.checked as boolean);
@@ -66,11 +74,6 @@ export const RateForm = ({ onDone }: RateFormProps) => {
 
   return (
     <div className={styleMr(styles.formArea)}>
-      {/* 可选ExchangeRate */}
-      <div className={styleMr(styles.rateValueSelect)}>
-        <ExchangeRateValue />
-      </div>
-
       <div className={styleMr(styles.inputArea)}>
         {/* 填表单 */}
         <div className={styleMr(styles.box, cssPick(confirmed, styles.hide))}>

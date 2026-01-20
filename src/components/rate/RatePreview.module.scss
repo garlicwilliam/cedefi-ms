@@ -1,0 +1,88 @@
+.preview {
+  display: grid;
+  grid-row-gap: 16px;
+  width: 700px;
+  padding: 16px;
+  border: 1px solid #999999;
+  border-radius: 16px;
+
+  .rows {
+    display: grid;
+    grid-template-columns: 120px 150px 100px 120px 120px;
+    padding: 0 16px;
+  }
+
+  // rows
+  .head {
+    font-size: 14px;
+    font-weight: bold;
+    color: #888888;
+
+    &.dark {
+      color: #bbbbbb;
+    }
+  }
+
+  // rows
+  .data {
+    font-size: 14px;
+    font-family: monospace, sans-serif;
+  }
+
+  .shot {
+    font-size: 14px;
+    font-family: monospace, sans-serif;
+    background-color: rgba(153, 153, 153, 0.3);
+    align-items: center;
+    border-radius: 8px;
+
+    .shotSelect {
+      width: 100%;
+      background-color: transparent;
+
+      :global {
+        .ant-select-selector {
+          background-color: transparent !important;
+          font-family: monospace, sans-serif;
+        }
+      }
+    }
+  }
+
+  .view {
+    font-size: 14px;
+    font-family: monospace, sans-serif;
+    background-color: rgba(153, 153, 153, 0.3);
+    align-items: center;
+    border-radius: 8px;
+    padding: 5px 16px;
+
+    .shotSelect {
+      width: 100%;
+    }
+  }
+
+  .time {
+    text-align: left;
+  }
+
+  .apy {
+    text-align: right;
+  }
+
+  .rate {
+    text-align: right;
+  }
+
+  .period {
+    text-align: right;
+  }
+}
+
+.shotSelectDropdown {
+  :global {
+    .ant-select-item-option-content {
+      font-family: monospace, sans-serif !important;
+    }
+  }
+}

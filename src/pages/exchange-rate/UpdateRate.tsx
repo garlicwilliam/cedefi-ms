@@ -7,10 +7,12 @@ import { useExchangeRateExecute } from '../../hooks/graph/useExchangeRateExecute
 import { RateConfirm } from '../../components/rate/RateConfirm.tsx';
 import { useMultiTimesCall } from '../../util/refresh.ts';
 import { LoadingOutlined } from '@ant-design/icons';
+import { RatePreview } from '../../components/rate/RatePreview.tsx';
+import { useState } from 'react';
 
 export const UpdateRate = () => {
   const styleMr: StyleMerger = useStyleMr(styles);
-
+  const [inputRate, setInputRate] = useState<number>();
   const { data: priceExecute, refresh } = useExchangeRateExecute();
   const { refresh: multiRefresh, isPending } = useMultiTimesCall(refresh);
   const hasExecute: boolean = priceExecute.length > 0;
@@ -24,7 +26,14 @@ export const UpdateRate = () => {
       {/* Form */}
       {!hasExecute && (
         <div className={styleMr(styles.form)}>
-          <RateForm onDone={multiRefresh} />
+          <RatePreview inputRate={inputRate} />
+          <div>
+            <ul>
+              <li>APY计算以天为时间单位</li>
+              <li>一天内多次更新Rate会取最后一次的数值覆盖前值</li>
+            </ul>
+          </div>
+          <RateForm onDone={multiRefresh} onChange={setInputRate} />
         </div>
       )}
 
