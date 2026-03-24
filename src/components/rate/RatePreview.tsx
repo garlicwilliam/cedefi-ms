@@ -48,7 +48,11 @@ export type RatePreviewProps = {
 
 export function RatePreview({ inputRate }: RatePreviewProps) {
   const [shotRate, setShotRate] = useState<number>();
-  const { base14DayRate, base14DayPeriod, apyHistory, period, periodBase } = useApyPreviewData(0);
+  const startDayIndex: number = useMemo(() => {
+    const startTime = Date.now() - 30 * 86400 * 1000;
+    return Math.floor(startTime / 86400 / 1000);
+  }, []);
+  const { base14DayRate, base14DayPeriod, apyHistory, period, periodBase } = useApyPreviewData(startDayIndex);
   const nowDate: Date = new Date(Math.floor(now() / 86400) * 86400 * 1000);
   const { shots, options } = useShotsOptions();
   const styleMr = useStyleMr(styles);
