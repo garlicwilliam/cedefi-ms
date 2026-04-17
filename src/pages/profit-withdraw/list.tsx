@@ -4,7 +4,6 @@ import { getFromType } from '../profit-reallocations/util.ts';
 import { useTeamMap } from '../../hooks/useTeamMap.tsx';
 import { usePortfolios } from '../../hooks/usePortfolios.tsx';
 import { formatDatetime } from '../../util/time.ts';
-import { useUsers } from '../../hooks/useUsers.tsx';
 import { shortHex } from '../../util/string.ts';
 import { CHAIN_EXPLORER_TX, CHAIN_ICON, SupportedChainIDsType } from '../../const/chain-rpc.ts';
 import { ExportOutlined } from '@ant-design/icons';
@@ -21,7 +20,6 @@ export const ProfitWithdrawList = () => {
 
   const { map: teamMap } = useTeamMap();
   const { map: portfolioMap } = usePortfolios();
-  const { map: userMap } = useUsers();
   const { map: opMap } = useOperators();
 
   return (
@@ -78,14 +76,16 @@ export const ProfitWithdrawList = () => {
         <Table.Column
           dataIndex={'usdValue'}
           title={'转账金额'}
+          align={'right'}
           render={(usd, row) => {
-            return `${row.assetsAmount} ${row.assets} = $${usd}`;
+            return <div>{`${row.assetsAmount} ${row.assets} = ${usd} $`}</div>;
           }}
         />
 
         <Table.Column
           dataIndex="createdAt"
           title={'提交时间'}
+          align={'right'}
           render={(time) => {
             return formatDatetime(time);
           }}
@@ -97,6 +97,7 @@ export const ProfitWithdrawList = () => {
         <Table.Column
           dataIndex={'createdBy'}
           title={'记录人'}
+          align={'right'}
           render={(uid) => {
             return opMap.get(uid)?.name || uid;
           }}

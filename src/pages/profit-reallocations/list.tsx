@@ -25,7 +25,11 @@ export const ProfitReallocationList = () => {
           dataIndex="from"
           title={'From'}
           render={(from, row) => {
-            return getFromType(from, row.fromPortfolioId, teamMap, portfolioMap);
+            return (
+              <div style={{ maxWidth: '150px' }}>
+                {getFromType(from, row.fromPortfolioId, teamMap, portfolioMap)}
+              </div>
+            );
           }}
           filters={FilterTypes}
         />
@@ -43,6 +47,13 @@ export const ProfitReallocationList = () => {
         />
         <Table.Column dataIndex="usdValue" title={'金额(USD)'} />
         <Table.Column
+          dataIndex="reason"
+          title={'原因'}
+          render={(reason) => {
+            return <div style={{ maxWidth: '300px' }}>{reason}</div>;
+          }}
+        />
+        <Table.Column
           dataIndex="createdAt"
           title={'时间'}
           render={(at) => {
@@ -50,13 +61,6 @@ export const ProfitReallocationList = () => {
           }}
           filterDropdown={() => {
             return <SnapshotAtFilter fieldName={'createdAt'} filters={filters} setFilters={setFilters} />;
-          }}
-        />
-        <Table.Column
-          dataIndex="reason"
-          title={'原因'}
-          render={(reason) => {
-            return <div style={{ maxWidth: '300px' }}>{reason}</div>;
           }}
         />
         <Table.Column
