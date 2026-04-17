@@ -7,6 +7,10 @@ export const CHAIN_SELECT_OPTIONS = [
     label: <ChainLabel chainId={'1'} icon={CHAIN_ICON['1']} name={'Ethereum'} />,
     value: '1',
   },
+  {
+    label: <ChainLabel chainId={'56'} icon={CHAIN_ICON['56']} name={'BNB'} />,
+    value: '56',
+  },
 ];
 
 export const ASSETS_SELECT_OPTIONS = [

@@ -1,6 +1,6 @@
 import { Create, useForm } from '@refinedev/antd';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Col, Form, Input, InputNumber, Row, Select, message } from 'antd';
+import { Col, Form, Input, InputNumber, Row, Select } from 'antd';
 import { FromTypes } from './util.tsx';
 import { useTeamMap } from '../../hooks/useTeamMap.tsx';
 import { usePortfolios } from '../../hooks/usePortfolios.tsx';
@@ -156,11 +156,19 @@ export const CreateProfitWithdrawal = () => {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <div style={{ display: 'flex', height: '32px', alignItems: 'center' }}>Transfer At: {txTime ? formatDatetime(txTime) : ''}</div>
+            <div style={{ display: 'flex', height: '32px', alignItems: 'center' }}>
+              Transfer At: {txTime ? formatDatetime(txTime) : ''}
+            </div>
           </Col>
         </Row>
 
-        <Form.Item label={'Token种类'} name="assets" labelCol={{ span: 3 }} wrapperCol={{ span: 4 }} rules={[{ required: true }]}>
+        <Form.Item
+          label={'Token种类'}
+          name="assets"
+          labelCol={{ span: 3 }}
+          wrapperCol={{ span: 4 }}
+          rules={[{ required: true }]}
+        >
           <Select options={ASSETS_SELECT_OPTIONS} />
         </Form.Item>
 

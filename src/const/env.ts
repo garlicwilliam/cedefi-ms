@@ -1,5 +1,5 @@
 import { mainnet } from 'wagmi/chains';
-import { SAFE_SERVICE_URLS, SupportedChainIDsType, SupportedChainType } from './chain-rpc.ts';
+import { SupportedChainType } from './chain-rpc.ts';
 
 type ConfigType = {
   ADDR_DEPOSIT: `0x${string}`;
@@ -81,4 +81,3 @@ export const SUBQUERY_URL: string = SUBQUERY_URL_CONFIG[CURRENT_ENV];
 export const SUBQUERY_ST_URL: string = SUBQUERY_ST_URL_CONFIG[CURRENT_ENV];
 export const REST_API: string = REST_API_CONFIG[CURRENT_ENV];
 export const STONEUSD_API: string = STONEUSD_API_CONFIG[CURRENT_ENV];
-export const SAFE_TX_SERVICE_URL: string = SAFE_SERVICE_URLS[DEPLOYED_NETWORK.id as SupportedChainIDsType];

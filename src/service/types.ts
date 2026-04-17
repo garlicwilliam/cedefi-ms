@@ -12,6 +12,11 @@ export type AdminUser = {
   permissions: string[];
 };
 
+export type Operator = {
+  id: number;
+  name: string;
+};
+
 export type Permission = {
   id: string; // user, team ...
   label: string;
