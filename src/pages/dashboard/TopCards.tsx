@@ -1,4 +1,4 @@
-import { StyleMerger } from '../../util/css.ts';
+import { cssPick, StyleMerger } from '../../util/css.ts';
 import { useStyleMr } from '../../hooks/useStyleMr.tsx';
 import styles from './index.module.scss';
 import { IndexCard } from '../../components/dashboard/IndexCard.tsx';
@@ -9,16 +9,17 @@ import { SldDecimal, SldDecPercent } from '../../util/decimal.ts';
 import { NetAssetSnapshot, Price } from '../../service/types.ts';
 import { useLiabilities } from '../../hooks/combine/useLiabilities.tsx';
 import { IndexCardValue } from '../../components/dashboard/IndexCardValue.tsx';
-import { useMemo } from 'react';
-import { PercentValue } from '../../components/value/PercentValue.tsx';
+import { useMemo, useState } from 'react';
 import { DecimalValue } from '../../components/value/DecimalValue.tsx';
 import { useLatestSnapshotAt } from '../../hooks/useLatestSnapshotAt.tsx';
-import { useCustom, useList } from '@refinedev/core';
+import { useList } from '@refinedev/core';
 import { Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { formatDatetime } from '../../util/time.ts';
-import { STONEUSD_API } from '../../const/env.ts';
 import { useLatestApyData } from '../../hooks/apy-data/useApyData.ts';
+import { useNativeStoneUsdOrderBook } from '../../hooks/native/useNativeStoneUsdOrderBook.ts';
+import { MarketInfo } from '../../components/dashboard/MarketInfo.tsx';
+import { CHAIN_SELECT_OPTIONS } from '../../const/form.tsx';
 
 function rate7DayApy(prices: Price[]): SldDecPercent {
   if (prices.length < 2) {
@@ -93,7 +94,7 @@ function useLatestNetAssetSnapshot() {
 
 export const TopCards = () => {
   const styleMr: StyleMerger = useStyleMr(styles);
-  const { rate, rateTime, rateApy } = useLpPrice();
+  const { rate, rateTime } = useLpPrice();
 
   // 最新资产快照
   const { assetValue, assetTime } = useLatestNetAssetSnapshot();
@@ -103,7 +104,7 @@ export const TopCards = () => {
   const { liabilities, allReserved, expectedBalance, totalAsset } = useLiabilities(liaTime);
 
   //
-  const { data: apyItem, isLoading: apyLoading } = useLatestApyData();
+  const { data: apyItem } = useLatestApyData();
   const { d14, periods } = useMemo(() => {
     if (!apyItem) {
       return { d14: null, periods: null };
@@ -113,6 +114,14 @@ export const TopCards = () => {
 
     return { d14, periods };
   }, [apyItem]);
+
+  //
+  const [selectedChain, setSelectedChain] = useState<any>('1');
+  const { data } = useNativeStoneUsdOrderBook({
+    autoRefresh: true,
+    refreshInterval: 10 * 1000,
+    chain: selectedChain === '1' ? 'ethereum' : selectedChain === '56' ? 'bsc' : 'ethereum',
+  });
 
   return (
     <div className={styleMr(styles.cards)}>
@@ -130,6 +139,29 @@ export const TopCards = () => {
           }
           time={rateTime}
         />
+      </IndexCard>
+
+      <IndexCard title={<IndexCardTitle title={'Market Price'} desc={'Native报价'} />} actions={[]}>
+        <div className={styleMr(styles.marketInfo)}>
+          <div className={styleMr(styles.chainSwitch)}>
+            {CHAIN_SELECT_OPTIONS.map((item) => {
+              return (
+                <div
+                  className={styleMr(
+                    styles.chainLabel,
+                    cssPick(selectedChain === item.value, styles.selected),
+                  )}
+                  onClick={() => setSelectedChain(item.value as any)}
+                  key={item.value}
+                >
+                  {item.label}
+                </div>
+              );
+            })}
+          </div>
+
+          <MarketInfo items={data || []} chainRate={rate} />
+        </div>
       </IndexCard>
 
       <IndexCard

@@ -90,3 +90,28 @@
     line-height: 84px;
   }
 }
+
+//
+.marketInfo {
+  margin-top: 16px;
+
+  .chainSwitch {
+    display: flex;
+    column-gap: 20px;
+    padding-bottom: 10px;
+  }
+
+  .chainLabel {
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &.selected {
+      background-color: #eeeeee;
+
+      &.dark {
+        background-color: rgb(238 238 238 / 0.3);
+      }
+    }
+  }
+}

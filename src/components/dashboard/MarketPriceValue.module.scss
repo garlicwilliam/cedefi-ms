@@ -1,0 +1,24 @@
+.marketSymbolItem {
+  display: flex;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.marketItemRow {
+  display: flex;
+  column-gap: 8px;
+  line-height: 30px;
+}
+
+.marketLabel {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.4);
+
+  &.dark {
+    color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.marketValue {
+  font-size: 14px;
+}

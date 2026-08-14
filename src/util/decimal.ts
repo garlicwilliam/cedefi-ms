@@ -80,7 +80,7 @@ export class SldDecimal {
 
   static min(...decimals: SldDecimal[]): SldDecimal {
     let minRs = decimals[0];
-    decimals.forEach(dec => {
+    decimals.forEach((dec) => {
       if (dec.lt(minRs)) {
         minRs = dec;
       }
@@ -91,7 +91,7 @@ export class SldDecimal {
 
   static max(...decimals: SldDecimal[]): SldDecimal {
     let maxRs = decimals[0];
-    decimals.forEach(dec => {
+    decimals.forEach((dec) => {
       if (dec.gt(maxRs)) {
         maxRs = dec;
       }
@@ -220,7 +220,8 @@ export class SldDecimal {
       return SldDecimal.fromNumeric(parts[0], this.originDecimal);
     } else {
       const dec: number = this.originBigNumber !== null ? this.originDecimal : 18;
-      const big: bigint = this.originBigNumber !== null ? this.originBigNumber : (this.e18BigNumber as bigint);
+      const big: bigint =
+        this.originBigNumber !== null ? this.originBigNumber : (this.e18BigNumber as bigint);
       const one: bigint = baseBigInt(dec);
       const newBig: bigint = (big / one) * one;
 
@@ -266,6 +267,18 @@ export class SldDecimal {
     }
 
     return SldDecimal.fromE18(this.toE18() + sldDecimal.toE18(), this.originDecimal);
+  }
+
+  public abs() {
+    if (this === SldDecimal.ZERO || this.isZero()) {
+      return this;
+    }
+
+    if (this.toE18() < 0n) {
+      return SldDecimal.fromE18(-this.toE18(), this.originDecimal);
+    } else {
+      return this;
+    }
   }
 
   public sub(sldDecimal: SldDecimal): SldDecimal {
@@ -468,7 +481,7 @@ export class SldDecPrice {
   static min(...args: SldDecPrice[]): SldDecPrice {
     let rs = args[0];
 
-    args.forEach(arg => {
+    args.forEach((arg) => {
       if (arg.lt(rs)) {
         rs = arg;
       }
@@ -551,7 +564,7 @@ export class SldUsdValue {
 
   private constructor(
     private tokenOriginDecimal: number,
-    private decimalObj: SldDecimal
+    private decimalObj: SldDecimal,
   ) {}
 
   public getTokenDecimal(): number {

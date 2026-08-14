@@ -293,3 +293,13 @@ export type ApyAllDataItem = {
   apyD365: string;
   apyRealized: string;
 };
+
+export type NativeOrderBookItem = {
+  base_address: string;
+  base_symbol: string;
+  levels: [number, number][];
+  minimum_in_base: number;
+  quote_address: string;
+  quote_symbol: string;
+  side: 'bid' | 'ask';
+};

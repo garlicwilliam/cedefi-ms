@@ -1,0 +1,22 @@
+.deltaBox {
+  margin-top: 8px;
+  display: flex;
+  column-gap: 8px;
+}
+
+.deltaLabel {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.4);
+
+  &.dark {
+    color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.deltaValue {
+  font-size: 14px;
+
+  &.warn {
+    color: #ff4d4f;
+  }
+}
