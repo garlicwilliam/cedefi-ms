@@ -12,9 +12,9 @@ export const CHAIN_OBJECTS: { [c in SupportedChainIDsType]: Chain } = {
 };
 
 export const CHAIN_RPC: { [c in SupportedChainIDsType]: string } = {
-  [mainnet.id]: 'https://lb.drpc.org/ethereum/AsQlBGo230qhhptQOBJcQ_BtGYnvm44R8L2Awg8TMB_n',
-  [sepolia.id]: 'https://lb.drpc.org/sepolia/AsQlBGo230qhhptQOBJcQ_BtGYnvm44R8L2Awg8TMB_n',
-  [bsc.id]: 'https://lb.drpc.live/bsc/AsQlBGo230qhhptQOBJcQ_BtGYnvm44R8L2Awg8TMB_n',
+  [mainnet.id]: 'https://rpc.stakestone.io/ethereum',
+  [sepolia.id]: 'https://rpc.stakestone.io/sepolia',
+  [bsc.id]: 'https://rpc.stakestone.io/bsc',
 };
 
 export const CHAIN_ICON: { [c in SupportedChainIDsType]: string } = {
